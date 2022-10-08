@@ -1,5 +1,0 @@
-cn\rivamed\log\spring\annotations\EnableRivamedLog.class
-cn\rivamed\log\spring\configuration\RivamedLogAutoConfiguration.class
-cn\rivamed\log\spring\configuration\RabbitBatchConfig.class
-cn\rivamed\log\spring\configuration\DisruptorConfig.class
-cn\rivamed\log\spring\configuration\RivamedLogProperties.class

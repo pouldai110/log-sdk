@@ -1,0 +1,45 @@
+
+
+#ignore folder
+target
+.idea
+venv
+bin
+logs
+classes
+lib
+file
+webapp
+
+#ignore file
+.settings
+.project
+.classpath
+*.mdb
+*.ldb
+*.sln
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.iml
+
+#ignore compression file
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.via
+*.tmp
+*.err
+ehthumbs.db
+Thumbs.db
+Test.java
+logs
+target

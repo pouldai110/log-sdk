@@ -1,6 +1,0 @@
-cn\rivamed\log\core\entity\RabbitLogMessage.class
-cn\rivamed\log\core\util\UuidUtil.class
-cn\rivamed\log\core\entity\SystemLogMessage.class
-cn\rivamed\log\core\entity\LogRecordMessage.class
-cn\rivamed\log\core\constant\LogConstants.class
-cn\rivamed\log\core\event\LogMessageEvent.class
