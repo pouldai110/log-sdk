@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>cn.rivamed</groupId>
+    <artifactId>rivamed-log-sdk</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>cn.rivamed</groupId>
+  <artifactId>rivamed-log-spring-boot-autoconfigure</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <name>rivamed-log-spring-boot-autoconfigure</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>${spring-boot.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>cn.rivamed</groupId>
+      <artifactId>rivamed-log-spring</artifactId>
+      <version>${revision}</version>
+    </dependency>
+  </dependencies>
+</project>
