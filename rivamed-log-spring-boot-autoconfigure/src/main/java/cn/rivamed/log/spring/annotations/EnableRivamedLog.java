@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * 版本 Rivamed 2022
  *
  * @version V2.10.0
- * @author: 左健宏
+ * @author: Zuo Yang
  * @date: 2022/10/8 10:19
  */
 @Retention(RetentionPolicy.RUNTIME)

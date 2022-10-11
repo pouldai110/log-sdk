@@ -13,6 +13,8 @@ public class LogConstants {
 
     public final static String LOG_TRACEID = "traceId";
 
+    public final static String LOG_SPANID = "spanId";
+
     /**
      * 日志采集类型 http/rabbitmq
      */

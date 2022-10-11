@@ -21,7 +21,6 @@ import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
  */
 @Configuration
 @EnableConfigurationProperties({RivamedLogProperties.class})
-@ConditionalOnProperty(name = "rivamed.log.enable", havingValue = "true")
 public class DisruptorConfig {
 
     @Bean
@@ -29,7 +28,7 @@ public class DisruptorConfig {
 
         LogMessageEventFactory eventFactory = new LogMessageEventFactory();
         // ringBuffer大小必须为2的倍数
-        Disruptor<LogMessageEvent> disruptor = new Disruptor<>(eventFactory, 128 * 1024, new CustomizableThreadFactory("event-handler-"),
+        Disruptor<LogMessageEvent> disruptor = new Disruptor<>(eventFactory, 128 * 1024, new CustomizableThreadFactory("rivamed-log-event-handler-"),
                 ProducerType.SINGLE, new SleepingWaitStrategy());
         // 连接消费端
         disruptor.handleEventsWith(logMessageEventHandler).then(new LogMessageEventCleanHandler());

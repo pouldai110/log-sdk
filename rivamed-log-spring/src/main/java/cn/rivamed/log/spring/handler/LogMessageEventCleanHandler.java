@@ -5,7 +5,7 @@ import com.lmax.disruptor.EventHandler;
 import org.springframework.stereotype.Component;
 
 /**
- * @author weixiaobo
+ * @author Zuo Yang
  * @date 2022年3月15日
  */
 @Component

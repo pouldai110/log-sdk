@@ -25,6 +25,7 @@ webapp
 *.o
 *.so
 *.iml
+.flattened-pom.xml
 
 #ignore compression file
 *.7z

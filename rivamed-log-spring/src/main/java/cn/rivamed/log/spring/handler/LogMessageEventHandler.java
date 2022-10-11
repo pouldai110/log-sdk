@@ -1,7 +1,7 @@
 package cn.rivamed.log.spring.handler;
 
 import cn.rivamed.log.core.event.LogMessageEvent;
-import cn.rivamed.log.spring.component.LogMessagePushService;
+import cn.rivamed.log.spring.service.LogMessagePushService;
 import com.lmax.disruptor.EventHandler;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 
 
 /**
- * @author weixiaobo
+ * @author Zuo Yang
  * @date 2022年3月15日
  */
 @Component

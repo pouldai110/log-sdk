@@ -1,4 +1,4 @@
-package cn.rivamed.log.spring.component;
+package cn.rivamed.log.spring.service;
 
 import cn.rivamed.log.core.util.UuidUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * @author rufei.cn
- * <p>
- * 公共处理方法模块 $DESCRIPTION
- * </p>
+ * 推送到RabbitMQ服务
+ *
+ * @author Zuo Yang
+ * @date 2022/10/01
  */
 @Service
 public class LogMessagePushService {

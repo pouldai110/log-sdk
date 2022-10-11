@@ -1,7 +1,7 @@
 package cn.rivamed.log.core.util;
 
 /**
- * @author Lenovo
+ * @author Zuo Yang
  */
 
 import java.util.UUID;
@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * @ClassName: UuidUtil
  * @Description: (uuid工具类)
- * @author weixiaobo
+ * @author Zuo Yang
  * @date 2020年6月28日 下午2:13:04
  *
  */
@@ -22,7 +22,7 @@ public class UuidUtil {
     public static final String NULL_STRING = "";
 
     /**
-     * @author weixiaobo
+     * @author Zuo Yang
      * @Title: generatorUuid
      * @Description: (获取uuid)
      * @param

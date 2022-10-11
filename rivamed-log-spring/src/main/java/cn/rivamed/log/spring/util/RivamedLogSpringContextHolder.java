@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * 虽然有注解，但在OD分析中，有时要动态取出相关接口的实现来处理 以静态变量保存Spring
  * ApplicationContext,可在任意代码中取出ApplicaitonContext.
  *
- * @author liuyg
+ * @author Zuo Yang
  *
  */
 @Component

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
-import cn.rivamed.log.spring.component.DisruptorPushService;
+import cn.rivamed.log.spring.service.DisruptorPushService;
 import cn.rivamed.log.spring.util.RivamedLogSpringContextHolder;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -273,7 +273,7 @@ public final class RivamedRollingRandomAccessFileAppender extends AbstractOutput
             } catch (Exception e) {
             }
         } else {
-            disruptorPushService.publishMessage(logEvent, getSysName());
+            disruptorPushService.publishSystemLogMessage(logEvent, getSysName());
         }
     }
 
