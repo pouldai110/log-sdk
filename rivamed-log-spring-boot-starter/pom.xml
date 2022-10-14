@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.rivamed</groupId>
         <artifactId>rivamed-log-sdk</artifactId>
-        <version>${revision}</version>
+        <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,20 +15,18 @@
     <dependencies>
         <dependency>
             <groupId>cn.rivamed</groupId>
-            <artifactId>rivamed-log-spring-boot-autoconfigure</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lmax</groupId>
-            <artifactId>disruptor</artifactId>
+            <artifactId>rivamed-log-core</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sleuth</artifactId>
+            <version>${sleuth.version}</version>
         </dependency>
         <dependency> <!-- 引入log4j2依赖 -->
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
     </dependencies>
 </project>

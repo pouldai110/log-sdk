@@ -1,20 +1,16 @@
-package cn.rivamed.log.core.entity;
+package cn.rivamed.log.core.context;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
- * 描述: 接口、定时任务日志信息
- * 公司: 北京瑞华康源科技有限公司<br/>
- * 版权: rivamed2020<br/>
+ * Rivamed Log Label上下文
  *
- * @author fujiali
- * @version V1.0
- * @date 2022/9/27 15:34
+ * @author Zuo Yang
+ * @since 1.0.0
  */
-public class LogRecordMessage extends BaseLogMessage {
+public class RivamedLogLabel implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5235299539593154309L;
 
     /**
      * 操作人账号
@@ -24,7 +20,7 @@ public class LogRecordMessage extends BaseLogMessage {
     /**
      * 操作人姓名
      */
-    private String userName = "";
+    private String userName;
 
     /**
      * 设备id
@@ -35,11 +31,6 @@ public class LogRecordMessage extends BaseLogMessage {
      * 设备sn
      */
     private String sn;
-
-    /**
-     * 访问URL
-     */
-    private String url;
 
     /**
      * 业务号
@@ -57,19 +48,9 @@ public class LogRecordMessage extends BaseLogMessage {
     private String bizAction;
 
     /**
-     * 接口执行时长
-     */
-    private Long costTime;
-
-    /**
      * 操作状态码
      */
     private String responseCode;
-
-    /**
-     * 登录tokenId
-     */
-    private String tokenId;
 
     /**
      * LogRecode(语义化日志字符串)
@@ -77,14 +58,19 @@ public class LogRecordMessage extends BaseLogMessage {
     private String logRecord;
 
     /**
-     * record日志类型 timeTaskLog：定时任务 userLog：接口
+     * 登录tokenId
      */
-    private String logRecordType;
+    private String tokenId;
 
     /**
      * 租户id
      */
     private String tenantId;
+
+    /**
+     * 系统名称
+     */
+    private String sysName;
 
     public String getUserId() {
         return userId;
@@ -118,14 +104,6 @@ public class LogRecordMessage extends BaseLogMessage {
         this.sn = sn;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getBizId() {
         return bizId;
     }
@@ -150,28 +128,12 @@ public class LogRecordMessage extends BaseLogMessage {
         this.bizAction = bizAction;
     }
 
-    public Long getCostTime() {
-        return costTime;
-    }
-
-    public void setCostTime(Long costTime) {
-        this.costTime = costTime;
-    }
-
     public String getResponseCode() {
         return responseCode;
     }
 
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;
-    }
-
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
     }
 
     public String getLogRecord() {
@@ -182,12 +144,12 @@ public class LogRecordMessage extends BaseLogMessage {
         this.logRecord = logRecord;
     }
 
-    public String getLogRecordType() {
-        return logRecordType;
+    public String getTokenId() {
+        return tokenId;
     }
 
-    public void setLogRecordType(String logRecordType) {
-        this.logRecordType = logRecordType;
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
     }
 
     public String getTenantId() {
@@ -196,5 +158,13 @@ public class LogRecordMessage extends BaseLogMessage {
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public String getSysName() {
+        return sysName;
+    }
+
+    public void setSysName(String sysName) {
+        this.sysName = sysName;
     }
 }
