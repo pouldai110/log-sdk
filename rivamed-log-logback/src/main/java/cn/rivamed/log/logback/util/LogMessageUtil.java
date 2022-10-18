@@ -45,12 +45,17 @@ public class LogMessageUtil {
 
     public static BaseLogMessage getLogMessage(final String appName, final String env, final ILoggingEvent logEvent) {
         isExpandRunLog(logEvent);
-        String formattedMessage = getMessage(logEvent);
-
-        BaseLogMessage logMessage = new BaseLogMessage();
-        logMessage.setClassName(logEvent.getLoggerName());
-        logMessage.setThreadName(logEvent.getThreadName());
-        logMessage.setSeq(SEQ_BUILDER.getAndIncrement());
+        BaseLogMessage logMessage = convertMessage(logEvent);
+        logMessage.setClassName(logEvent.getLoggerName())
+                .setThreadName(logEvent.getThreadName())
+                .setSeq(SEQ_BUILDER.getAndIncrement())
+                // dateTime字段用来保存当前服务器的时间戳字符串
+                .setBizIP(IpGetter.CURRENT_IP)
+                .setBizTime(new Date())
+                .setLevel(logEvent.getLevel().toString())
+                .setSysName(appName)
+                .setEnv(env)
+                .setTraceId(logTraceID.get());
         StackTraceElement[] stackTraceElements = logEvent.getCallerData();
         if (stackTraceElements != null && stackTraceElements.length > 0) {
             StackTraceElement stackTraceElement = stackTraceElements[0];
@@ -60,25 +65,18 @@ public class LogMessageUtil {
         } else {
             logMessage.setMethod(logEvent.getThreadName());
         }
-        // dateTime字段用来保存当前服务器的时间戳字符串
-        logMessage.setBizIP(IpGetter.CURRENT_IP);
-        logMessage.setBizTime(new Date());
-        logMessage.setLevel(logEvent.getLevel().toString());
-        logMessage.setSysName(appName);
-        logMessage.setEnv(env);
-        logMessage.setBizDetail(formattedMessage);
-        logMessage.setStackTrace(formattedMessage);
-        logMessage.setTraceId(logTraceID.get());
-
         return logMessage;
     }
 
-    private static String getMessage(ILoggingEvent logEvent) {
+    private static BaseLogMessage convertMessage(ILoggingEvent logEvent) {
+        BaseLogMessage logMessage = LogMessageFactory.convertMessageType(logEvent.getFormattedMessage());
         if (logEvent.getLevel().equals(Level.ERROR)) {
+            String formatMessage = logEvent.getFormattedMessage();
+
             if (logEvent.getThrowableProxy() != null) {
                 ThrowableProxy throwableProxy = (ThrowableProxy) logEvent.getThrowableProxy();
                 String[] args = new String[]{logEvent.getFormattedMessage() + "\n" + LogExceptionStackTrace.errorStackTrace(throwableProxy.getThrowable()).toString()};
-                return packageMessage("{}", args);
+                formatMessage = packageMessage("{}", args);
             } else {
                 Object[] args = logEvent.getArgumentArray();
                 if (args != null) {
@@ -87,11 +85,12 @@ public class LogMessageUtil {
                             args[i] = LogExceptionStackTrace.errorStackTrace(args[i]);
                         }
                     }
-                    return packageMessage(logEvent.getMessage(), args);
+                    formatMessage = packageMessage(logEvent.getMessage(), args);
                 }
             }
+            logMessage.setStackTrace(formatMessage);
         }
-        return logEvent.getFormattedMessage();
+        return logMessage;
     }
 
     private static String packageMessage(String message, Object[] args) {

@@ -8,7 +8,7 @@ import java.io.StringWriter;
  * className：LogExceptionStackTrace
  * description：获取堆栈信息字符串工具类
  *
- * @author Frank.chen
+ * @author Zuo Yang
  * @version 1.0.0
  */
 public class LogExceptionStackTrace {

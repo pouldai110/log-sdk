@@ -6,7 +6,7 @@
 
     <groupId>cn.rivamed</groupId>
     <artifactId>rivamed-log-sdk</artifactId>
-    <version>1.0</version>
+    <version>${revision}</version>
 
     <packaging>pom</packaging>
     <name>rivamed-log-sdk</name>
@@ -30,6 +30,8 @@
         <httpclient.version>4.5.13</httpclient.version>
         <disruptor.version>3.4.4</disruptor.version>
         <jackson.version>2.11.4</jackson.version>
+        <slf4j.version>1.7.36</slf4j.version>
+        <logback.version>1.2.3</logback.version>
         <servlet.version>4.0.1</servlet.version>
         <lombok.version>1.18.24</lombok.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
@@ -40,8 +42,6 @@
         <module>rivamed-log-log4j</module>
         <module>rivamed-log-log4j2</module>
         <module>rivamed-log-logback</module>
-        <module>rivamed-log-trace</module>
-        <module>rivamed-log-spring-boot-starter</module>
     </modules>
 
     <dependencyManagement>
@@ -49,121 +49,31 @@
             <dependency>
                 <groupId>cn.rivamed</groupId>
                 <artifactId>rivamed-log-core</artifactId>
-                <version>1.0</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>cn.rivamed</groupId>
                 <artifactId>rivamed-log-logback</artifactId>
-                <version>1.0</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>cn.rivamed</groupId>
                 <artifactId>rivamed-log-log4j</artifactId>
-                <version>1.0</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>cn.rivamed</groupId>
                 <artifactId>rivamed-log-log4j2</artifactId>
-                <version>1.0</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>cn.rivamed</groupId>
                 <artifactId>rivamed-log-trace</artifactId>
-                <version>1.0</version>
+                <version>${revision}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
-   <!-- &lt;!&ndash;定义Jar包主版本&ndash;&gt;
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webflux</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
-            <version>${spring-boot.version}</version>
-        </dependency>
-        <dependency> &lt;!&ndash; 引入log4j2依赖 &ndash;&gt;
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-            <version>${spring-boot.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lmax</groupId>
-            <artifactId>disruptor</artifactId>
-            <version>${disruptor.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
-            <version>${sleuth.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>${jedis.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>${kafka.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>transmittable-thread-local</artifactId>
-            <version>${ttl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
-        </dependency>
-    </dependencies>-->
     <build>
         <plugins>
             <plugin>
@@ -176,33 +86,84 @@
                 </configuration>
             </plugin>
 
-            <!-- 统一版本号管理 -->
-            <!--<plugin>-->
-            <!--<groupId>org.codehaus.mojo</groupId>-->
-            <!--<artifactId>flatten-maven-plugin</artifactId>-->
-            <!--<version>1.2.7</version>-->
-            <!--<configuration>-->
-            <!--<updatePomFile>true</updatePomFile>-->
-            <!--<flattenMode>resolveCiFriendliesOnly</flattenMode>-->
-            <!--</configuration>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>flatten</id>-->
-            <!--<phase>process-resources</phase>-->
-            <!--<goals>-->
-            <!--<goal>flatten</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--<execution>-->
-            <!--<id>flatten.clean</id>-->
-            <!--<phase>clean</phase>-->
-            <!--<goals>-->
-            <!--<goal>clean</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
+            <!--统一版本号管理-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.2.7</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--生成doc jar包-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <!-- 不让像@Param 这种后面没写值的东西 报错。-->
+                        <configuration>
+                            <additionalJOption>-Xdoclint:none</additionalJOption>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--生成源码jar包-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.class</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.xml</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
     </build>
 
     <!-- 发布构建管理 -->

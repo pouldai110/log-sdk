@@ -33,7 +33,6 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
-import org.slf4j.MDC;
 
 import java.io.Serializable;
 
@@ -104,7 +103,7 @@ public final class RabbitMQAppender extends AbstractAppender {
         if (routingKey == null) {
             routingKey = "rivamed-log";
         }
-
+        //项目刚启动的时候拿不到配置信息，不去初始化客户端
         if (!host.contains(LogMessageConstant.EXCEPTION_CONFIG) && !virtualHost.contains(LogMessageConstant.EXCEPTION_CONFIG)) {
             RivamedLogContext.putSysName(sysName);
             RivamedLogContext.putEnv(env);

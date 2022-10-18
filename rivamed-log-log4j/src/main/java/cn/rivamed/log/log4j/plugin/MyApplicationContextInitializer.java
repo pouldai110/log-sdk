@@ -1,4 +1,5 @@
-package cn.rivamed.log.log4j2.plugin;
+/*
+package cn.rivamed.log.log4j.plugin;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -9,15 +10,17 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 
+*/
 /**
- * 描述: 用于log4j2配置中心加载完成后获取配置用
+ * 描述: 用于log4j配置中心加载完成后获取配置用
  * 公司 北京瑞华康源科技有限公司
  * 版本 Rivamed 2022
  *
  * @author 左健宏
  * @version V2.0.1
  * @date 22/10/13 17:30
- */
+ *//*
+
 @Plugin(name = "spring", category = StrLookup.CATEGORY)
 public class MyApplicationContextInitializer extends AbstractLookup implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
@@ -43,3 +46,4 @@ public class MyApplicationContextInitializer extends AbstractLookup implements A
 
 
 }
+*/

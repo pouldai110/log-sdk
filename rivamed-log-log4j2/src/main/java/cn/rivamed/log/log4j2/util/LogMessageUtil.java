@@ -43,12 +43,17 @@ public class LogMessageUtil {
 
     public static BaseLogMessage getLogMessage(String appName, String env, LogEvent logEvent) {
         isExpandRunLog(logEvent);
-        String formattedMessage = getMessage(logEvent);
-
-        BaseLogMessage logMessage = new BaseLogMessage();
-        logMessage.setClassName(logEvent.getLoggerName());
-        logMessage.setThreadName(logEvent.getThreadName());
-        logMessage.setSeq(SEQ_BUILDER.getAndIncrement());
+        BaseLogMessage logMessage = convertMessage(logEvent);
+        logMessage.setClassName(logEvent.getLoggerName())
+                .setThreadName(logEvent.getThreadName())
+                .setSeq(SEQ_BUILDER.getAndIncrement())
+                // dateTime字段用来保存当前服务器的时间戳字符串
+                .setBizIP(IpGetter.CURRENT_IP)
+                .setBizTime(new Date())
+                .setLevel(logEvent.getLevel().toString())
+                .setSysName(appName)
+                .setEnv(env)
+                .setTraceId(logTraceID.get());
         StackTraceElement stackTraceElement = logEvent.getSource();
         if (stackTraceElement != null) {
             String method = stackTraceElement.getMethodName();
@@ -57,20 +62,11 @@ public class LogMessageUtil {
         } else {
             logMessage.setMethod(logEvent.getThreadName());
         }
-        // dateTime字段用来保存当前服务器的时间戳字符串
-        logMessage.setBizIP(IpGetter.CURRENT_IP);
-        logMessage.setBizTime(new Date());
-        logMessage.setLevel(logEvent.getLevel().toString());
-        logMessage.setSysName(appName);
-        logMessage.setEnv(env);
-        logMessage.setBizDetail(formattedMessage);
-        logMessage.setStackTrace(formattedMessage);
-        logMessage.setTraceId(logTraceID.get());
-
         return logMessage;
     }
 
-    private static String getMessage(LogEvent logEvent) {
+    private static BaseLogMessage convertMessage(LogEvent logEvent) {
+        BaseLogMessage logMessage = LogMessageFactory.convertMessageType(logEvent.getMessage().getFormattedMessage());
         if (logEvent.getLevel().equals(Level.ERROR)) {
             // 如果占位符个数与参数个数相同,即使最后一个参数为Throwable类型,logEvent.getThrown()也会为null
             Throwable thrown = logEvent.getThrown();
@@ -86,12 +82,12 @@ public class LogMessageUtil {
                 formatMessage = packageMessage(formatMessage, args);
             }
             if (thrown != null) {
-                return packageMessage(formatMessage,
+                formatMessage = packageMessage(formatMessage,
                         new String[]{LogExceptionStackTrace.errorStackTrace(thrown).toString()});
             }
-            return formatMessage;
+            logMessage.setStackTrace(formatMessage);
         }
-        return logEvent.getMessage().getFormattedMessage();
+        return logMessage;
     }
 
     private static String packageMessage(String message, Object[] args) {

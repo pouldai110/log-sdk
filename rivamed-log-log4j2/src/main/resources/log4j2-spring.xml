@@ -4,7 +4,6 @@
 -->
 <!-- monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数 -->
 <configuration monitorInterval="30">
-    <!--<springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="sdk"/>-->
 
     <!-- 日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
 
@@ -14,6 +13,8 @@
             格式化输出：
             %d表示日期，
             %thread表示线程名，
+            %X{X-B3-TraceId表示traceId
+            %X{X-B3-SpanId表示spanId
             %-5level：级别从左显示5个字符宽度
             %msg：日志消息，%n是换行符
             %logger{36} 表示 Logger 名字最长36个字符
@@ -26,6 +27,14 @@
         <property name="LOG_MAX_SIZE" value="1MB" />
         <property name="LOG_DAYS" value="50" />
         <property name="TIME_BASED_INTERVAL" value="1" />
+        <property name="env" value="${spring:spring.profiles.active}" />
+        <property name="host" value="${spring:rivamed.log.rabbitmq.host}" />
+        <property name="port" value="${spring:rivamed.log.rabbitmq.port}" />
+        <property name="virtualHost" value="${spring:rivamed.log.rabbitmq.virtualHost}" />
+        <property name="username" value="${spring:rivamed.log.rabbitmq.username}" />
+        <property name="password" value="${spring:rivamed.log.rabbitmq.password}" />
+        <property name="exchange" value="${spring:rivamed.log.rabbitmq.exchange}" />
+        <property name="routingKey" value="${spring:rivamed.log.rabbitmq.routingKey}" />
     </Properties>
 
     <appenders>
@@ -40,7 +49,7 @@
         　　这个会打印出所有的info及以下级别的信息，每次大小超过size，
         　　则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档
         -->
-        <RivamedRollingRandomAccessFileAppender name="RollingRandomAccessFileInfo" fileName="${LOG_PATH}/${LOG_NAME}-info.log" filePattern="${LOG_PATH}/info/${LOG_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingRandomAccessFile name="RollingRandomAccessFileInfo" fileName="${LOG_PATH}/${LOG_NAME}-info.log" filePattern="${LOG_PATH}/info/$${date:yyyy-MM}/${LOG_NAME}-INFO-%d{yyyy-MM-dd}-%i.log">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -51,10 +60,10 @@
             </Policies>
             <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖 -->
             <DefaultRolloverStrategy max="${LOG_DAYS}"/>
-        </RivamedRollingRandomAccessFileAppender>
+        </RollingRandomAccessFile>
 
         <!-- 这个会打印出所有的warn及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RivamedRollingRandomAccessFileAppender name="RollingRandomAccessFileWarn" fileName="${LOG_PATH}/${LOG_NAME}-warn.log" filePattern="${LOG_PATH}/warn/${LOG_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingRandomAccessFile name="RollingRandomAccessFileWarn" fileName="${LOG_PATH}/${LOG_NAME}-warn.log" filePattern="${LOG_PATH}/warn/$${date:yyyy-MM}/${LOG_NAME}-WARN-%d{yyyy-MM-dd}-%i.log">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -65,10 +74,10 @@
             </Policies>
             <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
             <DefaultRolloverStrategy max="${LOG_DAYS}"/>
-        </RivamedRollingRandomAccessFileAppender>
+        </RollingRandomAccessFile>
 
         <!-- 这个会打印出所有的error及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RivamedRollingRandomAccessFileAppender name="RollingRandomAccessFileError" fileName="${LOG_PATH}/${LOG_NAME}-error.log" filePattern="${LOG_PATH}/error/${LOG_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingRandomAccessFile name="RollingRandomAccessFileError" fileName="${LOG_PATH}/${LOG_NAME}-error.log" filePattern="${LOG_PATH}/error/$${date:yyyy-MM}/${LOG_NAME}-ERROR-%d{yyyy-MM-dd}-%i.log">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -79,7 +88,18 @@
             </Policies>
             <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
             <DefaultRolloverStrategy max="${LOG_DAYS}"/>
-        </RivamedRollingRandomAccessFileAppender>
+        </RollingRandomAccessFile>
+
+        <!--使用RabbitMQ启用下面配置-->
+        <!-- 字段说明 -->
+        <!-- appName:应用名称 -->
+        <!-- redisHost：redis地址 -->
+        <!-- redisPort：redis端口号 不配置，默认使用6379-->
+        <!-- runModel：runModel 1,2  1表示最高性能模式，2表示低性能模式 但是2可以获取更多信息 不配置默认为1- -->
+        <!-- expand：整合其他链路插件，启用这个字段 expand=“sleuth” 表示整合springcloud.sleuth- -->
+        <RabbitMQAppender name="RabbitMQAppender" sysName="${LOG_NAME}" env="${env}" host="${host}"
+                          port="${port}" virtualHost="${virtualHost}" username="${username}" password="${password}"
+                          exchange="${exchange}"  routingKey="${routingKey}"/>
     </appenders>
 
     <!--Logger节点用来单独指定日志的形式，比如要为指定包下的class指定不同的日志级别等。-->
@@ -100,6 +120,9 @@
             <appender-ref ref="RollingRandomAccessFileInfo"/>
             <appender-ref ref="RollingRandomAccessFileWarn"/>
             <appender-ref ref="RollingRandomAccessFileError"/>
+            <appender-ref ref="RabbitMQAppender"/>
         </root>
     </loggers>
 </configuration>
+
+

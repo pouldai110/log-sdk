@@ -2,19 +2,17 @@ package cn.rivamed.log.core.aspect;
 
 import brave.propagation.TraceContext;
 import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.constant.LogMessageContextConstant;
 import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.LogRecordMessage;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRPCHandler;
-import cn.rivamed.log.core.util.GfJsonUtil;
+import cn.rivamed.log.core.util.JsonUtil;
 import cn.rivamed.log.core.util.IpGetter;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -55,7 +53,7 @@ public abstract class AbstractAspect extends RivamedLogRPCHandler {
             }
             LogRecordMessage message = new LogRecordMessage();
             HttpServletRequest request = sra.getRequest();
-            TraceContext context = (TraceContext) request.getAttribute("brave.propagation.TraceContext");
+            TraceContext context = (TraceContext) request.getAttribute(TraceContext.class.getName());
             message.setTraceId(context.traceIdString());
             message.setSpanId(context.spanIdString());
             Object[] args = joinPoint.getArgs();
@@ -70,7 +68,7 @@ public abstract class AbstractAspect extends RivamedLogRPCHandler {
             Method m = ms.getMethod();
             String cloneParams;
             try {
-                cloneParams = GfJsonUtil.toJSONString(params);
+                cloneParams = JsonUtil.toJSONString(params);
             } catch (Exception e) {
                 cloneParams = params.toString();
             }
@@ -81,7 +79,6 @@ public abstract class AbstractAspect extends RivamedLogRPCHandler {
             stopWatch.start();
             returnValue = joinPoint.proceed(joinPoint.getArgs());
             stopWatch.stop();
-
             message.setSysName(RivamedLogContext.getSysName());
             message.setEnv(RivamedLogContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());

@@ -1,11 +1,9 @@
 package cn.rivamed.log.core.factory;
 
-import cn.rivamed.log.core.client.AbstractClient;
 import cn.rivamed.log.core.disruptor.LogMessageProducer;
 import cn.rivamed.log.core.disruptor.LogMessageRingBuffer;
 import cn.rivamed.log.core.entity.BaseLogMessage;
-import cn.rivamed.log.core.exception.LogQueueConnectException;
-import cn.rivamed.log.core.util.GfJsonUtil;
+import cn.rivamed.log.core.util.JsonUtil;
 import cn.rivamed.log.core.util.HttpClient;
 
 import java.util.ArrayList;
@@ -34,13 +32,13 @@ public class MessageAppenderFactory {
         }
         List<Map<String, Object>> logs = new ArrayList<>();
         for (String str : baseLogMessage) {
-            Map<String, Object> map = GfJsonUtil.parseObject(str, Map.class);
+            Map<String, Object> map = JsonUtil.parseObject(str, Map.class);
             logs.add(map);
         }
 
         try {
             String url = "http://" + rivamedLogHost;
-            String param = GfJsonUtil.toJSONString(logs);
+            String param = JsonUtil.toJSONString(logs);
             HttpClient.doPostBody(url, param);
         } catch (Exception e) {
             System.out.println("Rivamed Log error:----------------" + e.getMessage() + "-------------------");

@@ -1,4 +1,4 @@
-package cn.rivamed.log.core.entity;
+package cn.rivamed.log.core.util;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

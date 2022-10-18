@@ -1,4 +1,4 @@
-package cn.rivamed.log.core.context;
+package cn.rivamed.log.log4j.context;
 
 
 import cn.rivamed.log.core.entity.LogRecordMessage;
@@ -6,12 +6,12 @@ import cn.rivamed.log.core.entity.RivamedLogLabel;
 import com.alibaba.ttl.TransmittableThreadLocal;
 
 /**
- * Rivamed Log上下文
+ * Rivamed Log Properties上下文
  *
  * @author Zuo Yang
  * @since 1.0.0
  */
-public class RivamedLogContext {
+public class RivamedLogPropertiesContext {
 
     private static final TransmittableThreadLocal<String> sysNameTTL = new TransmittableThreadLocal<>();
 

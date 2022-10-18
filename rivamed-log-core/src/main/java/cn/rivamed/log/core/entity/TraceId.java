@@ -2,12 +2,13 @@ package cn.rivamed.log.core.entity;
 
 
 import cn.rivamed.log.core.util.IdWorker;
+import cn.rivamed.log.core.util.TraceIdGenerator;
 import com.alibaba.ttl.TransmittableThreadLocal;
 
 /**
  * className：TraceId
  * description：TraceId 用来存储traceID相关信息
- * @author Frank.chen
+ * @author Zuo Yang
  * @version 1.0.0
  */
 public class TraceId {

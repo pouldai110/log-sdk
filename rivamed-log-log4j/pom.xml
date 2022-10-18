@@ -5,12 +5,28 @@
     <parent>
         <artifactId>rivamed-log-sdk</artifactId>
         <groupId>cn.rivamed</groupId>
-        <version>1.0</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>rivamed-log-log4j</artifactId>
     <name>rivamed-log-log4j</name>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.rivamed</groupId>
+            <artifactId>rivamed-log-core</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

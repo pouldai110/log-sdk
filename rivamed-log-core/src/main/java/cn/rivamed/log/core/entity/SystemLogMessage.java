@@ -1,6 +1,9 @@
 package cn.rivamed.log.core.entity;
 
-import java.io.Serializable;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * 描述: 系统日志
@@ -11,6 +14,9 @@ import java.io.Serializable;
  * @version V1.0
  * @date 2022/9/27 15:30
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
 public class SystemLogMessage extends BaseLogMessage {
 
     private static final long serialVersionUID = 1L;
@@ -25,19 +31,4 @@ public class SystemLogMessage extends BaseLogMessage {
      */
     private String tokenId;
 
-    public Long getCostTime() {
-        return costTime;
-    }
-
-    public void setCostTime(Long costTime) {
-        this.costTime = costTime;
-    }
-
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
-    }
 }

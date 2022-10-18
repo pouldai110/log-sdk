@@ -2,7 +2,7 @@ package cn.rivamed.log.core.disruptor;
 
 import cn.rivamed.log.core.client.AbstractClient;
 import cn.rivamed.log.core.entity.BaseLogMessage;
-import cn.rivamed.log.core.util.GfJsonUtil;
+import cn.rivamed.log.core.util.JsonUtil;
 import com.lmax.disruptor.WorkHandler;
 
 /**
@@ -24,6 +24,6 @@ public class LogMessageConsumer implements WorkHandler<LogMessageEvent> {
     @Override
     public void onEvent(LogMessageEvent event) throws Exception {
         BaseLogMessage baseLogMessage = event.getBaseLogMessage();
-        AbstractClient.getClient().pushMessage(baseLogMessage.getLogType(), GfJsonUtil.toJSONString(baseLogMessage));
+        AbstractClient.getClient().pushMessage(baseLogMessage.getLogType(), JsonUtil.toJSONString(baseLogMessage));
     }
 }

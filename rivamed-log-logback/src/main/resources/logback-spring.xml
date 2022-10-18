@@ -7,15 +7,14 @@
 	<include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 	<!--应用名称-->
 	<springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="th-sth"/>
-
-	<springProperty scope="context" name="host" source="spring.rabbitmq.host"/>
-	<springProperty scope="context" name="port" source="spring.rabbitmq.port"/>
-	<springProperty scope="context" name="virtualHost" source="spring.rabbitmq.virtual-host"/>
-	<springProperty scope="context" name="username" source="spring.rabbitmq.username"/>
-	<springProperty scope="context" name="password" source="spring.rabbitmq.password"/>
-	<springProperty scope="context" name="exchange" source="rivamed.log.exchange"/>
-	<springProperty scope="context" name="routingKey" source="rivamed.log.routingKey"/>
 	<springProperty scope="context" name="env" source="spring.profiles.active"/>
+	<springProperty scope="context" name="host" source="rivamed.log.rabbitmq.host"/>
+	<springProperty scope="context" name="port" source="rivamed.log.rabbitmq.port"/>
+	<springProperty scope="context" name="virtualHost" source="rivamed.log.rabbitmq.virtualHost"/>
+	<springProperty scope="context" name="username" source="rivamed.log.rabbitmq.username"/>
+	<springProperty scope="context" name="password" source="rivamed.log.rabbitmq.password"/>
+	<springProperty scope="context" name="exchange" source="rivamed.log.rabbitmq.exchange"/>
+	<springProperty scope="context" name="routingKey" source="rivamed.log.rabbitmq.routingKey"/>
 
 	<!--日志文件保存路径-->
 	<property name="LOG_FILE_PATH" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/logs}"/>

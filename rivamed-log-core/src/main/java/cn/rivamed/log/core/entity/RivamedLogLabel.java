@@ -1,25 +1,23 @@
 package cn.rivamed.log.core.entity;
 
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
- * 描述: 接口、定时任务日志信息
- * 公司: 北京瑞华康源科技有限公司<br/>
- * 版权: rivamed2020<br/>
+ * Rivamed Log Label上下文
  *
- * @author fujiali
- * @version V1.0
- * @date 2022/9/27 15:34
+ * @author Zuo Yang
+ * @since 1.0.0
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class LogRecordMessage extends BaseLogMessage {
+public class RivamedLogLabel implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5235299539593154309L;
 
     /**
      * 操作人账号
@@ -42,11 +40,6 @@ public class LogRecordMessage extends BaseLogMessage {
     private String sn;
 
     /**
-     * 访问URL
-     */
-    private String url;
-
-    /**
      * 业务号
      */
     private String bizId;
@@ -62,19 +55,9 @@ public class LogRecordMessage extends BaseLogMessage {
     private String bizAction;
 
     /**
-     * 接口执行时长
-     */
-    private Long costTime;
-
-    /**
      * 操作状态码
      */
     private String responseCode;
-
-    /**
-     * 登录tokenId
-     */
-    private String tokenId;
 
     /**
      * LogRecode(语义化日志字符串)
@@ -82,13 +65,18 @@ public class LogRecordMessage extends BaseLogMessage {
     private String logRecord;
 
     /**
-     * record日志类型 timeTaskLog：定时任务 userLog：接口
+     * 登录tokenId
      */
-    private String logRecordType;
+    private String tokenId;
 
     /**
      * 租户id
      */
     private String tenantId;
+
+    /**
+     * 系统名称
+     */
+    private String sysName;
 
 }

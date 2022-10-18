@@ -40,13 +40,15 @@ public class LogMessageConstant {
     public final static String LOG_RABBITMQ = "rabbitmq";
 
     /**
-     * 日志类型 logRecord/rabbitMQ/systemLog
+     * 日志类型 logRecord/rabbitMQ/systemLog/loginLog
      */
     public final static String LOG_TYPE_RECORD = "logRecord";
 
     public final static String LOG_TYPE_RABBITMQ = "rabbitMQ";
 
     public final static String LOG_TYPE_SYSTEM_LOG = "systemLog";
+
+    public final static String LOG_TYPE_LOGIN_LOG = "loginLog";
 
     /**
      * record日志类型 timeTaskLog：定时任务 userLog：接口

@@ -1,7 +1,9 @@
 package cn.rivamed.log.core.entity;
 
-import java.io.Serializable;
-import java.util.Date;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * 描述: 队列日志
@@ -12,6 +14,9 @@ import java.util.Date;
  * @version V1.0
  * @date 2022/9/27 15:30
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
 public class RabbitLogMessage extends BaseLogMessage {
 
     private static final long serialVersionUID = 1L;
@@ -51,59 +56,4 @@ public class RabbitLogMessage extends BaseLogMessage {
      */
     private String tenantId;
 
-    public String getMqType() {
-        return mqType;
-    }
-
-    public void setMqType(String mqType) {
-        this.mqType = mqType;
-    }
-
-    public String getVhost() {
-        return vhost;
-    }
-
-    public void setVhost(String vhost) {
-        this.vhost = vhost;
-    }
-
-    public String getExchangeKey() {
-        return exchangeKey;
-    }
-
-    public void setExchangeKey(String exchangeKey) {
-        this.exchangeKey = exchangeKey;
-    }
-
-    public String getRoutingKey() {
-        return routingKey;
-    }
-
-    public void setRoutingKey(String routingKey) {
-        this.routingKey = routingKey;
-    }
-
-    public String getQueueName() {
-        return queueName;
-    }
-
-    public void setQueueName(String queueName) {
-        this.queueName = queueName;
-    }
-
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
 }
