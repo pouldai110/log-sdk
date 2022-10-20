@@ -78,9 +78,4 @@ public class RivamedLogRecordLabel implements Serializable {
      */
     private String tenantId;
 
-    /**
-     * 系统名称
-     */
-    private String sysName;
-
 }

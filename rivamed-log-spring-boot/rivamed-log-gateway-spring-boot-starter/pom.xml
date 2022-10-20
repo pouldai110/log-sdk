@@ -20,11 +20,6 @@
          </dependency>
          <dependency>
              <groupId>cn.rivamed</groupId>
-             <artifactId>rivamed-log-webflux</artifactId>
-             <version>${revision}</version>
-         </dependency>
-         <dependency>
-             <groupId>cn.rivamed</groupId>
              <artifactId>rivamed-log-spring-boot-configuration</artifactId>
              <version>${revision}</version>
          </dependency>

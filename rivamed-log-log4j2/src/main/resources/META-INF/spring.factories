@@ -1,2 +1,0 @@
-org.springframework.context.ApplicationContextInitializer=\
-  cn.rivamed.log.log4j2.plugin.MyApplicationContextInitializer

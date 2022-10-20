@@ -84,7 +84,7 @@ public class RabbitMQClient extends AbstractClient {
         // 生成消息对象
         MessageConverter messageConverter = batchingRabbitTemplate.getMessageConverter();
         Message message = messageConverter.toMessage(strings, messageProperties);
-        System.out.println("收到消息：" + strings);
+//        System.out.println("收到消息：" + strings);
         batchingRabbitTemplate.send(exchange, routingKey, message, null);
 
     }

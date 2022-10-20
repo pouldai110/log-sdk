@@ -21,12 +21,6 @@
         </dependency>
         <dependency>
             <groupId>cn.rivamed</groupId>
-            <artifactId>rivamed-log-feign</artifactId>
-            <version>${revision}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>cn.rivamed</groupId>
             <artifactId>rivamed-log-webroot</artifactId>
             <version>${revision}</version>
             <optional>true</optional>

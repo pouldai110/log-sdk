@@ -45,8 +45,6 @@
         <module>rivamed-log-logback</module>
         <module>rivamed-log-rabbitmq</module>
         <module>rivamed-log-gateway</module>
-        <module>rivamed-log-feign</module>
-        <module>rivamed-log-webflux</module>
         <module>rivamed-log-spring-boot</module>
         <module>rivamed-log-webroot</module>
     </modules>
@@ -81,16 +79,6 @@
             <dependency>
                 <groupId>cn.rivamed</groupId>
                 <artifactId>rivamed-log-gateway</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.rivamed</groupId>
-                <artifactId>rivamed-log-feign</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.rivamed</groupId>
-                <artifactId>rivamed-log-webflux</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
