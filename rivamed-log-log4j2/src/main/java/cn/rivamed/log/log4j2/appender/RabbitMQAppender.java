@@ -16,8 +16,6 @@
  */
 package cn.rivamed.log.log4j2.appender;
 
-import cn.rivamed.log.core.client.AbstractClient;
-import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
@@ -43,120 +41,25 @@ import java.io.Serializable;
 @Plugin(name = "RabbitMQAppender", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
 public final class RabbitMQAppender extends AbstractAppender {
 
-    private static RabbitMQClient rabbitMQClient;
-    private String sysName;
-    private String env;
-    private String host;
-    private int port;
-    private String virtualHost;
-    private String username;
-    private String password;
-    private String exchange;
-    private String routingKey;
 
-    protected RabbitMQAppender(String name, String sysName, String env, String host, int port, String virtualHost, String username, String password, String exchange, String routingKey, Filter filter, Layout<? extends Serializable> layout,
+    protected RabbitMQAppender(String name, Filter filter, Layout<? extends Serializable> layout,
                                final boolean ignoreExceptions) {
         super(name, filter, layout, ignoreExceptions);
-        this.sysName = sysName;
-        this.env = env;
-        this.host = host;
-        this.port = port;
-        this.virtualHost = virtualHost;
-        this.username = username;
-        this.password = password;
-        this.exchange = exchange;
-        this.routingKey = routingKey;
     }
 
     @PluginFactory
     public static RabbitMQAppender createAppender(
             @PluginAttribute("name") String name,
-            @PluginAttribute("sysName") String sysName,
-            @PluginAttribute("env") String env,
-            @PluginAttribute("host") String host,
-            @PluginAttribute("port") int port,
-            @PluginAttribute("virtualHost") String virtualHost,
-            @PluginAttribute("username") String username,
-            @PluginAttribute("password") String password,
-            @PluginAttribute("exchange") String exchange,
-            @PluginAttribute("routingKey") String routingKey,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter) {
-        if (env == null) {
-            env = "dev";
-        }
-        if (host == null) {
-            host = "127.0.0.1";
-        }
-        if (port == 0) {
-            port = 5672;
-        }
-
-        if (virtualHost == null) {
-            virtualHost = "/";
-        }
-
-        if (exchange == null) {
-            exchange = "rivamed-log";
-        }
-
-        if (routingKey == null) {
-            routingKey = "rivamed-log";
-        }
-        //项目刚启动的时候拿不到配置信息，不去初始化客户端
-        if (!host.contains(LogMessageConstant.EXCEPTION_CONFIG) && !virtualHost.contains(LogMessageConstant.EXCEPTION_CONFIG)) {
-            RivamedLogRecordContext.putSysName(sysName);
-            RivamedLogRecordContext.putEnv(env);
-            rabbitMQClient = RabbitMQClient.getInstance(host, port, virtualHost, username, password, exchange, routingKey);
-            AbstractClient.setClient(rabbitMQClient);
-            return new RabbitMQAppender(name, sysName, env, host, port, virtualHost, username, password, exchange, routingKey, filter, layout, true);
-        }
-        return new RabbitMQAppender(name, sysName, env, host, port, virtualHost, username, password, exchange, routingKey, filter, layout, true);
+        return new RabbitMQAppender(name, filter, layout, true);
     }
 
     @Override
     public void append(LogEvent logEvent) {
-        final BaseLogMessage logMessage = LogMessageUtil.getLogMessage(sysName, env, logEvent);
-        if (rabbitMQClient != null) {
+        if (RabbitMQClient.getClient() != null) {
+            final BaseLogMessage logMessage = LogMessageUtil.getLogMessage(logEvent);
             MessageAppenderFactory.push(logMessage);
         }
     }
-
-    public String getSysName() {
-        return sysName;
-    }
-
-
-    public String getEnv() {
-        return env;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public String getVirtualHost() {
-        return virtualHost;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getExchange() {
-        return exchange;
-    }
-
-    public String getRoutingKey() {
-        return routingKey;
-    }
-
 }

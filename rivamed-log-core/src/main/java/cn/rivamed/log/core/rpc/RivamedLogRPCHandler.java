@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 /**
- * TLog的RPC处理逻辑的封装类
+ * Rivamed Log的RPC处理逻辑的封装类
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.2.0
  */
 public class RivamedLogRPCHandler {

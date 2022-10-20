@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * TLog web层面的自动装配类
+ * Rivamed Log web层面的自动装配类
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.0.0
  */
 @Configuration

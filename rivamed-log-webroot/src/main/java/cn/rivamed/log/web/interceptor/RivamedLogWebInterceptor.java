@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * web controller的拦截器
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.1.5
  */
 public class RivamedLogWebInterceptor extends AbstractRivamedLogWebHandlerMethodInterceptor {

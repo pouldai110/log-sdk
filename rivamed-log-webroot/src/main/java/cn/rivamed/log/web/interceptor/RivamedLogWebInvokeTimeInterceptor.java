@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * RIVAMED LOG web的调用时间统计拦截器
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.2.0
  */
 public class RivamedLogWebInvokeTimeInterceptor extends AbstractRivamedLogWebHandlerMethodInterceptor {

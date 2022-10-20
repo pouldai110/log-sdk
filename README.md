@@ -27,7 +27,7 @@ RabbitMQAppender内部实例化了一个 BatchingRabbitTemplate客户端和一�
 * 客户项目先加上rabbitmq日志基础配置 
 
 
-* application.yml中添加
+* application.yml中添加配置
 
 ```yml
 
@@ -44,6 +44,19 @@ rivamed:
       queueName: log.rm-th
 
 ```  
+
+|  字段值   | 用途  |
+|  ----  | ----  |
+| sysName  | 自定义应用名称 |
+| env  | 环境 默认是dev |
+| host  | RabbitMQ 主机 |
+| port  | RabbitMQ 端口 |
+| virtualHost  | RabbitMQ 虚拟主机名 |
+| username  | RabbitMQ 账号 |
+| password  | RabbitMQ 密码 |
+| exchange  | RabbitMQ 交换机名称 |
+| routingKey  | RabbitMQ 路由键 |
+| queueName  | RabbitMQ 队列名称 |
 
 #### 2.根据项目需求使用情况导入对应的日志包并加上配置
 
@@ -70,28 +83,8 @@ log4j.appender.stdout.Target=System.out
 log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
 log4j.appender.stdout.layout.ConversionPattern=[%-5p] %d{yyyy-MM-dd HH:mm:ss,SSS} [%c.%t]%n%m%n
 
-#rabbitmq做为中间件 (自动从配置文件获取配置暂未实现，只有先写死)
-#log4j.appender.rabbitmq=cn.rivamed.log.log4j.appender.RabbitMQAppender
-#log4j.appender.rabbitmq.sysName=${spring.application.name}
-#log4j.appender.rabbitmq.env=${spring.profiles.active}
-#log4j.appender.rabbitmq.host=${rivamed.log.rabbitmq.host}
-#log4j.appender.rabbitmq.port=${rivamed.log.rabbitmq.port}
-#log4j.appender.rabbitmq.virtualHost=${rivamed.log.rabbitmq.virtualHost}
-#log4j.appender.rabbitmq.username=${rivamed.log.rabbitmq.username}
-#log4j.appender.rabbitmq.password=${rivamed.log.rabbitmq.password}
-#log4j.appender.rabbitmq.exchange=${rivamed.log.rabbitmq.exchange}
-#log4j.appender.rabbitmq.routingKey=${rivamed.log.rabbitmq.routingKey}
-
+#rabbitmq做为中间件
 log4j.appender.rabbitmq=cn.rivamed.log.log4j.appender.RabbitMQAppender
-log4j.appender.rabbitmq.sysName=rm-th
-log4j.appender.rabbitmq.env=prod
-log4j.appender.rabbitmq.host=192.168.111.222
-log4j.appender.rabbitmq.port=5672
-log4j.appender.rabbitmq.virtualHost=jishou
-log4j.appender.rabbitmq.username=rivamed
-log4j.appender.rabbitmq.password=rivamed
-log4j.appender.rabbitmq.exchange=log.rm-th
-log4j.appender.rabbitmq.routingKey=log.rm-th
 
 
 ```
@@ -124,30 +117,11 @@ log4j.appender.rabbitmq.routingKey=log.rm-th
 	<include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 	<!--使用默认的控制台日志输出实现-->
 	<include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-	<!--应用名称-->
-	<springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="th-sth"/>
-	<springProperty scope="context" name="env" source="spring.profiles.active"/>
-	<springProperty scope="context" name="host" source="rivamed.log.rabbitmq.host"/>
-	<springProperty scope="context" name="port" source="rivamed.log.rabbitmq.port"/>
-	<springProperty scope="context" name="virtualHost" source="rivamed.log.rabbitmq.virtualHost"/>
-	<springProperty scope="context" name="username" source="rivamed.log.rabbitmq.username"/>
-	<springProperty scope="context" name="password" source="rivamed.log.rabbitmq.password"/>
-	<springProperty scope="context" name="exchange" source="rivamed.log.rabbitmq.exchange"/>
-	<springProperty scope="context" name="routingKey" source="rivamed.log.rabbitmq.routingKey"/>
-
+	
 	<!--日志文件保存路径-->
 	<property name="LOG_FILE_PATH" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/logs}"/>
 
 	<appender name="RabbitMQAppender" class="cn.rivamed.log.logback.appender.RabbitMQAppender">
-		<sysName>${APP_NAME}</sysName><!-- 系统名称 -->
-		<env>${env}</env><!-- 配置文件环境 -->
-		<host>${host}</host><!-- RabbitMQ 主机 -->
-		<port>${port}</port><!-- RabbitMQ 端口 -->
-		<virtualHost>${virtualHost}</virtualHost><!-- RabbitMQ 虚拟主机名 -->
-		<username>${username}</username><!-- RabbitMQ账户 -->
-		<password>${password}</password><!-- RabbitMQ密码 -->
-		<exchange>${exchange}</exchange><!-- 交换机名称 -->
-		<routingKey>${routingKey}</routingKey><!-- 路由键 -->
 	</appender>
 
 	<root level="INFO">
@@ -212,31 +186,10 @@ log4j.appender.rabbitmq.routingKey=log.rm-th
         <property name="LOG_MAX_SIZE" value="1MB" />
         <property name="LOG_DAYS" value="50" />
         <property name="TIME_BASED_INTERVAL" value="1" />
-        <property name="env" value="${spring:spring.profiles.active}" />
-        <property name="host" value="${spring:rivamed.log.rabbitmq.host}" />
-        <property name="port" value="${spring:rivamed.log.rabbitmq.port}" />
-        <property name="virtualHost" value="${spring:rivamed.log.rabbitmq.virtualHost}" />
-        <property name="username" value="${spring:rivamed.log.rabbitmq.username}" />
-        <property name="password" value="${spring:rivamed.log.rabbitmq.password}" />
-        <property name="exchange" value="${spring:rivamed.log.rabbitmq.exchange}" />
-        <property name="routingKey" value="${spring:rivamed.log.rabbitmq.routingKey}" />
     </Properties>
 
     <appenders>
-        <!--使用RabbitMQ启用下面配置-->
-        <!-- 字段说明 -->
-        <!-- sysName:系统名称 -->
-        <!-- env：配置文件环境 -->
-        <!-- host：RabbitMQ 主机 不配置，默认使用127.0.0.1-->
-        <!-- port：RabbitMQ 端口 不配置，默认使用5672-->
-        <!-- virtualHost：RabbitMQ 虚拟主机名 不配置，默认使用/-->
-        <!-- username：RabbitMQ 账号-->
-        <!-- password：RabbitMQ 密码-->
-        <!-- exchange：RabbitMQ 交换机名称 不配置，默认使用rivamed-log-->
-        <!-- routingKey：RabbitMQ 路由键 不配置，默认使用rivamed-log-->
-        <RabbitMQAppender name="RabbitMQAppender" sysName="${LOG_NAME}" env="${env}" host="${host}"
-                          port="${port}" virtualHost="${virtualHost}" username="${username}" password="${password}"
-                          exchange="${exchange}"  routingKey="${routingKey}"/>
+        <RabbitMQAppender name="RabbitMQAppender"/>
     </appenders>
 
     <!--Logger节点用来单独指定日志的形式，比如要为指定包下的class指定不同的日志级别等。-->
@@ -251,25 +204,10 @@ log4j.appender.rabbitmq.routingKey=log.rm-th
 
 ```    
 
-### （3）客户端配置详解
 
-RabbitMQAppender
+### （3）自定义日志记录
 
-|  字段值   | 用途  |
-|  ----  | ----  |
-| sysName  | 自定义应用名称 |
-| env  | 环境 默认是dev |
-| host  | RabbitMQ 主机 |
-| port  | RabbitMQ 端口 |
-| virtualHost  | RabbitMQ 虚拟主机名 |
-| username  | RabbitMQ 账号 |
-| password  | RabbitMQ 密码 |
-| exchange  | RabbitMQ 交换机名称 |
-| routingKey  | RabbitMQ 路由键 |
-
-### （4）自定义日志记录
-
-#### 4.1 推送登录日志（logType: loginLog）
+#### 3.1 推送登录日志（logType: loginLog）
 
 
 

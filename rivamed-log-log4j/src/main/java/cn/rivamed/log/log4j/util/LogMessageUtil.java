@@ -1,6 +1,7 @@
 package cn.rivamed.log.log4j.util;
 
 import cn.rivamed.log.core.constant.LogMessageConstant;
+import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.factory.LogMessageFactory;
 import cn.rivamed.log.core.util.IpGetter;
@@ -31,7 +32,7 @@ public class LogMessageUtil {
      */
     private static final AtomicLong SEQ_BUILDER = new AtomicLong();
 
-    public static BaseLogMessage getLogMessage(String appName, String env, LoggingEvent loggingEvent) {
+    public static BaseLogMessage getLogMessage(LoggingEvent loggingEvent) {
         BaseLogMessage logMessage = convertMessage(loggingEvent);
         logMessage.setClassName(loggingEvent.getLoggerName())
                 .setThreadName(loggingEvent.getThreadName())
@@ -40,8 +41,8 @@ public class LogMessageUtil {
                 .setBizIP(IpGetter.CURRENT_IP)
                 .setBizTime(new Date())
                 .setLevel(loggingEvent.getLevel().toString())
-                .setSysName(appName)
-                .setEnv(env)
+                .setSysName(RivamedLogRecordContext.getSysName())
+                .setEnv(RivamedLogRecordContext.getEnv())
                 .setTraceId(logTraceID.get());
         LocationInfo locationInfo = loggingEvent.getLocationInformation();
         String method = locationInfo.getMethodName();

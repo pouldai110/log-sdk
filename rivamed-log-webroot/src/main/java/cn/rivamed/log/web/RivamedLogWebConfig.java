@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * RIVAMED LOG webconfig类
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.0.0
  */
 public class RivamedLogWebConfig implements WebMvcConfigurer {

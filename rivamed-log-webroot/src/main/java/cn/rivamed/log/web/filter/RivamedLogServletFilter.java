@@ -16,7 +16,7 @@ import java.io.IOException;
 
 /**
  * 支持servlet
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.3.5
  */
 public class RivamedLogServletFilter implements Filter {

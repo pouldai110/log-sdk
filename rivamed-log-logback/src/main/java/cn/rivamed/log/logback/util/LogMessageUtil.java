@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import cn.rivamed.log.core.constant.LogMessageConstant;
+import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.factory.LogMessageFactory;
 import cn.rivamed.log.core.util.IpGetter;
@@ -43,7 +44,7 @@ public class LogMessageUtil {
         return traceId;
     }
 
-    public static BaseLogMessage getLogMessage(final String appName, final String env, final ILoggingEvent logEvent) {
+    public static BaseLogMessage getLogMessage(final ILoggingEvent logEvent) {
         isExpandRunLog(logEvent);
         BaseLogMessage logMessage = convertMessage(logEvent);
         logMessage.setClassName(logEvent.getLoggerName())
@@ -53,8 +54,8 @@ public class LogMessageUtil {
                 .setBizIP(IpGetter.CURRENT_IP)
                 .setBizTime(new Date())
                 .setLevel(logEvent.getLevel().toString())
-                .setSysName(appName)
-                .setEnv(env)
+                .setSysName(RivamedLogRecordContext.getSysName())
+                .setEnv(RivamedLogRecordContext.getEnv())
                 .setTraceId(logTraceID.get());
         StackTraceElement[] stackTraceElements = logEvent.getCallerData();
         if (stackTraceElements != null && stackTraceElements.length > 0) {

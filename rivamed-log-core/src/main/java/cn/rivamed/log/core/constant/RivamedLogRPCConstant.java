@@ -3,7 +3,7 @@ package cn.rivamed.log.core.constant;
 /**
  * 静态变量类
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.0.0
  */
 public class RivamedLogRPCConstant {

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * spanId生成器
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.0.0
  */
 public class SpanIdGenerator {

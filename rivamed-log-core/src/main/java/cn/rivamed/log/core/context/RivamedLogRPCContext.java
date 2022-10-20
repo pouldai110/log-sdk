@@ -5,9 +5,9 @@ import cn.rivamed.log.core.util.SpanIdGenerator;
 import com.alibaba.ttl.TransmittableThreadLocal;
 
 /**
- * TLog上下文
+ * Rivamed Log上下文
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.0.0
  */
 public class RivamedLogRPCContext {

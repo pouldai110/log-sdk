@@ -6,7 +6,7 @@ import com.alibaba.ttl.TransmittableThreadLocal;
  * 日志切面的上下文，用于管理当前线程以及子线程的的增强内容
  * 这里有一段硬代码，为了适配log4j2的异步队列模式的日志
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.1.0
  */
 public class AspectLogRPCContext {

@@ -1,9 +1,9 @@
 package cn.rivamed.log.core.util;
 
 /**
- * TLog的日志标签生成器
+ * Rivamed Log的日志标签生成器
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.0.0
  */
 public class RivamedLogRPCLabelGenerator {

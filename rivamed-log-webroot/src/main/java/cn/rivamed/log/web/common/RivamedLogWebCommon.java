@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * RIVAMED LOG web这块的逻辑封装类
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.1.5
  */
 public class RivamedLogWebCommon extends RivamedLogRPCHandler {

@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TLog的日志标签包装类
+ * Rivamed Log的日志标签包装类
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.2.0
  */
 public class RivamedLogRPCLabel implements Serializable {

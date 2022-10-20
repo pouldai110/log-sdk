@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 /**
  * feign的拦截器
  *
- * @author Bryan.Zhang
+ * @author Zuo Yang
  * @since 1.0.0
  */
 public class RivamedLogFeignFilter implements RequestInterceptor {
