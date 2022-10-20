@@ -13,6 +13,7 @@ import com.alibaba.ttl.TransmittableThreadLocal;
  */
 public class TraceId {
     public static TransmittableThreadLocal<String> logTraceID = new TransmittableThreadLocal<String>();
+    public static TransmittableThreadLocal<String> spanID = new TransmittableThreadLocal<String>();
     public static IdWorker worker = new IdWorker(1, 1, 1);
 
     public static void set() {

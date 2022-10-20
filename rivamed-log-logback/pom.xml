@@ -27,6 +27,10 @@
             <groupId>cn.rivamed</groupId>
             <artifactId>rivamed-log-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.rivamed</groupId>
+            <artifactId>rivamed-log-rabbitmq</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

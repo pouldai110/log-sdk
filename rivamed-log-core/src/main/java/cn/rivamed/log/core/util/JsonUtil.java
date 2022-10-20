@@ -39,6 +39,7 @@ public class JsonUtil {
         try {
             return (T) objectMapper.readValue(jsonString, classz);
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -48,7 +49,7 @@ public class JsonUtil {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-
+            e.printStackTrace();
         }
         return null;
     }
@@ -58,7 +59,7 @@ public class JsonUtil {
         try {
             return objectMapper.readValue(json, javaType);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return null;
     }
@@ -68,6 +69,7 @@ public class JsonUtil {
         try {
             return objectMapper.readValue(jsonData, javaType);
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

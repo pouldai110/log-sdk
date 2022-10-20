@@ -1,8 +1,10 @@
 package cn.rivamed.log.core.entity;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -15,6 +17,8 @@ import lombok.experimental.Accessors;
  * @date 2022/9/27 15:30
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class SystemLogMessage extends BaseLogMessage {

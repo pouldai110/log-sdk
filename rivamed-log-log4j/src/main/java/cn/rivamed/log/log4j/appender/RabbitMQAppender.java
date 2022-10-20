@@ -17,8 +17,7 @@
 package cn.rivamed.log.log4j.appender;
 
 import cn.rivamed.log.core.client.AbstractClient;
-import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.context.RivamedLogContext;
+import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rabbitmq.RabbitMQClient;
@@ -139,8 +138,8 @@ public class RabbitMQAppender extends AppenderSkeleton {
             }
             //项目刚启动的时候拿不到配置信息，不去初始化客户端
             if (StringUtils.isNotBlank(host) && StringUtils.isNotBlank(virtualHost) &&StringUtils.isNotBlank(exchange) &&StringUtils.isNotBlank(routingKey)) {
-                RivamedLogContext.putSysName(sysName);
-                RivamedLogContext.putEnv(env);
+                RivamedLogRecordContext.putSysName(sysName);
+                RivamedLogRecordContext.putEnv(env);
                 rabbitMQClient = RabbitMQClient.getInstance(host, port, virtualHost, username, password, exchange, routingKey);
                 AbstractClient.setClient(rabbitMQClient);
             }

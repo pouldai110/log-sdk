@@ -1,8 +1,10 @@
 package cn.rivamed.log.core.entity;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -15,6 +17,8 @@ import lombok.experimental.Accessors;
  * @date 2022/9/27 15:30
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 public class RabbitLogMessage extends BaseLogMessage {
@@ -34,7 +38,7 @@ public class RabbitLogMessage extends BaseLogMessage {
     /**
      * 交换机
      */
-    private String exchangeKey;
+    private String exchange;
 
     /**
      * 路由
@@ -51,9 +55,24 @@ public class RabbitLogMessage extends BaseLogMessage {
      */
     private String messageId;
 
+
     /**
-     * 租户id
+     * 消息内容
      */
-    private String tenantId;
+    private Object message;
+
+
+    public RabbitLogMessage(String exchange, String routingKey, Object message) {
+        this.exchange = exchange;
+        this.routingKey = routingKey;
+        this.message = message;
+    }
+
+    public RabbitLogMessage(String exchange, String routingKey, String queueName, Object message) {
+        this.exchange = exchange;
+        this.routingKey = routingKey;
+        this.queueName = queueName;
+        this.message = message;
+    }
 
 }

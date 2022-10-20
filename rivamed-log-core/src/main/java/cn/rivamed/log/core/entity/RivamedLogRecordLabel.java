@@ -1,7 +1,9 @@
 package cn.rivamed.log.core.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -13,9 +15,11 @@ import java.io.Serializable;
  * @since 1.0.0
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class RivamedLogLabel implements Serializable {
+public class RivamedLogRecordLabel implements Serializable {
 
     private static final long serialVersionUID = 5235299539593154309L;
 

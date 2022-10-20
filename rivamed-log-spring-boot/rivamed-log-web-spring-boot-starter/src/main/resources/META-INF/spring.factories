@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  cn.rivamed.log.springboot.configuration.RivamedLogWebAutoConfiguration,\
+  cn.rivamed.log.springboot.configuration.RivamedLogCommonAutoConfiguration

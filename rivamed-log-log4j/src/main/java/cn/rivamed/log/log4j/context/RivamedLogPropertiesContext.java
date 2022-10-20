@@ -2,7 +2,7 @@ package cn.rivamed.log.log4j.context;
 
 
 import cn.rivamed.log.core.entity.LogRecordMessage;
-import cn.rivamed.log.core.entity.RivamedLogLabel;
+import cn.rivamed.log.core.entity.RivamedLogRecordLabel;
 import com.alibaba.ttl.TransmittableThreadLocal;
 
 /**
@@ -17,7 +17,7 @@ public class RivamedLogPropertiesContext {
 
     private static final TransmittableThreadLocal<String> envTTL = new TransmittableThreadLocal<>();
 
-    public static final TransmittableThreadLocal<RivamedLogLabel> rivamedLogLabelTTL = new TransmittableThreadLocal<>();
+    public static final TransmittableThreadLocal<RivamedLogRecordLabel> rivamedLogLabelTTL = new TransmittableThreadLocal<>();
 
     public static void putSysName(String sysName) {
         sysNameTTL.set(sysName);
@@ -45,17 +45,17 @@ public class RivamedLogPropertiesContext {
     }
 
     public static LogRecordMessage buildLogMessage(LogRecordMessage logRecordMessage) {
-        RivamedLogLabel rivamedLogLabel = rivamedLogLabelTTL.get();
-        logRecordMessage.setUserId(rivamedLogLabel.getUserId());
-        logRecordMessage.setUserName(rivamedLogLabel.getUserName());
-        logRecordMessage.setDeviceId(rivamedLogLabel.getDeviceId());
-        logRecordMessage.setSn(rivamedLogLabel.getSn());
-        logRecordMessage.setBizId(rivamedLogLabel.getBizId());
-        logRecordMessage.setBizProd(rivamedLogLabel.getBizProd());
-        logRecordMessage.setBizAction(rivamedLogLabel.getBizAction());
-        logRecordMessage.setLogRecord(rivamedLogLabel.getLogRecord());
-        logRecordMessage.setTokenId(rivamedLogLabel.getTokenId());
-        logRecordMessage.setTenantId(rivamedLogLabel.getTenantId());
+        RivamedLogRecordLabel rivamedLogRecordLabel = rivamedLogLabelTTL.get();
+        logRecordMessage.setUserId(rivamedLogRecordLabel.getUserId());
+        logRecordMessage.setUserName(rivamedLogRecordLabel.getUserName());
+        logRecordMessage.setDeviceId(rivamedLogRecordLabel.getDeviceId());
+        logRecordMessage.setSn(rivamedLogRecordLabel.getSn());
+        logRecordMessage.setBizId(rivamedLogRecordLabel.getBizId());
+        logRecordMessage.setBizProd(rivamedLogRecordLabel.getBizProd());
+        logRecordMessage.setBizAction(rivamedLogRecordLabel.getBizAction());
+        logRecordMessage.setLogRecord(rivamedLogRecordLabel.getLogRecord());
+        logRecordMessage.setTokenId(rivamedLogRecordLabel.getTokenId());
+        logRecordMessage.setTenantId(rivamedLogRecordLabel.getTenantId());
         return logRecordMessage;
     }
 }

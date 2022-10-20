@@ -53,7 +53,7 @@ public class LogMessageUtil {
     private static BaseLogMessage convertMessage(LoggingEvent loggingEvent) {
         BaseLogMessage logMessage = LogMessageFactory.convertMessageType(loggingEvent.getRenderedMessage());
         if (loggingEvent.getLevel().toInt() == Priority.ERROR_INT) {
-            String formatMessage = "";
+            String formatMessage;
             String msg = "";
             if (loggingEvent.getThrowableInformation() != null) {
                 msg = LogExceptionStackTrace.errorStackTrace(

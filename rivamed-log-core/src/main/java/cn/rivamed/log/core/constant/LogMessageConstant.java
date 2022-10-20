@@ -65,4 +65,15 @@ public class LogMessageConstant {
 
     public final static String EXCEPTION_CONFIG = "${";
 
+
+    /**
+     * 发送 消息类型
+     */
+    public final static String MESSAGE_TYPE_SEND = "send";
+
+    /**
+     * 接收 消息类型
+     */
+    public final static String MESSAGE_TYPE_ACCEPT = "accept";
+
 }

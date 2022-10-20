@@ -1,11 +1,12 @@
-package cn.rivamed.log.core.aspect;
+package cn.rivamed.log.web.aspect;
 
 import brave.propagation.TraceContext;
 import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.context.RivamedLogContext;
+import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.LogRecordMessage;
+import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
-import cn.rivamed.log.core.rpc.RivamedLogRPCHandler;
+import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
 import cn.rivamed.log.core.util.JsonUtil;
 import cn.rivamed.log.core.util.IpGetter;
 import org.apache.commons.lang3.time.StopWatch;
@@ -26,16 +27,16 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * className：AbstractAspect
+ * className：AbstractLogRecordAspect
  * description： 链路追踪打点拦截
  * time：2022-10-14.11:17
  *
  * @author Zuo Yang
  * @version 1.2.0
  */
-public abstract class AbstractAspect extends RivamedLogRPCHandler {
+public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(RivamedLogRPCHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(RivamedLogRecordHandler.class);
 
     /**
      * 序列生成器：当日志在一毫秒内打印多次时，发送到服务端排序时无法按照正常顺序显示，因此加一个序列保证同一毫秒内的日志按顺序显示
@@ -56,6 +57,7 @@ public abstract class AbstractAspect extends RivamedLogRPCHandler {
             TraceContext context = (TraceContext) request.getAttribute(TraceContext.class.getName());
             message.setTraceId(context.traceIdString());
             message.setSpanId(context.spanIdString());
+            TraceId.logTraceID.set(context.traceIdString());
             Object[] args = joinPoint.getArgs();
             for (int i = 0; i < args.length; i++) {
                 Object object = args[i];
@@ -79,10 +81,10 @@ public abstract class AbstractAspect extends RivamedLogRPCHandler {
             stopWatch.start();
             returnValue = joinPoint.proceed(joinPoint.getArgs());
             stopWatch.stop();
-            message.setSysName(RivamedLogContext.getSysName());
-            message.setEnv(RivamedLogContext.getEnv());
+            message.setSysName(RivamedLogRecordContext.getSysName());
+            message.setEnv(RivamedLogRecordContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
-            message.setMethod(ms.getMethod().getName());
+            message.setThreadName(Thread.currentThread().getName());
             message.setSeq(SEQ_BUILDER.getAndIncrement());
             message.setCostTime(stopWatch.getTime());
             message.setBizDetail(cloneParams);
@@ -93,10 +95,11 @@ public abstract class AbstractAspect extends RivamedLogRPCHandler {
             message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_USER_LOG);
             message.setResponseCode(String.valueOf(HttpStatus.OK.value()));
             //设置额外信息并推送消息
-            RivamedLogContext.buildLogMessage(message);
+            RivamedLogRecordContext.buildLogMessage(message);
             MessageAppenderFactory.push(message);
             return returnValue;
         } finally {
+            TraceId.logTraceID.remove();
             cleanThreadLocal();
         }
     }

@@ -20,7 +20,8 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spring.version>5.2.14.RELEASE</spring.version>
-        <spring-boot.version>2.3.10.RELEASE</spring-boot.version>
+        <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
+        <spring-cloud.version>2.2.8.RELEASE</spring-cloud.version>
         <sleuth.version>2.2.8.RELEASE</sleuth.version>
         <mysql.version>8.0.25</mysql.version>
         <jedis.version>4.2.3</jedis.version>
@@ -42,6 +43,12 @@
         <module>rivamed-log-log4j</module>
         <module>rivamed-log-log4j2</module>
         <module>rivamed-log-logback</module>
+        <module>rivamed-log-rabbitmq</module>
+        <module>rivamed-log-gateway</module>
+        <module>rivamed-log-feign</module>
+        <module>rivamed-log-webflux</module>
+        <module>rivamed-log-spring-boot</module>
+        <module>rivamed-log-webroot</module>
     </modules>
 
     <dependencyManagement>
@@ -68,7 +75,32 @@
             </dependency>
             <dependency>
                 <groupId>cn.rivamed</groupId>
-                <artifactId>rivamed-log-trace</artifactId>
+                <artifactId>rivamed-log-rabbitmq</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.rivamed</groupId>
+                <artifactId>rivamed-log-gateway</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.rivamed</groupId>
+                <artifactId>rivamed-log-feign</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.rivamed</groupId>
+                <artifactId>rivamed-log-webflux</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.rivamed</groupId>
+                <artifactId>rivamed-log-webroot</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.rivamed</groupId>
+                <artifactId>rivamed-log-spring-boot</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>
