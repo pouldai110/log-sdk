@@ -59,11 +59,6 @@ public class RivamedLogRecordLabel implements Serializable {
     private String bizAction;
 
     /**
-     * 操作状态码
-     */
-    private String responseCode;
-
-    /**
      * LogRecode(语义化日志字符串)
      */
     private String logRecord;

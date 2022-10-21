@@ -74,6 +74,6 @@ public class RivamedLogRecordHandler {
         MDC.remove(LogMessageContextConstant.CONTEXT_TENANTID);
 
         TraceId.logTraceID.remove();
-        TraceId.logTraceID.remove();
+        TraceId.logSpanID.remove();
     }
 }

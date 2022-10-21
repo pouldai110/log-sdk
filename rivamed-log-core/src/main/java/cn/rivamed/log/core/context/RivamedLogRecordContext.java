@@ -22,16 +22,16 @@ public class RivamedLogRecordContext {
 
     public static LogRecordMessage buildLogMessage(LogRecordMessage logRecordMessage) {
         RivamedLogRecordLabel rivamedLogRecordLabel = rivamedLogLabelTTL.get();
-        logRecordMessage.setUserId(rivamedLogRecordLabel.getUserId());
-        logRecordMessage.setUserName(rivamedLogRecordLabel.getUserName());
-        logRecordMessage.setDeviceId(rivamedLogRecordLabel.getDeviceId());
-        logRecordMessage.setSn(rivamedLogRecordLabel.getSn());
-        logRecordMessage.setBizId(rivamedLogRecordLabel.getBizId());
-        logRecordMessage.setBizProd(rivamedLogRecordLabel.getBizProd());
-        logRecordMessage.setBizAction(rivamedLogRecordLabel.getBizAction());
-        logRecordMessage.setLogRecord(rivamedLogRecordLabel.getLogRecord());
-        logRecordMessage.setTokenId(rivamedLogRecordLabel.getTokenId());
-        logRecordMessage.setTenantId(rivamedLogRecordLabel.getTenantId());
+        logRecordMessage.setUserId(rivamedLogRecordLabel.getUserId())
+                .setUserName(rivamedLogRecordLabel.getUserName())
+                .setDeviceId(rivamedLogRecordLabel.getDeviceId())
+                .setSn(rivamedLogRecordLabel.getSn())
+                .setBizId(rivamedLogRecordLabel.getBizId())
+                .setBizProd(rivamedLogRecordLabel.getBizProd())
+                .setBizAction(rivamedLogRecordLabel.getBizAction())
+                .setLogRecord(rivamedLogRecordLabel.getLogRecord())
+                .setTokenId(rivamedLogRecordLabel.getTokenId())
+                .setTenantId(rivamedLogRecordLabel.getTenantId());
         return logRecordMessage;
     }
 
