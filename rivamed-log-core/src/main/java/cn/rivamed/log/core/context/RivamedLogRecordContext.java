@@ -13,36 +13,12 @@ import com.alibaba.ttl.TransmittableThreadLocal;
  */
 public class RivamedLogRecordContext {
 
-    private static final TransmittableThreadLocal<String> sysNameTTL = new TransmittableThreadLocal<>();
+    private static String sysName = "rivamed-log";
 
-    private static final TransmittableThreadLocal<String> envTTL = new TransmittableThreadLocal<>();
+    private static String env = "dev";
 
     public static final TransmittableThreadLocal<RivamedLogRecordLabel> rivamedLogLabelTTL = new TransmittableThreadLocal<>();
 
-    public static void putSysName(String sysName) {
-        sysNameTTL.set(sysName);
-    }
-
-    public static String getSysName() {
-        return sysNameTTL.get();
-    }
-
-    public static void removeSysName() {
-        sysNameTTL.remove();
-    }
-
-
-    public static void putEnv(String env) {
-        envTTL.set(env);
-    }
-
-    public static String getEnv() {
-        return envTTL.get();
-    }
-
-    public static void removeEnv() {
-        envTTL.remove();
-    }
 
     public static LogRecordMessage buildLogMessage(LogRecordMessage logRecordMessage) {
         RivamedLogRecordLabel rivamedLogRecordLabel = rivamedLogLabelTTL.get();
@@ -57,5 +33,21 @@ public class RivamedLogRecordContext {
         logRecordMessage.setTokenId(rivamedLogRecordLabel.getTokenId());
         logRecordMessage.setTenantId(rivamedLogRecordLabel.getTenantId());
         return logRecordMessage;
+    }
+
+    public static String getSysName() {
+        return sysName;
+    }
+
+    public static void setSysName(String sysName) {
+        RivamedLogRecordContext.sysName = sysName;
+    }
+
+    public static String getEnv() {
+        return env;
+    }
+
+    public static void setEnv(String env) {
+        RivamedLogRecordContext.env = env;
     }
 }

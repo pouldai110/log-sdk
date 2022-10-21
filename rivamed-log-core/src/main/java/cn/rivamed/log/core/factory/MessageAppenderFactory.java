@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * className：MessageAppenderFactory
- * description： TODO
+ * description： 日志推送
  * time：2022-10-03.14:18
  *
  * @author Zuo Yang
@@ -41,7 +41,7 @@ public class MessageAppenderFactory {
         MethodSignature ms = (MethodSignature) joinPoint.getSignature();
         Method m = ms.getMethod();
         rabbitLogMessage.setTraceId(TraceId.logTraceID.get())
-                .setSpanId(TraceId.logTraceID.get())
+                .setSpanId(TraceId.logSpanID.get())
                 .setSysName(RivamedLogRecordContext.getSysName())
                 .setEnv(RivamedLogRecordContext.getEnv())
                 .setMethod(joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + m.getName())
@@ -52,7 +52,6 @@ public class MessageAppenderFactory {
                 .setLevel(LogLevel.INFO.name())
                 .setLogType(LogMessageConstant.LOG_TYPE_RABBITMQ)
                 .setSeq(SEQ_BUILDER.getAndIncrement());
-        MessageAppenderFactory.push(rabbitLogMessage);
         push(rabbitLogMessage);
     }
 

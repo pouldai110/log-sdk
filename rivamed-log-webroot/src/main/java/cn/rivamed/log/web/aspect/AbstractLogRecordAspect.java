@@ -58,6 +58,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             message.setTraceId(context.traceIdString());
             message.setSpanId(context.spanIdString());
             TraceId.logTraceID.set(context.traceIdString());
+            TraceId.logSpanID.set(context.spanIdString());
             Object[] args = joinPoint.getArgs();
             for (int i = 0; i < args.length; i++) {
                 Object object = args[i];
@@ -99,7 +100,6 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             MessageAppenderFactory.push(message);
             return returnValue;
         } finally {
-            TraceId.logTraceID.remove();
             cleanThreadLocal();
         }
     }

@@ -23,7 +23,11 @@ public class LogMessageConsumer implements WorkHandler<LogMessageEvent> {
 
     @Override
     public void onEvent(LogMessageEvent event) throws Exception {
-        BaseLogMessage baseLogMessage = event.getBaseLogMessage();
-        AbstractClient.getClient().pushMessage(baseLogMessage.getLogType(), JsonUtil.toJSONString(baseLogMessage));
+        try {
+            BaseLogMessage baseLogMessage = event.getBaseLogMessage();
+            AbstractClient.getClient().pushMessage(baseLogMessage.getLogType(), JsonUtil.toJSONString(baseLogMessage));
+        } finally {
+            event.clear();
+        }
     }
 }

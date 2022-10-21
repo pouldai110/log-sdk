@@ -30,4 +30,8 @@ public class LogMessageEvent implements Serializable {
     public void setBaseLogMessage(BaseLogMessage baseLogMessage) {
         this.baseLogMessage = baseLogMessage;
     }
+
+    public void clear() {
+        baseLogMessage = null;
+    }
 }

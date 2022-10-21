@@ -34,7 +34,7 @@ public class LogMessageRingBuffer {
             consumers[i] = new LogMessageConsumer("RivamedLogConsumer" + i);
         }
         //4 构建多消费者工作池
-        WorkerPool<LogMessageEvent> workerPool = new WorkerPool<LogMessageEvent>(
+        WorkerPool<LogMessageEvent> workerPool = new WorkerPool<>(
                 ringBuffer,
                 sequenceBarrier,
                 new EventExceptionHandler(),

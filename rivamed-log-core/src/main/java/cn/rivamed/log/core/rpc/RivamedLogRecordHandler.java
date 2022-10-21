@@ -3,6 +3,7 @@ package cn.rivamed.log.core.rpc;
 import cn.rivamed.log.core.constant.LogMessageContextConstant;
 import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.RivamedLogRecordLabel;
+import cn.rivamed.log.core.entity.TraceId;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -71,5 +72,8 @@ public class RivamedLogRecordHandler {
         MDC.remove(LogMessageContextConstant.CONTEXT_LOGRECORD);
         MDC.remove(LogMessageContextConstant.CONTEXT_TOKENID);
         MDC.remove(LogMessageContextConstant.CONTEXT_TENANTID);
+
+        TraceId.logTraceID.remove();
+        TraceId.logTraceID.remove();
     }
 }

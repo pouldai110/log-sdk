@@ -15,6 +15,7 @@ import org.slf4j.helpers.MessageFormatter;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static cn.rivamed.log.core.entity.TraceId.logSpanID;
 import static cn.rivamed.log.core.entity.TraceId.logTraceID;
 
 /**
@@ -43,7 +44,8 @@ public class LogMessageUtil {
                 .setLevel(loggingEvent.getLevel().toString())
                 .setSysName(RivamedLogRecordContext.getSysName())
                 .setEnv(RivamedLogRecordContext.getEnv())
-                .setTraceId(logTraceID.get());
+                .setTraceId(logTraceID.get())
+                .setSpanId(logSpanID.get());
         LocationInfo locationInfo = loggingEvent.getLocationInformation();
         String method = locationInfo.getMethodName();
         String line = locationInfo.getLineNumber();

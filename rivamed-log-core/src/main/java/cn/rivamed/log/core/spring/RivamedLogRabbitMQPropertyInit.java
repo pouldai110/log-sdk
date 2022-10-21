@@ -40,8 +40,8 @@ public class RivamedLogRabbitMQPropertyInit implements InitializingBean {
     public void afterPropertiesSet() {
         RabbitMQClient rabbitMQClient = RabbitMQClient.getInstance(host, port, virtualHost, username, password, exchange, routingKey);
         AbstractClient.setClient(rabbitMQClient);
-        RivamedLogRecordContext.putSysName(sysName);
-        RivamedLogRecordContext.putEnv(env);
+        RivamedLogRecordContext.setSysName(sysName);
+        RivamedLogRecordContext.setEnv(env);
     }
 
 }

@@ -14,6 +14,7 @@ import org.slf4j.helpers.MessageFormatter;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static cn.rivamed.log.core.entity.TraceId.logSpanID;
 import static cn.rivamed.log.core.entity.TraceId.logTraceID;
 
 
@@ -33,15 +34,19 @@ public class LogMessageUtil {
      */
     private static final AtomicLong SEQ_BUILDER = new AtomicLong();
 
-    private static String isExpandRunLog(ILoggingEvent logEvent) {
-        String traceId = null;
+    private static void isExpandRunLog(ILoggingEvent logEvent) {
+        String traceId;
+        String spanId;
         if (!logEvent.getMDCPropertyMap().isEmpty()) {
             traceId = logEvent.getMDCPropertyMap().get(LogMessageConstant.TRACE_ID);
+            spanId = logEvent.getMDCPropertyMap().get(LogMessageConstant.SPAN_ID);
             if (traceId != null) {
                 logTraceID.set(traceId);
             }
+            if (spanId != null) {
+                logSpanID.set(spanId);
+            }
         }
-        return traceId;
     }
 
     public static BaseLogMessage getLogMessage(final ILoggingEvent logEvent) {
@@ -56,7 +61,8 @@ public class LogMessageUtil {
                 .setLevel(logEvent.getLevel().toString())
                 .setSysName(RivamedLogRecordContext.getSysName())
                 .setEnv(RivamedLogRecordContext.getEnv())
-                .setTraceId(logTraceID.get());
+                .setTraceId(logTraceID.get())
+                .setSpanId(logSpanID.get());
         StackTraceElement[] stackTraceElements = logEvent.getCallerData();
         if (stackTraceElements != null && stackTraceElements.length > 0) {
             StackTraceElement stackTraceElement = stackTraceElements[0];
