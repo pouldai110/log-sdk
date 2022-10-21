@@ -26,6 +26,11 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>cn.rivamed</groupId>
+            <artifactId>rivamed-log-rabbitmq</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-boot.version}</version>

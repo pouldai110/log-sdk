@@ -16,13 +16,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnClass(name = {"org.springframework.web.servlet.config.annotation.WebMvcConfigurer", "org.springframework.boot.web.servlet.FilterRegistrationBean"})
 public class RivamedLogWebAutoConfiguration {
+/*
 
     @Bean
     @ConditionalOnMissingBean(TraceIdFilter.class)
     public TraceIdFilter traceIdFilter() {
         return new TraceIdFilter();
     }
+*/
 
+/*
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean1() {
@@ -32,5 +35,6 @@ public class RivamedLogWebAutoConfiguration {
         filterRegistrationBean.setOrder(Integer.MIN_VALUE);
         return filterRegistrationBean;
     }
+*/
 
 }

@@ -12,9 +12,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnClass(name = {"org.springframework.cloud.gateway.filter.GlobalFilter"})
 public class RivamedLogGatewayAutoConfiguration {
-
+/*
     @Bean
     public RivamedLogGatewayFilter tLogGatewayFilter(){
         return new RivamedLogGatewayFilter();
-    }
+    }*/
 }
