@@ -7,7 +7,7 @@ import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.util.IpGetter;
-import com.lmax.disruptor.EventTranslator;
+import cn.rivamed.log.core.util.JsonUtil;
 import org.springframework.boot.logging.LogLevel;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -34,12 +34,19 @@ public class MessageAppenderFactory {
     }
 
     public static void pushRabbitLogMessage(RabbitLogMessage rabbitLogMessage) {
+        // 如果不是String类型，就转成JSON
+        String message;
+        if (rabbitLogMessage.getMessage().getClass().isAssignableFrom(String.class)) {
+            message = (String) rabbitLogMessage.getMessage();
+        } else {
+            message = JsonUtil.toJSONString(rabbitLogMessage.getMessage());
+        }
         rabbitLogMessage.setTraceId(TraceId.logTraceID.get())
                 .setSpanId(TraceId.logSpanID.get())
                 .setSysName(RivamedLogRecordContext.getSysName())
                 .setEnv(RivamedLogRecordContext.getEnv())
                 .setThreadName(Thread.currentThread().getName())
-                .setBizDetail((String) rabbitLogMessage.getMessage())
+                .setBizDetail(message)
                 .setBizIP(IpGetter.CURRENT_IP)
                 .setLevel(LogLevel.INFO.name())
                 .setLogType(LogMessageConstant.LOG_TYPE_RABBITMQ)
