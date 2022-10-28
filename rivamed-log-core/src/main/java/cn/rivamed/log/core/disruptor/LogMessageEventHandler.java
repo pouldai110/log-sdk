@@ -14,7 +14,10 @@ public class LogMessageEventHandler implements EventHandler<LogMessageEvent> {
     @Override
     public void onEvent(LogMessageEvent event, long sequence, boolean endOfBatch) {
         BaseLogMessage baseLogMessage = event.getBaseLogMessage();
-        AbstractClient.getClient().pushMessage(JsonUtil.toJSONString(baseLogMessage));
+        AbstractClient client = AbstractClient.getClient();
+        if (client != null) {
+            client.pushMessage(JsonUtil.toJSONString(baseLogMessage));
+        }
     }
 
 }
