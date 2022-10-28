@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * @author pujian
+ * @author Zuo Yang
  * @date 2022/10/13 14:19
  */
 public class RivamedLogApplicationContextHolder implements ApplicationContextAware {

@@ -14,8 +14,9 @@
 
     <modules>
         <module>rivamed-log-spring-boot-configuration</module>
-        <module>rivamed-log-gateway-spring-boot-starter</module>
-        <module>rivamed-log-web-spring-boot-starter</module>
+        <module>rivamed-log-log4j-spring-boot-starter</module>
+        <module>rivamed-log-log4j2-spring-boot-starter</module>
+        <module>rivamed-log-logback-spring-boot-starter</module>
     </modules>
 
 </project>

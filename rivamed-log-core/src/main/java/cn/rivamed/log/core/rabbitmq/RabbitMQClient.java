@@ -75,24 +75,21 @@ public class RabbitMQClient extends AbstractClient {
     }
 
     @Override
-    public void pushMessage(String key, String strings) {
+    public void pushMessage(String strings) {
         String messageId = UuidUtil.generatorUuid();
         MessageProperties messageProperties = new MessageProperties();
-
         // 设置messageId，给消费端做幂等性
         messageProperties.setMessageId(messageId);
         // 生成消息对象
         MessageConverter messageConverter = batchingRabbitTemplate.getMessageConverter();
         Message message = messageConverter.toMessage(strings, messageProperties);
-//        System.out.println("收到消息：" + strings);
         batchingRabbitTemplate.send(exchange, routingKey, message, null);
-
     }
 
     @Override
-    public void putMessageList(String key, List<String> list) throws LogQueueConnectException {
+    public void putMessageList(List<String> list) {
         for (String s : list) {
-            pushMessage(key, s);
+            pushMessage(s);
         }
     }
 }

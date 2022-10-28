@@ -2,17 +2,14 @@ package cn.rivamed.log.core.factory;
 
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.context.RivamedLogRecordContext;
-import cn.rivamed.log.core.disruptor.LogMessageProducer;
 import cn.rivamed.log.core.disruptor.LogMessageRingBuffer;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.util.IpGetter;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
+import com.lmax.disruptor.EventTranslator;
 import org.springframework.boot.logging.LogLevel;
 
-import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -33,19 +30,14 @@ public class MessageAppenderFactory {
 
 
     public static void push(BaseLogMessage baseLogMessage) {
-        LogMessageProducer producer = new LogMessageProducer(LogMessageRingBuffer.ringBuffer);
-        producer.send(baseLogMessage);
+        LogMessageRingBuffer.ringBuffer.publishEvent((event, sequence) -> event.setBaseLogMessage(baseLogMessage));
     }
 
-    public static void pushRabbitLogMessage(RabbitLogMessage rabbitLogMessage, ProceedingJoinPoint joinPoint) {
-        MethodSignature ms = (MethodSignature) joinPoint.getSignature();
-        Method m = ms.getMethod();
+    public static void pushRabbitLogMessage(RabbitLogMessage rabbitLogMessage) {
         rabbitLogMessage.setTraceId(TraceId.logTraceID.get())
                 .setSpanId(TraceId.logSpanID.get())
                 .setSysName(RivamedLogRecordContext.getSysName())
                 .setEnv(RivamedLogRecordContext.getEnv())
-                .setMethod(joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + m.getName())
-                .setClassName(ms.getMethod().getDeclaringClass().getName())
                 .setThreadName(Thread.currentThread().getName())
                 .setBizDetail((String) rabbitLogMessage.getMessage())
                 .setBizIP(IpGetter.CURRENT_IP)

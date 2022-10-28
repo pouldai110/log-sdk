@@ -68,7 +68,7 @@ rivamed:
 
 <dependency>
     <groupId>cn.rivamed</groupId>
-    <artifactId>rivamed-log-log4j</artifactId>
+    <artifactId>rivamed-log-log4j-spring-boot-starter</artifactId>
     <version>1.0</version>
 </dependency>
 ```                       
@@ -86,7 +86,6 @@ log4j.appender.stdout.layout.ConversionPattern=[%-5p] %d{yyyy-MM-dd HH:mm:ss,SSS
 #rabbitmq做为中间件
 log4j.appender.rabbitmq=cn.rivamed.log.log4j.appender.RabbitMQAppender
 
-
 ```
 
 同理如果使用logback,和log4j2配置如下,示例如下：
@@ -99,7 +98,7 @@ log4j.appender.rabbitmq=cn.rivamed.log.log4j.appender.RabbitMQAppender
 
 <dependency>
     <groupId>cn.rivamed</groupId>
-    <artifactId>rivamed-log-logback</artifactId>
+    <artifactId>rivamed-log-logback-spring-boot-starter</artifactId>
     <version>1.0</version>
 </dependency>
 
@@ -147,7 +146,7 @@ log4j.appender.rabbitmq=cn.rivamed.log.log4j.appender.RabbitMQAppender
 
 <dependency>
     <groupId>cn.rivamed</groupId>
-    <artifactId>rivamed-log-log4j2</artifactId>
+    <artifactId>rivamed-log-log4j2-spring-boot-starter</artifactId>
     <version>1.0</version>
 </dependency>
    
@@ -203,44 +202,11 @@ log4j.appender.rabbitmq=cn.rivamed.log.log4j.appender.RabbitMQAppender
 
 ``` 
 
-#### 2.4 spring-boot spring-cloud项目
-
-* 如果是Spring的项目，需要引入基础的Spring启动类
-
-* 引入
-
-```xml
-
-<dependency>
-    <groupId>cn.rivamed</groupId>
-    <artifactId>rivamed-log-web-spring-boot-starter</artifactId>
-    <version>1.0</version>
-</dependency>
-   
-```  
- 
-#### 2.5 gateway
-
-* 如果是gateway项目，则需要引入Gateway的启动类
-* 引入
-
-```xml
-
-<dependency>
-    <groupId>cn.rivamed</groupId>
-    <artifactId>rivamed-log-gateway-spring-boot-starter</artifactId>
-    <version>1.0</version>
-</dependency> 
-   
-```  
- 
-
-
 ### （3）自定义日志记录
 
 #### 3.1 推送AOP接口日志（logType: logRecord）
 
-* 系统创建入了一个默认的抽象AOP类（AbstractLogRecordAspect.java），只需要在业务系统中创建一个AOP基础该基础类，然后设置对应的额外信息。
+* 系统创建入了一个默认的抽象AOP类（AbstractLogRecordAspect.java），只需要在业务系统中创建一个AOP继承该基础类，然后设置对应的额外信息。
 
 AbstractLogRecordAspect.java
 
@@ -422,76 +388,222 @@ public class LoginRest {
 
 #### 3.3 推送RabbitMQ监听日志（logType: rabbitMQ）
 
-* 系统默认创建了一个切面去处理RabbitMQ的send、convertAndSend方法和RabbitListener注解，然后解析生成对应的日志。
+* 不需要单独配置，框架默认已实现，下面是对应的实现方案，其他类似的监听也可以通过这种方式处理~
+
+* 因为RabbitMQ所有的发送消息最后都会调用org.springframework.amqp.rabbit.core.RabbitTemplate.send()方法，
+  所有的接收消息最后都会调用org.springframework.amqp.support.converter.MessagingMessageConverter.fromMessage()方法。
+  所以我们只需要通过javassist去增强这两个方法就好了~
+  使用javassist对类进行增强的时候需要优先执行增强的代码，不然在执行ctClass.toClass()方法的时候会报下面这种错：attempted  duplicate class definition，是因为同一个类加载器不能重复加载相同名字的类，所以我们需要在Spring初始化之前就进行增强~
+
+##### 3.3.1  首先引入最新的jar包
+
+```xml
+<dependency>
+  <groupId>org.javassist</groupId>
+  <artifactId>javassist</artifactId>
+  <version>3.29.2-GA</version>
+</dependency>
+```
+
+
+##### 3.3.2  创建增强类
 
 ```java
+package cn.rivamed.log.rabbitmq.instrument;
 
-package cn.rivamed.log.rabbitmq.aspect;
+import com.rabbitmq.client.Channel;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 
-import cn.rivamed.log.core.entity.RabbitLogMessage;
-import cn.rivamed.log.core.factory.MessageAppenderFactory;
-import cn.rivamed.log.rabbitmq.util.RabbitLogMessageUtils;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+/**
+ * 描述: RabbitMQ增强类
+ * 公司 北京瑞华康源科技有限公司
+ * 版本 Rivamed 2022
+ *
+ * @author 左健宏
+ * @version V2.0.1
+ * @date 22/10/24 10:34
+ */
+public class RabbitMQInstrumentation {
 
-import java.lang.reflect.Method;
+    public static final String ENHANCE_RABBITMQ_SEND_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.sendInterceptor"; // 增强的 client
 
-@Aspect
-public class RabbitAspect {
+    public static final String ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.receiveInterceptor"; // 增强的 client
 
-    protected static final Logger log = LoggerFactory.getLogger(RabbitAspect.class);
+    public static final String ENHANCE_RABBIT_TEMPLATE_CLASS = "org.springframework.amqp.rabbit.core.RabbitTemplate"; // 增强的 client
+    public static final String ENHANCE_RABBIT_RECEIVE_CLASS = "org.springframework.amqp.rabbit.listener.adapter.MessagingMessageListenerAdapter"; // 增强的 client
+    public static final String ENHANCE_SEND_METHOD = "send"; // 增强的方法
+    public static final String ENHANCE_RECEIVE_METHOD = "onMessage"; // 增强的方法
 
-    /**
-     * 拦截RabbitTemplate的convertAndSend与send方法
-     *
-     * @param joinPoint joinPoint
-     * @return java.lang.Object
-     * @author pujian
-     * @date 2022/10/13 11:07
-     */
-    @Around("execution(public void org.springframework.amqp.rabbit.core.RabbitTemplate.convertAndSend(..)) || " +
-            "execution(public void org.springframework.amqp.rabbit.core.RabbitTemplate.send(..))")
-    public Object sendInterceptor(ProceedingJoinPoint joinPoint) throws Throwable {
+    public static boolean sendEnhance() throws NotFoundException, CannotCompileException {
 
-        RabbitTemplate rabbitTemplate = (RabbitTemplate) joinPoint.getTarget();
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
-        Object[] args = joinPoint.getArgs();
+        ClassPool classPool = ClassPool.getDefault();
 
-        RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromSend(rabbitTemplate, method, args);
-        if (rabbitLogMessage != null) {
-            log.info("向MQ发送消息，exchange={}，routingKey={}，message={}", rabbitLogMessage.getExchange(), rabbitLogMessage.getRoutingKey(), rabbitLogMessage.getMessage());
-            MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage, joinPoint);
+        //拦截send方法
+        CtClass ctClass = classPool.getCtClass(ENHANCE_RABBIT_TEMPLATE_CLASS);
+        if (ctClass == null) {
+            System.out.println("RabbitMQ client not found");
+            return false;
         }
-        return joinPoint.proceed();
-    }
+        CtClass strClass = classPool.get(String.class.getName());
+        CtClass messageClass = classPool.get(Message.class.getName());
+        CtClass correlationDataClass = classPool.get(CorrelationData.class.getName());
+        CtClass[] params = new CtClass[]{strClass, strClass, messageClass, correlationDataClass};
+        CtMethod doExecuteMethod = ctClass.getDeclaredMethod(ENHANCE_SEND_METHOD, params);
+        String sb = "{" + ENHANCE_RABBITMQ_SEND_INTERCEPTOR_PATH + "($0, $args);" + "}"; // 调用封装的方法
+        doExecuteMethod.insertBefore(sb); // 植入代码片段
+        //实例化 通过这个类对象反射创建
+        doExecuteMethod.insertAfter("System.out.println(\"发送消息后\");");//调用后
+        ctClass.toClass();
 
+        return true;
+    }
 
     /**
-     * 拦截{@link org.springframework.amqp.rabbit.annotation.RabbitListener}注解标注的方法
+     * 只有在fromMessage执行完成后才能拿到targetMethod, 所以拦截了这个方法
      *
-     * @param joinPoint joinPoint
-     * @return java.lang.Object
-     * @author pujian
-     * @date 2022/10/13 11:07
+     * @return
+     * @throws NotFoundException
+     * @throws CannotCompileException
      */
-    @Around("@annotation(org.springframework.amqp.rabbit.annotation.RabbitListener)")
-    public Object listenerInterceptor(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object[] args = joinPoint.getArgs();
-        RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromListener(args);
-        log.info("rabbit listener接收到消息，exchange={}，routingKey={}，queue={}，message={}", rabbitLogMessage.getExchange(), rabbitLogMessage.getRoutingKey(), rabbitLogMessage.getQueueName(), rabbitLogMessage.getMessage());
-        MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage, joinPoint);
-        return joinPoint.proceed();
-    }
+    public static boolean receiveEnhance() throws NotFoundException, CannotCompileException {
 
+        ClassPool classPool = ClassPool.getDefault();
+
+        //拦截send方法
+        CtClass ctClass = classPool.getCtClass(ENHANCE_RABBIT_RECEIVE_CLASS);
+        if (ctClass == null) {
+            System.out.println("RabbitMQ Listener not found");
+            return false;
+        }
+
+        CtClass messageClass = classPool.get(Message.class.getName());
+        CtClass[] params = new CtClass[]{messageClass};
+
+        CtMethod doExecuteMethod = ctClass.getDeclaredMethod(ENHANCE_RECEIVE_METHOD, params);
+        String sb = "{" + ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH + "($1);" + "}"; // 调用封装的方法
+        doExecuteMethod.insertAfter(sb); // 植入代码片段
+        ctClass.toClass();
+
+        return true;
+    }
 }
 
 
 ```
+
+##### 3.3.3  创建拦截解析类
+
+```java
+
+package cn.rivamed.log.rabbitmq.interceptor;
+
+import cn.rivamed.log.core.entity.RabbitLogMessage;
+import cn.rivamed.log.core.factory.MessageAppenderFactory;
+import cn.rivamed.log.core.util.JsonUtil;
+import cn.rivamed.log.rabbitmq.util.RabbitLogMessageUtils;
+import com.rabbitmq.client.Channel;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
+/**
+ * 描述: RabbitMQ方法拦截解析类
+ * 公司 北京瑞华康源科技有限公司
+ * 版本 Rivamed 2022
+ *
+ * @author 左健宏
+ * @version V2.0.1
+ * @date 22/10/24 10:34
+ */
+public class RabbitMQInterceptor {
+
+    public static void sendInterceptor(RabbitTemplate rabbitTemplate, Object[] args) {
+        if (rabbitTemplate.getClass().isAssignableFrom(RabbitTemplate.class)) {
+            RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromSend(rabbitTemplate, args);
+            System.out.println(JsonUtil.toJSONString(rabbitLogMessage));
+            MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
+        }
+
+    }
+
+    public static void receiveInterceptor(Message message, Channel channel) {
+        RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromReceive(message, channel);
+        System.out.println(JsonUtil.toJSONString(rabbitLogMessage));
+        MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
+    }
+
+}
+
+```
+##### 3.3.4  在Spring初始化之前增强
+
+```java
+package cn.rivamed.log.rabbitmq.initializer;
+
+import cn.rivamed.log.rabbitmq.instrument.RabbitMQInstrumentation;
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+
+/**
+ * 描述: RabbitMQ初始执行
+ * 公司 北京瑞华康源科技有限公司
+ * 版本 Rivamed 2022
+ *
+ * @author 左健宏
+ * @version V2.0.1
+ * @date 22/10/26 10:14
+ */
+@Configuration
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class RabbitMQEnhanceContextInitializer implements ApplicationContextInitializer {
+
+    private static boolean sendEnhanceFlag = false;
+    private static boolean receiveEnhanceFlag = false;
+
+    @Override
+    public void initialize(ConfigurableApplicationContext applicationContext) {
+        if (!sendEnhanceFlag) {
+            try {
+                sendEnhanceFlag = RabbitMQInstrumentation.sendEnhance();
+            } catch (NotFoundException e) {
+                e.printStackTrace();
+            } catch (CannotCompileException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (!receiveEnhanceFlag) {
+            try {
+                receiveEnhanceFlag = RabbitMQInstrumentation.receiveEnhance();
+            } catch (NotFoundException e) {
+                e.printStackTrace();
+            } catch (CannotCompileException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+}
+
+```
+##### 3.3.5 创建spring.factories
+
+```properties
+# Initializers
+org.springframework.context.ApplicationContextInitializer=\
+cn.rivamed.log.rabbitmq.initializer.RabbitMQEnhanceContextInitializer
+
+```
+
 
 

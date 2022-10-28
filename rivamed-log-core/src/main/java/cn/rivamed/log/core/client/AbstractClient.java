@@ -25,11 +25,11 @@ public abstract class AbstractClient {
         client = abstractClient;
     }
 
-    public void pushMessage(String key, String strings) throws LogQueueConnectException {
+    public void pushMessage(String strings) {
 
     }
 
-    public void putMessageList(String key, List<String> list) throws LogQueueConnectException {
+    public void putMessageList(List<String> list) {
 
     }
 }
