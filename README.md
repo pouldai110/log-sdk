@@ -4,10 +4,10 @@
 
 ## 使用前注意事项
 
-* Rivamed Log使用的是RabbitMQ + Disruptor。
+* Rivamed Log使用的是RabbitMQ + Disruptor + Sleuth。
 * 原理是增加一个新的 RabbitMQAppender,在配置完成后，启动项目时将日志推送到RabbitMQAppender,
 RabbitMQAppender内部实例化了一个 BatchingRabbitTemplate客户端和一个Disruptor队列，日志数据先存到Disruptor,
-然后通过BatchingRabbitTemplate将数据批量推送给RabbitMQ服务器端。
+然后通过BatchingRabbitTemplate将数据批量推送给RabbitMQ服务器端, Sleuth用来在链路中生成TraceId和SpanId。
 
 ## 一、客户端使用
 
@@ -58,6 +58,16 @@ rivamed:
 | queueName  | RabbitMQ 队列名称 |
 
 #### 2.根据项目需求使用情况导入对应的日志包并加上配置
+
+#### 注意：如果使用了配置中心，则需要把日志路径配置移到配置中心下统一配置，不在每个项目下单独配置。配置示例:
+
+```yml
+# 日志配置
+logging:
+  config: classpath:log4j2-spring.xml
+```
+
+
 
 #### 2.1 log4j
 
@@ -430,14 +440,14 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
  */
 public class RabbitMQInstrumentation {
 
-    public static final String ENHANCE_RABBITMQ_SEND_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.sendInterceptor"; // 增强的 client
+    public static final String ENHANCE_RABBITMQ_SEND_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.sendInterceptor"; // 发送拦截器
 
-    public static final String ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.receiveInterceptor"; // 增强的 client
+    public static final String ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.receiveInterceptor"; // 接收拦截器
 
-    public static final String ENHANCE_RABBIT_TEMPLATE_CLASS = "org.springframework.amqp.rabbit.core.RabbitTemplate"; // 增强的 client
-    public static final String ENHANCE_RABBIT_RECEIVE_CLASS = "org.springframework.amqp.rabbit.listener.adapter.MessagingMessageListenerAdapter"; // 增强的 client
+    public static final String ENHANCE_RABBIT_TEMPLATE_CLASS = "org.springframework.amqp.rabbit.core.RabbitTemplate"; // 增强的类
+    public static final String ENHANCE_RABBIT_RECEIVE_CLASS = "org.springframework.amqp.rabbit.listener.adapter.MessagingMessageListenerAdapter"; // 增强的类
     public static final String ENHANCE_SEND_METHOD = "send"; // 增强的方法
-    public static final String ENHANCE_RECEIVE_METHOD = "onMessage"; // 增强的方法
+    public static final String ENHANCE_RECEIVE_METHOD = "invokeHandler"; // 增强的方法
 
     public static boolean sendEnhance() throws NotFoundException, CannotCompileException {
 
@@ -456,15 +466,15 @@ public class RabbitMQInstrumentation {
         CtMethod doExecuteMethod = ctClass.getDeclaredMethod(ENHANCE_SEND_METHOD, params);
         String sb = "{" + ENHANCE_RABBITMQ_SEND_INTERCEPTOR_PATH + "($0, $args);" + "}"; // 调用封装的方法
         doExecuteMethod.insertBefore(sb); // 植入代码片段
-        //实例化 通过这个类对象反射创建
-        doExecuteMethod.insertAfter("System.out.println(\"发送消息后\");");//调用后
         ctClass.toClass();
 
         return true;
     }
 
     /**
-     * 只有在fromMessage执行完成后才能拿到targetMethod, 所以拦截了这个方法
+     * 只有在 fromMessage 执行完成后才能拿到 targetMethod, 然后需要从 channel 里面拿到 Connection 的 virtualHost 信息，
+     * 所有拦截 invokeHandlerAndProcessResult 这个方法
+     *
      *
      * @return
      * @throws NotFoundException
@@ -474,24 +484,26 @@ public class RabbitMQInstrumentation {
 
         ClassPool classPool = ClassPool.getDefault();
 
-        //拦截send方法
+        //拦截receive方法
         CtClass ctClass = classPool.getCtClass(ENHANCE_RABBIT_RECEIVE_CLASS);
         if (ctClass == null) {
             System.out.println("RabbitMQ Listener not found");
             return false;
         }
-
         CtClass messageClass = classPool.get(Message.class.getName());
-        CtClass[] params = new CtClass[]{messageClass};
+        CtClass channelClass = classPool.get(Channel.class.getName());
+        CtClass messagingClass = classPool.get(org.springframework.messaging.Message.class.getName());
+        CtClass[] params = new CtClass[]{messageClass,channelClass, messagingClass};
 
         CtMethod doExecuteMethod = ctClass.getDeclaredMethod(ENHANCE_RECEIVE_METHOD, params);
-        String sb = "{" + ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH + "($1);" + "}"; // 调用封装的方法
-        doExecuteMethod.insertAfter(sb); // 植入代码片段
+        String sb = "{" + ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH + "($1, $2);" + "}"; // 调用封装的方法
+        doExecuteMethod.insertBefore(sb); // 植入代码片段
         ctClass.toClass();
 
         return true;
     }
 }
+
 
 
 ```
@@ -521,22 +533,32 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
  */
 public class RabbitMQInterceptor {
 
+    /**
+     * 处理RabbitMQ发送消息事件
+     *
+     * @param rabbitTemplate
+     * @param args
+     */
     public static void sendInterceptor(RabbitTemplate rabbitTemplate, Object[] args) {
         if (rabbitTemplate.getClass().isAssignableFrom(RabbitTemplate.class)) {
             RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromSend(rabbitTemplate, args);
-            System.out.println(JsonUtil.toJSONString(rabbitLogMessage));
             MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
         }
-
     }
 
+    /**
+     * 处理RabbitMQ接收消息事件
+     *
+     * @param message
+     * @param channel
+     */
     public static void receiveInterceptor(Message message, Channel channel) {
         RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromReceive(message, channel);
-        System.out.println(JsonUtil.toJSONString(rabbitLogMessage));
+        System.out.println("收到消息" + JsonUtil.toJSONString(rabbitLogMessage));
         MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
     }
-
 }
+
 
 ```
 ##### 3.3.4  在Spring初始化之前增强
