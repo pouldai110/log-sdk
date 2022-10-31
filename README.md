@@ -13,11 +13,10 @@ RabbitMQAppender内部实例化了一个 BatchingRabbitTemplate客户端和一�
 
 ### （1）注意事项
 
-* 1.客户端在项目使用，非maven项目下载依赖包（ https://gitee.com/James-ZY/rivamed-log-sdk/releases ）放在自己的lib下面直接使用，去除重复的包即可使用，然后配置log4j就可以搜集日志了
+* 1.只支持spring-boot项目，基于spring-boot(2.3.12.RELEASE)版本开发，请尽量使用高版本的spring-boot,低版本里面的RabbitMQ可能会不兼容。
+比如SimpleBatchingStrategy的路径就不一样，会导致启动报错~
 
-* 2.推荐使用logback,特别是SpringBoot，SpringCloud项目;
-
-* 3.示例中仅仅是基本配置，更多配置请看文章下面配置详解
+* 2.示例中是基本配置，更多使用方法请看文章下面详解
   
 
 ### （2）客户端配置
@@ -256,7 +255,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
      * 序列生成器：当日志在一毫秒内打印多次时，发送到服务端排序时无法按照正常顺序显示，因此加一个序列保证同一毫秒内的日志按顺序显示
      * 使用AtomicLong不要使用LongAdder，LongAdder在该场景高并发下无法严格保证顺序性，也不需要考虑Long是否够用，假设每秒打印10万日志，也需要两百多万年才能用的完
      */
-    private static final AtomicLong SEQ_BUILDER = new AtomicLong();
+    private static final AtomicLong SEQ_BUILDER = new AtomicLong(1);
 
     public Object aroundExecute(ProceedingJoinPoint joinPoint) throws Throwable {
         try {

@@ -19,6 +19,12 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
  */
 public class RabbitMQInterceptor {
 
+    /**
+     * 处理RabbitMQ发送消息事件
+     *
+     * @param rabbitTemplate
+     * @param args
+     */
     public static void sendInterceptor(RabbitTemplate rabbitTemplate, Object[] args) {
         if (rabbitTemplate.getClass().isAssignableFrom(RabbitTemplate.class)) {
             RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromSend(rabbitTemplate, args);
@@ -27,9 +33,15 @@ public class RabbitMQInterceptor {
 
     }
 
-    public static void receiveInterceptor(Message message) {
-        RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromReceive(message);
-        System.out.println("收到消息"+ JsonUtil.toJSONString(rabbitLogMessage));
+    /**
+     * 处理RabbitMQ接收消息事件
+     *
+     * @param message
+     * @param channel
+     */
+    public static void receiveInterceptor(Message message, Channel channel) {
+        RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromReceive(message, channel);
+        System.out.println("收到消息" + JsonUtil.toJSONString(rabbitLogMessage));
         MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
     }
 

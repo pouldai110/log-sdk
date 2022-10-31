@@ -25,9 +25,9 @@ public class RabbitMQInstrumentation {
     public static final String ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.receiveInterceptor"; // 接收拦截器
 
     public static final String ENHANCE_RABBIT_TEMPLATE_CLASS = "org.springframework.amqp.rabbit.core.RabbitTemplate"; // 增强的类
-    public static final String ENHANCE_RABBIT_RECEIVE_CLASS = "org.springframework.amqp.support.converter.MessagingMessageConverter"; // 增强的类
+    public static final String ENHANCE_RABBIT_RECEIVE_CLASS = "org.springframework.amqp.rabbit.listener.adapter.MessagingMessageListenerAdapter"; // 增强的类
     public static final String ENHANCE_SEND_METHOD = "send"; // 增强的方法
-    public static final String ENHANCE_RECEIVE_METHOD = "fromMessage"; // 增强的方法
+    public static final String ENHANCE_RECEIVE_METHOD = "invokeHandler"; // 增强的方法
 
     public static boolean sendEnhance() throws NotFoundException, CannotCompileException {
 
@@ -52,7 +52,9 @@ public class RabbitMQInstrumentation {
     }
 
     /**
-     * 只有在fromMessage执行完成后才能拿到targetMethod, 所以拦截了这个方法
+     * 只有在 fromMessage 执行完成后才能拿到 targetMethod, 然后需要从 channel 里面拿到 Connection 的 virtualHost 信息，
+     * 所有拦截 invokeHandlerAndProcessResult 这个方法
+     *
      *
      * @return
      * @throws NotFoundException
@@ -69,11 +71,13 @@ public class RabbitMQInstrumentation {
             return false;
         }
         CtClass messageClass = classPool.get(Message.class.getName());
-        CtClass[] params = new CtClass[]{messageClass};
+        CtClass channelClass = classPool.get(Channel.class.getName());
+        CtClass messagingClass = classPool.get(org.springframework.messaging.Message.class.getName());
+        CtClass[] params = new CtClass[]{messageClass,channelClass, messagingClass};
 
         CtMethod doExecuteMethod = ctClass.getDeclaredMethod(ENHANCE_RECEIVE_METHOD, params);
-        String sb = "{" + ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH + "($1);" + "}"; // 调用封装的方法
-        doExecuteMethod.insertAfter(sb); // 植入代码片段
+        String sb = "{" + ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH + "($1, $2);" + "}"; // 调用封装的方法
+        doExecuteMethod.insertBefore(sb); // 植入代码片段
         ctClass.toClass();
 
         return true;

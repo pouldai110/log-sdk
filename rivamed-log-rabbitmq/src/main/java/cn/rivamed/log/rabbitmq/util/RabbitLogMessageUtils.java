@@ -2,15 +2,12 @@ package cn.rivamed.log.rabbitmq.util;
 
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
-import cn.rivamed.log.core.spring.RivamedLogApplicationContextHolder;
 import cn.rivamed.log.rabbitmq.instrument.RabbitMQInstrumentation;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.impl.AMQConnection;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.context.ApplicationContext;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
@@ -23,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 public class RabbitLogMessageUtils {
 
     /**
-     * 从{@link RabbitTemplate}的convertAndSend和send方法收集消息数据
+     * 从{@link RabbitTemplate}的send方法收集消息数据
      *
      * @param rabbitTemplate rabbitTemplate
      * @param args           args
@@ -51,31 +48,36 @@ public class RabbitLogMessageUtils {
 
 
     /**
+     * 获取消息基本参数
+     *
      * @param message
+     * @param channel
      * @return cn.rivamed.log.core.entity.RabbitLogMessage
      * @author Zuo Yang
      * @date 2022/10/17 9:58
      */
-    public static RabbitLogMessage collectFromReceive(Message message) {
+    public static RabbitLogMessage collectFromReceive(Message message, Channel channel) {
         Object msg = null;
-        String vhost = null, exchange = null, routingKey = null, queue = null, messageId = null, className = null, methodName = null;
+        String vhost = "/", exchange = null, routingKey = null, queue = null, messageId = null, className = null, methodName = null;
         if (message != null) {
+            //获取队列修改信息
             MessageProperties messageProperties = message.getMessageProperties();
             exchange = messageProperties.getReceivedExchange();
             routingKey = messageProperties.getReceivedRoutingKey();
             queue = messageProperties.getConsumerQueue();
             messageId = messageProperties.getMessageId();
-
-            ApplicationContext applicationContext = RivamedLogApplicationContextHolder.getApplicationContext();
-            RabbitTemplate rabbitTemplate = applicationContext.getBean(RabbitTemplate.class);
-            if (rabbitTemplate != null) {
-                vhost = rabbitTemplate.getConnectionFactory().getVirtualHost();
+            //从channel里面拿virtualHost,如果长度超过3，取最后一个
+            String[] strs = channel.getConnection().toString().split("/");
+            if (strs.length > 3) {
+                vhost = strs[3];
             }
+            //获取消息
             try {
                 msg = new String(message.getBody(), StandardCharsets.UTF_8.name());
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
+            //获取listener的目标方法
             Method targetMethod = message.getMessageProperties().getTargetMethod();
             if (null != targetMethod) {
                 className = targetMethod.getDeclaringClass().getName();
