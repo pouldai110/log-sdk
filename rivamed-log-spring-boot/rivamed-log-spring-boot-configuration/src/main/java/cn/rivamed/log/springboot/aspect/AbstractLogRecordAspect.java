@@ -75,6 +75,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             } catch (Exception e) {
                 cloneParams = params.toString();
             }
+            logger.info(request.getRequestURI() + " param: {}", cloneParams);
             message.setMethod(joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + m.getName());
             message.setUrl(request.getRequestURI());
 
@@ -82,6 +83,13 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             stopWatch.start();
             returnValue = joinPoint.proceed(joinPoint.getArgs());
             stopWatch.stop();
+            String result;
+            try {
+                result = JsonUtil.toJSONString(returnValue);
+            } catch (Exception e) {
+                result = returnValue.toString();
+            }
+            logger.info(request.getRequestURI() + " result: {}", result);
             message.setSysName(RivamedLogRecordContext.getSysName());
             message.setEnv(RivamedLogRecordContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
