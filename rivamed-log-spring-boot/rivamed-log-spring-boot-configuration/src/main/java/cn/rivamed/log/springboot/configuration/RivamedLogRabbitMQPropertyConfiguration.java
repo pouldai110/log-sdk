@@ -37,7 +37,8 @@ public class RivamedLogRabbitMQPropertyConfiguration {
                 .setUsername(rabbitMQProperty.getUsername())
                 .setPassword(rabbitMQProperty.getPassword())
                 .setExchange(rabbitMQProperty.getExchange())
-                .setRoutingKey(rabbitMQProperty.getRoutingKey());
+                .setRoutingKey(rabbitMQProperty.getRoutingKey())
+                .setQueueName(rabbitMQProperty.getQueueName());
         return rabbitMQPropertyInit;
     }
 }

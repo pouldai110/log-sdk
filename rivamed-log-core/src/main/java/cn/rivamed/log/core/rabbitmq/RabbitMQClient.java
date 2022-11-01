@@ -1,7 +1,6 @@
 package cn.rivamed.log.core.rabbitmq;
 
 import cn.rivamed.log.core.client.AbstractClient;
-import cn.rivamed.log.core.exception.LogQueueConnectException;
 import cn.rivamed.log.core.util.UuidUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -36,6 +35,7 @@ public class RabbitMQClient extends AbstractClient {
 
     private static String exchange = "";
     private static String routingKey = "";
+    private CachingConnectionFactory cachingConnectionFactory;
     private BatchingRabbitTemplate batchingRabbitTemplate;
 
     public RabbitMQClient(String host, int port, String virtualHost, String username, String password, String exchange, String routingKey) {
@@ -50,6 +50,7 @@ public class RabbitMQClient extends AbstractClient {
         BatchingRabbitTemplate template = new BatchingRabbitTemplate(strategy, scheduler);
         template.setConnectionFactory(cachingConnectionFactory);
         template.setMessageConverter(messageConverter());
+        this.cachingConnectionFactory = cachingConnectionFactory;
         this.batchingRabbitTemplate = template;
         this.exchange = exchange;
         this.routingKey = routingKey;
@@ -92,4 +93,9 @@ public class RabbitMQClient extends AbstractClient {
             pushMessage(s);
         }
     }
+
+    public CachingConnectionFactory getCachingConnectionFactory() {
+        return cachingConnectionFactory;
+    }
+
 }

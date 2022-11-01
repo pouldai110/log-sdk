@@ -8,6 +8,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -35,6 +40,7 @@ public class RivamedLogRabbitMQPropertyInit implements InitializingBean {
     private String password;
     private String exchange;
     private String routingKey;
+    private String queueName;
 
     @Override
     public void afterPropertiesSet() {
@@ -42,6 +48,17 @@ public class RivamedLogRabbitMQPropertyInit implements InitializingBean {
         AbstractClient.setClient(rabbitMQClient);
         RivamedLogRecordContext.setSysName(sysName);
         RivamedLogRecordContext.setEnv(env);
+        //自动创建交换机、路由、队列及绑定关系
+        if (StringUtils.isNotBlank(exchange) && StringUtils.isNotBlank(routingKey) && StringUtils.isNotBlank(queueName)) {
+            RabbitAdmin admin = new RabbitAdmin(rabbitMQClient.getCachingConnectionFactory());
+            Queue queue = new Queue(queueName, true);
+            DirectExchange exchange1 = new DirectExchange(exchange, true, false);
+            admin.declareExchange(exchange1);
+            admin.declareQueue(queue);
+            admin.declareBinding(BindingBuilder.bind(queue) // 直接创建队列
+                    .to(exchange1) // 直接创建交换机
+                    .with(routingKey)); // 指定路由Key
+        }
     }
 
 }

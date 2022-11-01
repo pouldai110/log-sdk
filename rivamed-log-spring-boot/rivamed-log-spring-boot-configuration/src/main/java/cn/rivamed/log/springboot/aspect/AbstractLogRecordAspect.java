@@ -90,7 +90,6 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             message.setCostTime(stopWatch.getTime());
             message.setBizDetail(cloneParams);
             message.setLevel(LogLevel.INFO.name());
-            message.setResponseCode(HttpStatus.OK.name());
             message.setBizIP(IpGetter.CURRENT_IP);
             message.setLogType(LogMessageConstant.LOG_TYPE_RECORD);
             message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_USER_LOG);

@@ -18,6 +18,7 @@ public class RivamedLogRabbitMQProperty {
     private String password;
     private String exchange;
     private String routingKey;
+    private String queueName;
 
     public String getHost() {
         return host;
@@ -73,5 +74,13 @@ public class RivamedLogRabbitMQProperty {
 
     public void setRoutingKey(String routingKey) {
         this.routingKey = routingKey;
+    }
+
+    public String getQueueName() {
+        return queueName;
+    }
+
+    public void setQueueName(String queueName) {
+        this.queueName = queueName;
     }
 }
