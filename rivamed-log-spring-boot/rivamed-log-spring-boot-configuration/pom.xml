@@ -19,6 +19,11 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
+            <groupId>cn.rivamed</groupId>
+            <artifactId>rivamed-log-task</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-boot.version}</version>

@@ -50,12 +50,7 @@ public class LogMessageConstant {
 
     public final static String LOG_TYPE_LOGIN_LOG = "loginLog";
 
-    /**
-     * record日志类型 timeTaskLog：定时任务 userLog：接口
-     */
-    public final static String LOG_RECORD_TYPE_SYSTEM_LOG = "timeTaskLog";
-
-    public final static String LOG_RECORD_TYPE_USER_LOG = "userLog";
+    public final static String LOG_TYPE_SCHEDULED_TASK_LOG = "scheduledTask";
 
     public final static String DELIM_STR = "{}";
 

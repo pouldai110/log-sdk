@@ -3,7 +3,7 @@ package cn.rivamed.log.log4j.util;
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
-import cn.rivamed.log.core.factory.LogMessageFactory;
+import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.util.IpGetter;
 import cn.rivamed.log.core.util.LogExceptionStackTrace;
 import org.apache.log4j.Priority;
@@ -54,7 +54,7 @@ public class LogMessageUtil {
     }
 
     private static BaseLogMessage convertMessage(LoggingEvent loggingEvent) {
-        BaseLogMessage logMessage = LogMessageFactory.convertMessageType(loggingEvent.getRenderedMessage());
+        BaseLogMessage logMessage = LogTypeEnum.convertMessageType(loggingEvent.getRenderedMessage());
         if (loggingEvent.getLevel().toInt() == Priority.ERROR_INT) {
             String formatMessage;
             String msg = "";

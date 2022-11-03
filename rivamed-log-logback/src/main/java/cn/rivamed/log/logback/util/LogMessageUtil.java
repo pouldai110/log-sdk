@@ -6,6 +6,7 @@ import ch.qos.logback.classic.spi.ThrowableProxy;
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
+import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.factory.LogMessageFactory;
 import cn.rivamed.log.core.util.IpGetter;
 import cn.rivamed.log.core.util.LogExceptionStackTrace;
@@ -76,7 +77,7 @@ public class LogMessageUtil {
     }
 
     private static BaseLogMessage convertMessage(ILoggingEvent logEvent) {
-        BaseLogMessage logMessage = LogMessageFactory.convertMessageType(logEvent.getFormattedMessage());
+        BaseLogMessage logMessage = LogTypeEnum.convertMessageType(logEvent.getFormattedMessage());
         if (logEvent.getLevel().equals(Level.ERROR)) {
             String formatMessage = logEvent.getFormattedMessage();
 

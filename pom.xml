@@ -35,6 +35,7 @@
         <logback.version>1.2.3</logback.version>
         <servlet.version>4.0.1</servlet.version>
         <javassist.version>3.29.2-GA</javassist.version>
+        <quartz.version>2.3.2</quartz.version>
         <lombok.version>1.18.24</lombok.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
     </properties>
@@ -45,6 +46,7 @@
         <module>rivamed-log-log4j2</module>
         <module>rivamed-log-logback</module>
         <module>rivamed-log-rabbitmq</module>
+        <module>rivamed-log-task</module>
         <module>rivamed-log-spring-boot</module>
     </modules>
 
@@ -73,6 +75,11 @@
             <dependency>
                 <groupId>cn.rivamed</groupId>
                 <artifactId>rivamed-log-rabbitmq</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.rivamed</groupId>
+                <artifactId>rivamed-log-task</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

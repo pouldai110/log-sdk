@@ -16,7 +16,6 @@
  */
 package cn.rivamed.log.log4j2.appender;
 
-import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rabbitmq.RabbitMQClient;

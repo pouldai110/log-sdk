@@ -31,34 +31,6 @@ public class LogMessageFactory<T> {
     }
 
     /**
-     * 根据日志数据获得类型并转换
-     *
-     * @param formattedMessage
-     * @return
-     */
-    public static BaseLogMessage convertMessageType(String formattedMessage) {
-        BaseLogMessage logMessage = new BaseLogMessage();
-        if (formattedMessage.startsWith(LogMessageConstant.LOG_TYPE_RECORD)) {
-            logMessage.setBizDetail(formattedMessage.substring(LogMessageConstant.LOG_TYPE_RECORD.length()));
-            logMessage.setLogType(LogMessageConstant.LOG_TYPE_RECORD);
-        } else if (formattedMessage.startsWith(LogMessageConstant.LOG_TYPE_RABBITMQ)) {
-            logMessage.setBizDetail(formattedMessage.substring(LogMessageConstant.LOG_TYPE_RABBITMQ.length()));
-            logMessage.setLogType(LogMessageConstant.LOG_TYPE_RABBITMQ);
-        } else if (formattedMessage.startsWith(LogMessageConstant.LOG_TYPE_SYSTEM_LOG)) {
-            logMessage.setBizDetail(formattedMessage.substring(LogMessageConstant.LOG_TYPE_SYSTEM_LOG.length()));
-            logMessage.setLogType(LogMessageConstant.LOG_TYPE_SYSTEM_LOG);
-        } else if (formattedMessage.startsWith(LogMessageConstant.LOG_TYPE_LOGIN_LOG)) {
-            logMessage.setBizDetail(formattedMessage.substring(LogMessageConstant.LOG_TYPE_LOGIN_LOG.length()));
-            logMessage.setLogType(LogMessageConstant.LOG_TYPE_LOGIN_LOG);
-        } else {
-            logMessage.setBizDetail(formattedMessage);
-            logMessage.setLogType(LogMessageConstant.LOG_TYPE_SYSTEM_LOG);
-        }
-        return logMessage;
-    }
-
-
-    /**
      * 推送登录日志
      * @param loginLogMessage
      */

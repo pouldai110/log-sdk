@@ -87,7 +87,7 @@ public class BaseLogMessage implements Serializable {
     private String level;
 
     /**
-     * 日志类型 logRecord/rabbitMQ/systemLog/loginLog
+     * 日志类型 logRecord/rabbitMQ/systemLog/loginLog/scheduledTask
      */
     private String logType;
 

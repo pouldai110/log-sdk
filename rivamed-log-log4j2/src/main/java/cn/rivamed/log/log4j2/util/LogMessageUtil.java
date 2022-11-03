@@ -3,6 +3,7 @@ package cn.rivamed.log.log4j2.util;
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
+import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.factory.LogMessageFactory;
 import cn.rivamed.log.core.util.IpGetter;
 import cn.rivamed.log.core.util.LogExceptionStackTrace;
@@ -73,7 +74,7 @@ public class LogMessageUtil {
     }
 
     private static BaseLogMessage convertMessage(LogEvent logEvent) {
-        BaseLogMessage logMessage = LogMessageFactory.convertMessageType(logEvent.getMessage().getFormattedMessage());
+        BaseLogMessage logMessage = LogTypeEnum.convertMessageType(logEvent.getMessage().getFormattedMessage());
         if (logEvent.getLevel().equals(Level.ERROR)) {
             // 如果占位符个数与参数个数相同,即使最后一个参数为Throwable类型,logEvent.getThrown()也会为null
             Throwable thrown = logEvent.getThrown();

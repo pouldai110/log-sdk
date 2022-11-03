@@ -1,3 +1,4 @@
+import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.util.UuidUtil;
 import cn.rivamed.log.rabbitmq.instrument.RabbitMQInstrumentation;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -51,11 +52,13 @@ public class TestRabbitmq {
         rabbitTemplate.setMessageConverter(messageConverter());
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(UuidUtil.generatorUuid());
+        BaseLogMessage baseLogMessage = new BaseLogMessage();
+        baseLogMessage.setSpanId("111").setTraceId("222").setEnv("prod").setSysName("HVC");
         rabbitTemplate.convertAndSend("{\"traceId\":\"5032f7d87ac06f2e\",\"spanId\":\"5032f7d87ac06f2e}");
         rabbitTemplate.convertAndSend("log.rm-th1", "{\"traceId\":\"5032f7d87ac06f2e\",\"spanId\":\"5032f7d87ac06f2e}");
         rabbitTemplate.convertAndSend("log.rm-th1", (Object) "{\"traceId\":\"5032f7d87ac06f2e\",\"spanId\":\"5032f7d87ac06f2e}", correlationData);
         rabbitTemplate.convertAndSend("log.rm-th1", "log.rm-th1", "{\"traceId\":\"5032f7d87ac06f2e\",\"spanId\":\"5032f7d87ac06f2e}");
         rabbitTemplate.convertAndSend("log.rm-th1", "log.rm-th1", "{\"traceId\":\"5032f7d87ac06f2e\",\"spanId\":\"5032f7d87ac06f2e}", correlationData);
-
+        rabbitTemplate.convertAndSend("log.rm-th1",baseLogMessage);
     }
 }

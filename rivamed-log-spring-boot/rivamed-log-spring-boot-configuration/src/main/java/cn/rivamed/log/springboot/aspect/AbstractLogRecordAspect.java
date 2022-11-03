@@ -75,7 +75,9 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             } catch (Exception e) {
                 cloneParams = params.toString();
             }
-            logger.info(request.getRequestURI() + " param: {}", cloneParams);
+            if (logger.isInfoEnabled()) {
+                logger.info(request.getRequestURI() + " param: {}", cloneParams);
+            }
             message.setMethod(joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + m.getName());
             message.setUrl(request.getRequestURI());
 
@@ -89,7 +91,9 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             } catch (Exception e) {
                 result = returnValue.toString();
             }
-            logger.info(request.getRequestURI() + " result: {}", result);
+            if (logger.isInfoEnabled()) {
+                logger.info(request.getRequestURI() + " result: {}", result);
+            }
             message.setSysName(RivamedLogRecordContext.getSysName());
             message.setEnv(RivamedLogRecordContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
@@ -100,7 +104,6 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             message.setLevel(LogLevel.INFO.name());
             message.setBizIP(IpGetter.CURRENT_IP);
             message.setLogType(LogMessageConstant.LOG_TYPE_RECORD);
-            message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_USER_LOG);
             message.setResponseCode(String.valueOf(HttpStatus.OK.value()));
             //设置额外信息并推送消息
             RivamedLogRecordContext.buildLogMessage(message);
