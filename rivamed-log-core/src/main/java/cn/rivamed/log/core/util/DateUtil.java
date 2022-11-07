@@ -157,27 +157,27 @@ public class DateUtil {
     }
 
 
-    public static String parseDateToStr(Date time, String timeFromat) {
-        DateFormat dateFormat = new SimpleDateFormat(timeFromat);
+    public static String parseDateToStr(Date time, String timeFormat) {
+        DateFormat dateFormat = new SimpleDateFormat(timeFormat);
         return dateFormat.format(time);
     }
 
 
-    public static String parseTimestampToStr(Timestamp timestamp, String timeFromat) {
-        SimpleDateFormat df = new SimpleDateFormat(timeFromat);
+    public static String parseTimestampToStr(Timestamp timestamp, String timeFormat) {
+        SimpleDateFormat df = new SimpleDateFormat(timeFormat);
         return df.format(timestamp);
     }
 
 
-    public static String parseDateToStr(Date time, String timeFromat, final Date defaultValue) {
+    public static String parseDateToStr(Date time, String timeFormat, final Date defaultValue) {
         try {
-            DateFormat dateFormat = new SimpleDateFormat(timeFromat);
+            DateFormat dateFormat = new SimpleDateFormat(timeFormat);
             return dateFormat.format(time);
         } catch (Exception e) {
             if (defaultValue != null)
-                return parseDateToStr(defaultValue, timeFromat);
+                return parseDateToStr(defaultValue, timeFormat);
             else
-                return parseDateToStr(new Date(), timeFromat);
+                return parseDateToStr(new Date(), timeFormat);
         }
     }
 
@@ -185,13 +185,13 @@ public class DateUtil {
      * 格式化Date时间
      *
      * @param time         Date类型时间
-     * @param timeFromat   String类型格式
+     * @param timeFormat   String类型格式
      * @param defaultValue 默认时间值String类型
      * @return 格式化后的字符串
      */
-    public static String parseDateToStr(Date time, String timeFromat, final String defaultValue) {
+    public static String parseDateToStr(Date time, String timeFormat, final String defaultValue) {
         try {
-            DateFormat dateFormat = new SimpleDateFormat(timeFromat);
+            DateFormat dateFormat = new SimpleDateFormat(timeFormat);
             return dateFormat.format(time);
         } catch (Exception e) {
             return defaultValue;
@@ -199,14 +199,14 @@ public class DateUtil {
     }
 
 
-    public static Date parseStrToDate(String time, String timeFromat) {
+    public static Date parseStrToDate(String time, String timeFormat) {
         if (time == null || time.equals("")) {
             return null;
         }
 
         Date date = null;
         try {
-            DateFormat dateFormat = new SimpleDateFormat(timeFromat);
+            DateFormat dateFormat = new SimpleDateFormat(timeFormat);
             date = dateFormat.parse(time);
         } catch (Exception e) {
 
@@ -215,10 +215,10 @@ public class DateUtil {
     }
 
 
-    public static Date parseStrToDate(String strTime, String timeFromat,
+    public static Date parseStrToDate(String strTime, String timeFormat,
                                       Date defaultValue) {
         try {
-            DateFormat dateFormat = new SimpleDateFormat(timeFromat);
+            DateFormat dateFormat = new SimpleDateFormat(timeFormat);
             return dateFormat.parse(strTime);
         } catch (Exception e) {
             return defaultValue;

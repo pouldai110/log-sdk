@@ -2,7 +2,6 @@ package cn.rivamed.log.rabbitmq.interceptor;
 
 import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
-import cn.rivamed.log.core.util.JsonUtil;
 import cn.rivamed.log.rabbitmq.util.RabbitLogMessageUtils;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
@@ -41,7 +40,6 @@ public class RabbitMQInterceptor {
      */
     public static void receiveInterceptor(Message message, Channel channel) {
         RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromReceive(message, channel);
-        System.out.println("收到消息" + JsonUtil.toJSONString(rabbitLogMessage));
         MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
     }
 
