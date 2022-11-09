@@ -86,11 +86,6 @@ public class LogRecordMessage extends BaseLogMessage {
     private String logRecord;
 
     /**
-     * record日志类型 timeTaskLog：定时任务 userLog：接口
-     */
-    private String logRecordType;
-
-    /**
      * 租户id
      */
     private String tenantId;

@@ -1,7 +1,10 @@
 package cn.rivamed.log.rabbitmq.interceptor;
 
+import brave.Tracer;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
+import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
+import cn.rivamed.log.core.spring.RivamedLogApplicationContextHolder;
 import cn.rivamed.log.rabbitmq.util.RabbitLogMessageUtils;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
@@ -17,6 +20,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
  * @date 22/10/24 10:34
  */
 public class RabbitMQInterceptor {
+
+    private static Tracer tracer;
+
 
     /**
      * 处理RabbitMQ发送消息事件
@@ -39,6 +45,11 @@ public class RabbitMQInterceptor {
      * @param channel
      */
     public static void receiveInterceptor(Message message, Channel channel) {
+        if (tracer == null) {
+            tracer = RivamedLogApplicationContextHolder.getApplicationContext().getBean("tracer", Tracer.class);
+        }
+        TraceId.logTraceID.set(tracer.currentSpan().context().traceIdString());
+        TraceId.logSpanID.set(tracer.currentSpan().context().spanIdString());
         RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromReceive(message, channel);
         MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
     }

@@ -33,7 +33,19 @@ public class LogMessageUtil {
      */
     private static final AtomicLong SEQ_BUILDER = new AtomicLong(1);
 
+    private static void isExpandRunLog(LoggingEvent loggingEvent) {
+        String traceId = (String) loggingEvent.getMDC(LogMessageConstant.TRACE_ID);
+        String spanId = (String) loggingEvent.getMDC(LogMessageConstant.SPAN_ID);
+        if (traceId != null) {
+            logTraceID.set(traceId);
+        }
+        if (spanId != null) {
+            logSpanID.set(spanId);
+        }
+    }
+
     public static BaseLogMessage getLogMessage(LoggingEvent loggingEvent) {
+        isExpandRunLog(loggingEvent);
         BaseLogMessage logMessage = convertMessage(loggingEvent);
         logMessage.setClassName(loggingEvent.getLoggerName())
                 .setThreadName(loggingEvent.getThreadName())
