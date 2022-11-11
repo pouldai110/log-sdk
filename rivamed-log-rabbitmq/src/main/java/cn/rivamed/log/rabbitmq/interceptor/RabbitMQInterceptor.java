@@ -1,5 +1,6 @@
 package cn.rivamed.log.rabbitmq.interceptor;
 
+import brave.Span;
 import brave.Tracer;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.entity.TraceId;
@@ -48,10 +49,19 @@ public class RabbitMQInterceptor {
         if (tracer == null) {
             tracer = RivamedLogApplicationContextHolder.getApplicationContext().getBean("tracer", Tracer.class);
         }
+        //创建新的Tracer，防止tracer重复~
+        Span span = tracer.newTrace();
+        tracer.withSpanInScope(span);
         TraceId.logTraceID.set(tracer.currentSpan().context().traceIdString());
         TraceId.logSpanID.set(tracer.currentSpan().context().spanIdString());
-        RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromReceive(message, channel);
-        MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
+        try {
+            RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromReceive(message, channel);
+            MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
+        } finally {
+            TraceId.logTraceID.remove();
+            TraceId.logSpanID.remove();
+            span.finish();
+        }
     }
 
 }

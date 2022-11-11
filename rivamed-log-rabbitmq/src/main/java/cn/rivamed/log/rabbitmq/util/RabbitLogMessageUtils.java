@@ -33,15 +33,19 @@ public class RabbitLogMessageUtils {
         String routingKey = (String) args[1];
         Message message = (Message) args[2];
         CorrelationData correlationData = (CorrelationData) args[3];
+        String host = rabbitTemplate.getConnectionFactory().getHost();
+        int port = rabbitTemplate.getConnectionFactory().getPort();
         Object msg = rabbitTemplate.getMessageConverter().fromMessage(message);
         RabbitLogMessage rabbitLogMessage = new RabbitLogMessage();
         rabbitLogMessage.setVhost(rabbitTemplate.getConnectionFactory().getVirtualHost())
+                .setRabbitMQHost(host)
+                .setRabbitMQPort(port)
                 .setExchange(exchange)
                 .setRoutingKey(routingKey)
                 .setMessage(msg)
                 .setMessageId(correlationData == null ? null : correlationData.getId())
                 .setMqType(LogMessageConstant.MESSAGE_TYPE_SEND)
-                .setMethod(RabbitMQInstrumentation.ENHANCE_SEND_METHOD)
+                .setMethod(RabbitMQInstrumentation.ENHANCE_RABBIT_TEMPLATE_CLASS + "." + RabbitMQInstrumentation.ENHANCE_SEND_METHOD)
                 .setClassName(RabbitMQInstrumentation.ENHANCE_RABBIT_TEMPLATE_CLASS);
         return rabbitLogMessage;
     }
@@ -58,7 +62,8 @@ public class RabbitLogMessageUtils {
      */
     public static RabbitLogMessage collectFromReceive(Message message, Channel channel) {
         Object msg = null;
-        String vhost = "/", exchange = null, routingKey = null, queue = null, messageId = null, className = null, methodName = null;
+        String host = "127.0.0.1", vhost = "/", exchange = null, routingKey = null, queue = null, messageId = null, className = null, methodName = null;
+        Integer port = 6379;
         if (message != null) {
             //获取队列修改信息
             MessageProperties messageProperties = message.getMessageProperties();
@@ -66,6 +71,8 @@ public class RabbitLogMessageUtils {
             routingKey = messageProperties.getReceivedRoutingKey();
             queue = messageProperties.getConsumerQueue();
             messageId = messageProperties.getMessageId();
+            host = channel.getConnection().getAddress().getHostAddress();
+            port = channel.getConnection().getPort();
             //从channel里面拿virtualHost,如果长度超过3，取最后一个
             String[] strs = channel.getConnection().toString().split("/");
             if (strs.length > 3) {
@@ -81,11 +88,14 @@ public class RabbitLogMessageUtils {
             Method targetMethod = message.getMessageProperties().getTargetMethod();
             if (null != targetMethod) {
                 className = targetMethod.getDeclaringClass().getName();
-                methodName = targetMethod.getName();
+                methodName = targetMethod.getDeclaringClass().getSimpleName() + "." + targetMethod.getName();
             }
         }
         RabbitLogMessage rabbitLogMessage = new RabbitLogMessage();
-        rabbitLogMessage.setVhost(vhost)
+        rabbitLogMessage
+                .setRabbitMQHost(host)
+                .setRabbitMQPort(port)
+                .setVhost(vhost)
                 .setExchange(exchange)
                 .setRoutingKey(routingKey)
                 .setQueueName(queue)
