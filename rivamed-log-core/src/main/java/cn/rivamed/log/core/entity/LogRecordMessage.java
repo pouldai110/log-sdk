@@ -95,4 +95,14 @@ public class LogRecordMessage extends BaseLogMessage {
      */
     private String tenantId;
 
+    /**
+     * 业务类型
+     */
+    private String bizType;
+
+    /**
+     * 业务子类型
+     */
+    private String bizSubType;
+
 }
