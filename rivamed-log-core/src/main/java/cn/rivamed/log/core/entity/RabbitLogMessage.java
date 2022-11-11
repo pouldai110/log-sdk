@@ -31,6 +31,16 @@ public class RabbitLogMessage extends BaseLogMessage {
     private String mqType;
 
     /**
+     * 队列IP地址
+     */
+    private String rabbitMQHost;
+
+    /**
+     * 队列端口号
+     */
+    private Integer rabbitMQPort;
+
+    /**
      * vhost
      */
     private String vhost;

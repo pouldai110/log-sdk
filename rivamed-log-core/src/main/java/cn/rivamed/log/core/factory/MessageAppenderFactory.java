@@ -8,6 +8,7 @@ import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.util.IpGetter;
 import cn.rivamed.log.core.util.JsonUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.logging.LogLevel;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -30,7 +31,9 @@ public class MessageAppenderFactory {
 
 
     public static void push(BaseLogMessage baseLogMessage) {
-        LogMessageRingBuffer.ringBuffer.publishEvent((event, sequence) -> event.setBaseLogMessage(baseLogMessage));
+        if (StringUtils.isNotBlank(baseLogMessage.getTraceId())) {
+            LogMessageRingBuffer.ringBuffer.publishEvent((event, sequence) -> event.setBaseLogMessage(baseLogMessage));
+        }
     }
 
     public static void pushRabbitLogMessage(RabbitLogMessage rabbitLogMessage) {

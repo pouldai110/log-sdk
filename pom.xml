@@ -19,7 +19,7 @@
         <log-skipTests>true</log-skipTests>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <spring.version>5.2.14.RELEASE</spring.version>
+        <spring.version>5.2.15.RELEASE</spring.version>
         <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
         <spring-cloud.version>2.2.8.RELEASE</spring-cloud.version>
         <sleuth.version>2.2.8.RELEASE</sleuth.version>
