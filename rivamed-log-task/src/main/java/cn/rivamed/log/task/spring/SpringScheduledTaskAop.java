@@ -4,7 +4,7 @@ import brave.Span;
 import brave.Tracer;
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.util.DateUtil;
-import cn.rivamed.log.task.util.TaskLogUtil;
+import cn.rivamed.log.core.util.LogTemplateUtil;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -48,11 +48,11 @@ public class SpringScheduledTaskAop {
         try {
             proceed = pjp.proceed();
             stopWatch.stop();
-            logger.info(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(TaskLogUtil.taskNormalFormatStr, dateStr, method, stopWatch.getTime()));
+            logger.info(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_SUCCESS_FORMAT, dateStr, method, stopWatch.getTime()));
             return proceed;
         } catch (Throwable ex) {
             String message = ex.getMessage() == null ? ex.getClass().getSimpleName() : ex.getMessage();
-            logger.error(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(TaskLogUtil.taskErrorFormatStr, dateStr, method), message);
+            logger.error(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_FAIL_FORMAT, dateStr, method), message);
             throw ex;
         } finally {
             span.finish();
