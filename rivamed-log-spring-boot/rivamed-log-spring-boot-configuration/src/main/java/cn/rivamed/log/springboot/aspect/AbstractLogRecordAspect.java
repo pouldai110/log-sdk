@@ -9,12 +9,16 @@ import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
 import cn.rivamed.log.core.util.IpGetter;
 import cn.rivamed.log.core.util.JsonUtil;
+import cn.rivamed.log.core.util.LogTemplateUtil;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.logging.LogLevel;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -46,6 +50,9 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
 
     public Object aroundExecute(ProceedingJoinPoint joinPoint) throws Throwable {
         LogRecordMessage message = new LogRecordMessage();
+        String method = null;
+        String methodDesc = null;
+
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         try {
@@ -71,6 +78,11 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             }
             MethodSignature ms = (MethodSignature) joinPoint.getSignature();
             Method m = ms.getMethod();
+            methodDesc = method = joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + m.getName();
+            ApiOperation declaredAnnotation = AnnotationUtils.findAnnotation(m, ApiOperation.class);
+            if (declaredAnnotation != null && StringUtils.isNotBlank(declaredAnnotation.value())) {
+                methodDesc = declaredAnnotation.value();
+            }
             String cloneParams;
             try {
                 cloneParams = JsonUtil.toJSONString(params);
@@ -80,14 +92,13 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             if (logger.isInfoEnabled()) {
                 logger.info(request.getRequestURI() + " param: {}", cloneParams);
             }
-            message.setMethod(joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + m.getName());
+            message.setMethod(method);
             message.setUrl(request.getRequestURI());
             message.setSysName(RivamedLogRecordContext.getSysName());
             message.setEnv(RivamedLogRecordContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
             message.setSeq(SEQ_BUILDER.getAndIncrement());
-            message.setBizDetail(cloneParams);
             message.setBizIP(IpGetter.CURRENT_IP);
             message.setLogType(LogMessageConstant.LOG_TYPE_RECORD);
 
@@ -103,9 +114,11 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             }
             message.setLevel(LogLevel.INFO.name());
             message.setResponseCode(String.valueOf(HttpStatus.OK.value()));
+            message.setBizDetail(String.format(LogTemplateUtil.LOG_RECORD_SUCCESS_FORMAT, methodDesc, stopWatch.getTime()));
             return returnValue;
         } catch (Exception e) {
             message.setLevel(LogLevel.ERROR.name());
+            message.setBizDetail(String.format(LogTemplateUtil.LOG_RECORD_FAIL_FORMAT, methodDesc));
             message.setResponseCode(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
             throw e;
         } finally {

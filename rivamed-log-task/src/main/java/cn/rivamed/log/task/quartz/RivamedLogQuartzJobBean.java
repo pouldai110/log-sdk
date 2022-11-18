@@ -1,55 +1,45 @@
-package cn.rivamed.log.task.spring;
+package cn.rivamed.log.task.quartz;
 
 import brave.Span;
 import brave.Tracer;
 import cn.rivamed.log.core.constant.LogMessageConstant;
+import cn.rivamed.log.core.spring.RivamedLogApplicationContextHolder;
 import cn.rivamed.log.core.util.DateUtil;
 import cn.rivamed.log.core.util.LogTemplateUtil;
 import org.apache.commons.lang3.time.StopWatch;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.impl.JobDetailImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.lang.reflect.Method;
 import java.util.Date;
 
-/**
- * 基于spring scheduled定时器的增强AOP
- * @author Zuo Yang
- */
-@Aspect
-public class SpringScheduledTaskAop {
+public abstract class RivamedLogQuartzJobBean extends QuartzJobBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(SpringScheduledTaskAop.class);
+    private static final Logger logger = LoggerFactory.getLogger(RivamedLogQuartzJobBean.class);
 
-    private final Tracer tracer;
+    private static Tracer tracer;
 
-    public SpringScheduledTaskAop(Tracer tracer) {
-        this.tracer = tracer;
-    }
 
-    @Around("execution (@org.springframework.scheduling.annotation.Scheduled  * *.*(..))")
-    public Object around(ProceedingJoinPoint pjp) throws Throwable {
-        //只有新增一个trace, 不然定时任务是同一个线程导致TraceId一直一样
+    @Override
+    protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        if (tracer == null) {
+            tracer = RivamedLogApplicationContextHolder.getApplicationContext().getBean("tracer", Tracer.class);
+        }
         Span span = tracer.newTrace();
         tracer.withSpanInScope(span);
         //执行时间
         String dateStr = DateUtil.parseDateToStr(new Date(), DateUtil.DATE_TIME_FORMAT_YYYY_MM_DD_HH_MI_SS);
-        MethodSignature ms = (MethodSignature) pjp.getSignature();
-        Method m = ms.getMethod();
         //执行方法
-        String method = pjp.getSignature().getDeclaringType().getSimpleName() + "." + m.getName();
-        Object proceed;
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
+        String method = ((JobDetailImpl)jobExecutionContext.getJobDetail()).getFullName();
         try {
-            proceed = pjp.proceed();
+            executeTask(jobExecutionContext);
             stopWatch.stop();
             logger.info(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_SUCCESS_FORMAT, dateStr, method, stopWatch.getTime()));
-            return proceed;
         } catch (Throwable ex) {
             String message = ex.getMessage() == null ? ex.getClass().getSimpleName() : ex.getMessage();
             logger.error(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_FAIL_FORMAT, dateStr, method), message);
@@ -59,4 +49,5 @@ public class SpringScheduledTaskAop {
         }
     }
 
+    public abstract void executeTask(JobExecutionContext jobExecutionContext) throws JobExecutionException;
 }
