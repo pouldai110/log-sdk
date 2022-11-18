@@ -2,7 +2,7 @@ package cn.rivamed.log.springboot.aspect;
 
 import brave.propagation.TraceContext;
 import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.context.RivamedLogRecordContext;
+import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.LogRecordMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -92,13 +93,13 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             } catch (Exception e) {
                 cloneParams = params.toString();
             }
-            if (logger.isInfoEnabled()) {
+            if (RivamedLogContext.isRequestEnable()) {
                 logger.info(request.getRequestURI() + " param: {}", cloneParams);
             }
             message.setMethod(method);
             message.setUrl(request.getRequestURI());
-            message.setSysName(RivamedLogRecordContext.getSysName());
-            message.setEnv(RivamedLogRecordContext.getEnv());
+            message.setSysName(RivamedLogContext.getSysName());
+            message.setEnv(RivamedLogContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
             message.setSeq(SEQ_BUILDER.getAndIncrement());
@@ -112,7 +113,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             } catch (Exception e) {
                 result = returnValue.toString();
             }
-            if (logger.isInfoEnabled()) {
+            if (RivamedLogContext.isResponseEnable()) {
                 logger.info(request.getRequestURI() + " result: {}", result);
             }
             message.setLevel(LogLevel.INFO.name());
@@ -126,9 +127,10 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             throw e;
         } finally {
             stopWatch.stop();
-            message.setCostTime(stopWatch.getTime());
+            message.setCostTime(stopWatch.getTime())
+            .setBizTime(new Date());
             //设置额外信息并推送消息
-            RivamedLogRecordContext.buildLogMessage(message);
+            RivamedLogContext.buildLogMessage(message);
             MessageAppenderFactory.push(message);
             cleanThreadLocal();
         }

@@ -1,7 +1,7 @@
 package cn.rivamed.log.core.factory;
 
 import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.context.RivamedLogRecordContext;
+import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.disruptor.LogMessageRingBuffer;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
@@ -31,9 +31,23 @@ public class MessageAppenderFactory {
 
 
     public static void push(BaseLogMessage baseLogMessage) {
-        if (StringUtils.isNotBlank(baseLogMessage.getTraceId())) {
+        if (StringUtils.isNotBlank(baseLogMessage.getTraceId()) && checkSqlLog(baseLogMessage)) {
             LogMessageRingBuffer.ringBuffer.publishEvent((event, sequence) -> event.setBaseLogMessage(baseLogMessage));
         }
+    }
+
+    /**
+     * 根据配置判断是否收集SQL日志
+     *
+     * @param baseLogMessage
+     * @return
+     */
+    private static boolean checkSqlLog(BaseLogMessage baseLogMessage) {
+        Boolean flag = true;
+        if (!RivamedLogContext.isSqlEnable() && (baseLogMessage.getBizDetail().startsWith(LogMessageConstant.LEFT_EQULES) || baseLogMessage.getBizDetail().startsWith(LogMessageConstant.RIGHT_EQULES) || baseLogMessage.getClassName().equals(LogMessageConstant.HIBERNATE_SQL_PATH))) {
+            flag = false;
+        }
+        return flag;
     }
 
     public static void pushRabbitLogMessage(RabbitLogMessage rabbitLogMessage) {
@@ -46,8 +60,8 @@ public class MessageAppenderFactory {
         }
         rabbitLogMessage.setTraceId(TraceId.logTraceID.get())
                 .setSpanId(TraceId.logSpanID.get())
-                .setSysName(RivamedLogRecordContext.getSysName())
-                .setEnv(RivamedLogRecordContext.getEnv())
+                .setSysName(RivamedLogContext.getSysName())
+                .setEnv(RivamedLogContext.getEnv())
                 .setThreadName(Thread.currentThread().getName())
                 .setBizDetail(message)
                 .setBizIP(IpGetter.CURRENT_IP)

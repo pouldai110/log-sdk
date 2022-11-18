@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.context.RivamedLogRecordContext;
+import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.factory.LogMessageFactory;
@@ -60,8 +60,8 @@ public class LogMessageUtil {
                 .setBizIP(IpGetter.CURRENT_IP)
                 .setBizTime(new Date())
                 .setLevel(logEvent.getLevel().toString())
-                .setSysName(RivamedLogRecordContext.getSysName())
-                .setEnv(RivamedLogRecordContext.getEnv())
+                .setSysName(RivamedLogContext.getSysName())
+                .setEnv(RivamedLogContext.getEnv())
                 .setTraceId(logTraceID.get())
                 .setSpanId(logSpanID.get());
         StackTraceElement[] stackTraceElements = logEvent.getCallerData();

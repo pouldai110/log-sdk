@@ -1,7 +1,7 @@
 package cn.rivamed.log.log4j.util;
 
 import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.context.RivamedLogRecordContext;
+import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.util.IpGetter;
@@ -54,8 +54,8 @@ public class LogMessageUtil {
                 .setBizIP(IpGetter.CURRENT_IP)
                 .setBizTime(new Date())
                 .setLevel(loggingEvent.getLevel().toString())
-                .setSysName(RivamedLogRecordContext.getSysName())
-                .setEnv(RivamedLogRecordContext.getEnv())
+                .setSysName(RivamedLogContext.getSysName())
+                .setEnv(RivamedLogContext.getEnv())
                 .setTraceId(logTraceID.get())
                 .setSpanId(logSpanID.get());
         LocationInfo locationInfo = loggingEvent.getLocationInformation();

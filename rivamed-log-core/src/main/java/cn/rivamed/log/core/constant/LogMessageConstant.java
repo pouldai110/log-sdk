@@ -60,6 +60,12 @@ public class LogMessageConstant {
 
     public final static String EXCEPTION_CONFIG = "${";
 
+    public static final String LEFT_EQULES = "<==";
+
+    public static final String RIGHT_EQULES = "==>";
+
+    public static final String HIBERNATE_SQL_PATH = "org.hibernate.SQL";
+
 
     /**
      * 发送 消息类型

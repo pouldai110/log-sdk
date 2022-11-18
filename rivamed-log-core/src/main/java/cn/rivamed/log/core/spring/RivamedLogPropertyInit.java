@@ -1,7 +1,7 @@
 package cn.rivamed.log.core.spring;
 
 import cn.rivamed.log.core.client.AbstractClient;
-import cn.rivamed.log.core.context.RivamedLogRecordContext;
+import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.rabbitmq.RabbitMQClient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,12 +27,18 @@ import org.springframework.beans.factory.annotation.Value;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class RivamedLogRabbitMQPropertyInit implements InitializingBean {
+public class RivamedLogPropertyInit implements InitializingBean {
 
     @Value("${spring.application.name}")
     private String sysName;
     @Value("${spring.profiles.active:dev}")
     private String env;
+
+    private boolean sqlEnable;
+    private boolean rabbitmqEnable;
+    private boolean taskEnable;
+    private boolean requestEnable;
+    private boolean responseEnable;
     private String host;
     private int port;
     private String virtualHost;
@@ -46,8 +52,13 @@ public class RivamedLogRabbitMQPropertyInit implements InitializingBean {
     public void afterPropertiesSet() {
         RabbitMQClient rabbitMQClient = RabbitMQClient.getInstance(host, port, virtualHost, username, password, exchange, routingKey);
         AbstractClient.setClient(rabbitMQClient);
-        RivamedLogRecordContext.setSysName(sysName);
-        RivamedLogRecordContext.setEnv(env);
+        RivamedLogContext.setSysName(sysName);
+        RivamedLogContext.setEnv(env);
+        RivamedLogContext.setSqlEnable(sqlEnable);
+        RivamedLogContext.setRabbitmqEnable(rabbitmqEnable);
+        RivamedLogContext.setTaskEnable(taskEnable);
+        RivamedLogContext.setRequestEnable(requestEnable);
+        RivamedLogContext.setResponseEnable(responseEnable);
         //自动创建交换机、路由、队列及绑定关系
         if (StringUtils.isNotBlank(exchange) && StringUtils.isNotBlank(routingKey) && StringUtils.isNotBlank(queueName)) {
             RabbitAdmin admin = new RabbitAdmin(rabbitMQClient.getCachingConnectionFactory());
