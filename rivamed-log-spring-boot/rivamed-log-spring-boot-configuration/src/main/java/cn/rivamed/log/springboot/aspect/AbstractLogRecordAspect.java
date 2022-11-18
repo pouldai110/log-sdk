@@ -10,7 +10,7 @@ import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
 import cn.rivamed.log.core.util.IpGetter;
 import cn.rivamed.log.core.util.JsonUtil;
 import cn.rivamed.log.core.util.LogTemplateUtil;
-import io.swagger.annotations.ApiOperation;
+import cn.rivamed.log.core.util.RivamedClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -18,7 +18,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.logging.LogLevel;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -29,6 +28,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
 
 /**
  * className：AbstractLogRecordAspect
@@ -41,6 +41,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
 
     private static Logger logger = LoggerFactory.getLogger(RivamedLogRecordHandler.class);
+
+    private static final String API_OPERATION_CLASS_NAME = "io.swagger.annotations.ApiOperation";
+    private static final String API_OPERATION_FIELD_NAME = "value";
 
     /**
      * 序列生成器：当日志在一毫秒内打印多次时，发送到服务端排序时无法按照正常顺序显示，因此加一个序列保证同一毫秒内的日志按顺序显示
@@ -79,9 +82,9 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             MethodSignature ms = (MethodSignature) joinPoint.getSignature();
             Method m = ms.getMethod();
             methodDesc = method = joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + m.getName();
-            ApiOperation declaredAnnotation = AnnotationUtils.findAnnotation(m, ApiOperation.class);
-            if (declaredAnnotation != null && StringUtils.isNotBlank(declaredAnnotation.value())) {
-                methodDesc = declaredAnnotation.value();
+            String value = RivamedClassUtils.getAnnotationValue(API_OPERATION_CLASS_NAME, m, API_OPERATION_FIELD_NAME);
+            if (StringUtils.isNotBlank(value)) {
+                methodDesc = value;
             }
             String cloneParams;
             try {
