@@ -32,6 +32,7 @@ public class MessageAppenderFactory {
 
     public static void push(BaseLogMessage baseLogMessage) {
         if (StringUtils.isNotBlank(baseLogMessage.getTraceId()) && checkSqlLog(baseLogMessage)) {
+            baseLogMessage.setSeq(SEQ_BUILDER.getAndIncrement());
             LogMessageRingBuffer.ringBuffer.publishEvent((event, sequence) -> event.setBaseLogMessage(baseLogMessage));
         }
     }
