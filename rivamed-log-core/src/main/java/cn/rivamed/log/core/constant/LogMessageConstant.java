@@ -15,6 +15,8 @@ public class LogMessageConstant {
 
     public final static String SPAN_ID = "spanId";
 
+    public final static String MESSAGE_ID = "messageId";
+
     /**
      * 链路日志前缀
      */
