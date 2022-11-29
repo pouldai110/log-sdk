@@ -28,8 +28,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-
 
 /**
  * className：AbstractLogRecordAspect
@@ -48,13 +46,13 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
 
     public Object aroundExecute(ProceedingJoinPoint joinPoint) throws Throwable {
         LogRecordMessage message = new LogRecordMessage();
-        String method = null;
+        String methodName;
         String methodDesc = null;
+        Object returnValue;
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         try {
-            Object returnValue;
             final List<Object> params = new ArrayList<>();
             ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             if (sra == null) {
@@ -75,9 +73,9 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
                 params.add(object);
             }
             MethodSignature ms = (MethodSignature) joinPoint.getSignature();
-            Method m = ms.getMethod();
-            methodDesc = method = joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + m.getName();
-            String value = RivamedClassUtils.getAnnotationValue(API_OPERATION_CLASS_NAME, m, API_OPERATION_FIELD_NAME);
+            Method method = ms.getMethod();
+            methodDesc = methodName = joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + method.getName();
+            String value = RivamedClassUtils.getAnnotationValue(API_OPERATION_CLASS_NAME, method, API_OPERATION_FIELD_NAME);
             if (StringUtils.isNotBlank(value)) {
                 methodDesc = value;
             }
@@ -90,7 +88,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             if (RivamedLogContext.isRequestEnable()) {
                 logger.info(request.getRequestURI() + " param: {}", cloneParams);
             }
-            message.setMethod(method);
+            message.setMethod(methodName);
             message.setUrl(request.getRequestURI());
             message.setSysName(RivamedLogContext.getSysName());
             message.setEnv(RivamedLogContext.getEnv());
@@ -120,8 +118,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             throw e;
         } finally {
             stopWatch.stop();
-            message.setCostTime(stopWatch.getTime())
-            .setBizTime(new Date());
+            message.setCostTime(stopWatch.getTime()).setBizTime(new Date());
             //设置额外信息并推送消息
             RivamedLogContext.buildLogMessage(message);
             MessageAppenderFactory.push(message);

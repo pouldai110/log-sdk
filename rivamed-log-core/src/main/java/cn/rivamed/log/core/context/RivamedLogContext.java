@@ -60,6 +60,10 @@ public class RivamedLogContext {
         return logRecordMessage;
     }
 
+    public static String getCurrentUser() {
+        return rivamedLogLabelTTL.get().getUserName();
+    }
+
     public static String getSysName() {
         return sysName;
     }

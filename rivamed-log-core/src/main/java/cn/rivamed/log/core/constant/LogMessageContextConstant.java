@@ -35,5 +35,7 @@ public class LogMessageContextConstant {
 
     public static final String CONTEXT_SYSNAME = "sysName";
 
+    public static final String CONTEXT_OPERATOR = "operator";
+
 
 }
