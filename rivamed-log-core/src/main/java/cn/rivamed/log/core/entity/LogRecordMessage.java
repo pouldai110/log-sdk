@@ -81,9 +81,9 @@ public class LogRecordMessage extends BaseLogMessage {
     private String tokenId;
 
     /**
-     * LogRecode(语义化日志字符串)
+     * 语义化日志类型（system,swagger,mztbiz）
      */
-    private String logRecord;
+    private String logRecordType;
 
     /**
      * 租户id
