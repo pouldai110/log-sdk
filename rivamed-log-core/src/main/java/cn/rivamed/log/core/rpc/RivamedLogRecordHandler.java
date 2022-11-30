@@ -1,7 +1,7 @@
 package cn.rivamed.log.core.rpc;
 
 import cn.rivamed.log.core.constant.LogMessageContextConstant;
-import cn.rivamed.log.core.context.RivamedLogRecordContext;
+import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.RivamedLogRecordLabel;
 import cn.rivamed.log.core.entity.TraceId;
 import com.alibaba.ttl.TransmittableThreadLocal;
@@ -21,7 +21,7 @@ public class RivamedLogRecordHandler {
     protected static final Logger log = LoggerFactory.getLogger(RivamedLogRecordHandler.class);
 
     public void processProviderSide(RivamedLogRecordLabel labelBean) {
-        TransmittableThreadLocal<RivamedLogRecordLabel> rivamedLogLabelTTL = RivamedLogRecordContext.rivamedLogLabelTTL;
+        TransmittableThreadLocal<RivamedLogRecordLabel> rivamedLogLabelTTL = RivamedLogContext.rivamedLogLabelTTL;
 
         rivamedLogLabelTTL.set(labelBean);
         //目前无论是不是MDC，都往MDC里放参数，这样就避免了log4j2的特殊设置,  log4j底层用的 HashTable value不能为空，需要先判空再设置
@@ -59,7 +59,7 @@ public class RivamedLogRecordHandler {
 
     public void cleanThreadLocal() {
         //移除ThreadLocal里的数据
-        RivamedLogRecordContext.rivamedLogLabelTTL.remove();
+        RivamedLogContext.rivamedLogLabelTTL.remove();
 
         //移除MDC里的信息
         MDC.remove(LogMessageContextConstant.CONTEXT_USERID);

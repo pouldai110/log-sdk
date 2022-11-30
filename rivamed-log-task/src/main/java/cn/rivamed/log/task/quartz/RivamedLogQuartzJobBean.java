@@ -3,6 +3,7 @@ package cn.rivamed.log.task.quartz;
 import brave.Span;
 import brave.Tracer;
 import cn.rivamed.log.core.constant.LogMessageConstant;
+import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.spring.RivamedLogApplicationContextHolder;
 import cn.rivamed.log.core.util.DateUtil;
 import cn.rivamed.log.core.util.LogTemplateUtil;
@@ -35,14 +36,18 @@ public abstract class RivamedLogQuartzJobBean extends QuartzJobBean {
         //执行方法
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        String method = ((JobDetailImpl)jobExecutionContext.getJobDetail()).getFullName();
+        String method = ((JobDetailImpl) jobExecutionContext.getJobDetail()).getFullName();
         try {
             executeTask(jobExecutionContext);
             stopWatch.stop();
-            logger.info(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_SUCCESS_FORMAT, dateStr, method, stopWatch.getTime()));
+            if (RivamedLogContext.isTaskEnable()) {
+                logger.info(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_SUCCESS_FORMAT, dateStr, method, stopWatch.getTime()));
+            }
         } catch (Throwable ex) {
             String message = ex.getMessage() == null ? ex.getClass().getSimpleName() : ex.getMessage();
-            logger.error(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_FAIL_FORMAT, dateStr, method), message);
+            if (RivamedLogContext.isTaskEnable()) {
+                logger.error(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_FAIL_FORMAT, dateStr, method), message);
+            }
             throw ex;
         } finally {
             span.finish();

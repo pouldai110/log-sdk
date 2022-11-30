@@ -15,6 +15,8 @@ public class LogMessageConstant {
 
     public final static String SPAN_ID = "spanId";
 
+    public final static String MESSAGE_ID = "messageId";
+
     /**
      * 链路日志前缀
      */
@@ -59,6 +61,12 @@ public class LogMessageConstant {
 
 
     public final static String EXCEPTION_CONFIG = "${";
+
+    public static final String LEFT_EQULES = "<==";
+
+    public static final String RIGHT_EQULES = "==>";
+
+    public static final String HIBERNATE_SQL_PATH = "org.hibernate.SQL";
 
 
     /**

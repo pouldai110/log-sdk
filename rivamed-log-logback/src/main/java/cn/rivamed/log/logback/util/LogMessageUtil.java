@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.context.RivamedLogRecordContext;
+import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.factory.LogMessageFactory;
@@ -29,12 +29,6 @@ import static cn.rivamed.log.core.entity.TraceId.logTraceID;
  */
 public class LogMessageUtil {
 
-    /**
-     * 序列生成器：当日志在一毫秒内打印多次时，发送到服务端排序时无法按照正常顺序显示，因此加一个序列保证同一毫秒内的日志按顺序显示
-     * 使用AtomicLong不要使用LongAdder，LongAdder在该场景高并发下无法严格保证顺序性，也不需要考虑Long是否够用，假设每秒打印10万日志，也需要两百多万年才能用的完
-     */
-    private static final AtomicLong SEQ_BUILDER = new AtomicLong(1);
-
     private static void isExpandRunLog(ILoggingEvent logEvent) {
         String traceId;
         String spanId;
@@ -55,13 +49,11 @@ public class LogMessageUtil {
         BaseLogMessage logMessage = convertMessage(logEvent);
         logMessage.setClassName(logEvent.getLoggerName())
                 .setThreadName(logEvent.getThreadName())
-                .setSeq(SEQ_BUILDER.getAndIncrement())
-                // dateTime字段用来保存当前服务器的时间戳字符串
                 .setBizIP(IpGetter.CURRENT_IP)
                 .setBizTime(new Date())
                 .setLevel(logEvent.getLevel().toString())
-                .setSysName(RivamedLogRecordContext.getSysName())
-                .setEnv(RivamedLogRecordContext.getEnv())
+                .setSysName(RivamedLogContext.getSysName())
+                .setEnv(RivamedLogContext.getEnv())
                 .setTraceId(logTraceID.get())
                 .setSpanId(logSpanID.get());
         StackTraceElement[] stackTraceElements = logEvent.getCallerData();

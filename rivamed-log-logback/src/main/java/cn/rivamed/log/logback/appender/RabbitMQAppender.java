@@ -2,9 +2,6 @@ package cn.rivamed.log.logback.appender;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
-import cn.rivamed.log.core.client.AbstractClient;
-import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.context.RivamedLogRecordContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rabbitmq.RabbitMQClient;

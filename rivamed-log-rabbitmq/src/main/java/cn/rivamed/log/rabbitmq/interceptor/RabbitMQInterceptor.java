@@ -2,6 +2,7 @@ package cn.rivamed.log.rabbitmq.interceptor;
 
 import brave.Span;
 import brave.Tracer;
+import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
@@ -32,11 +33,10 @@ public class RabbitMQInterceptor {
      * @param args
      */
     public static void sendInterceptor(RabbitTemplate rabbitTemplate, Object[] args) {
-        if (rabbitTemplate.getClass().isAssignableFrom(RabbitTemplate.class)) {
+        if (rabbitTemplate.getClass().isAssignableFrom(RabbitTemplate.class) && RivamedLogContext.isRabbitmqEnable()) {
             RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromSend(rabbitTemplate, args);
             MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
         }
-
     }
 
     /**
@@ -46,22 +46,23 @@ public class RabbitMQInterceptor {
      * @param channel
      */
     public static void receiveInterceptor(Message message, Channel channel) {
-        if (tracer == null) {
-            tracer = RivamedLogApplicationContextHolder.getApplicationContext().getBean("tracer", Tracer.class);
-        }
-        //创建新的Tracer，防止tracer重复~
-        Span span = tracer.newTrace();
-        tracer.withSpanInScope(span);
-        TraceId.logTraceID.set(tracer.currentSpan().context().traceIdString());
-        TraceId.logSpanID.set(tracer.currentSpan().context().spanIdString());
-        try {
-            RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromReceive(message, channel);
-            MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
-        } finally {
-            TraceId.logTraceID.remove();
-            TraceId.logSpanID.remove();
-            span.finish();
+        if (RivamedLogContext.isRabbitmqEnable()) {
+            if (tracer == null) {
+                tracer = RivamedLogApplicationContextHolder.getApplicationContext().getBean("tracer", Tracer.class);
+            }
+            //创建新的Tracer，防止tracer重复~
+            Span span = tracer.newTrace();
+            tracer.withSpanInScope(span);
+            TraceId.logTraceID.set(tracer.currentSpan().context().traceIdString());
+            TraceId.logSpanID.set(tracer.currentSpan().context().spanIdString());
+            try {
+                RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromReceive(message, channel);
+                MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
+            } finally {
+                TraceId.logTraceID.remove();
+                TraceId.logSpanID.remove();
+                span.finish();
+            }
         }
     }
-
 }

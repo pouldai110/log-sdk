@@ -1,11 +1,7 @@
 package cn.rivamed.log.rabbitmq.instrument;
 
 import com.rabbitmq.client.Channel;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 
@@ -32,6 +28,7 @@ public class RabbitMQInstrumentation {
     public static boolean sendEnhance() throws NotFoundException, CannotCompileException {
 
         ClassPool classPool = ClassPool.getDefault();
+        classPool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
 
         //拦截send方法
         CtClass ctClass = classPool.getCtClass(ENHANCE_RABBIT_TEMPLATE_CLASS);
@@ -63,6 +60,7 @@ public class RabbitMQInstrumentation {
     public static boolean receiveEnhance() throws NotFoundException, CannotCompileException {
 
         ClassPool classPool = ClassPool.getDefault();
+        classPool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
 
         //拦截receive方法
         CtClass ctClass = classPool.getCtClass(ENHANCE_RABBIT_RECEIVE_CLASS);

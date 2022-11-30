@@ -87,8 +87,10 @@ public class RabbitLogMessageUtils {
             try {
                 msg = new String(message.getBody(), StandardCharsets.UTF_8.name());
                 if (StringUtils.isBlank(messageId)) {
-                    Map<String, String> msgMap = JsonUtil.json2Map(msg, String.class, String.class);
-                    messageId = msgMap.get("messageId");
+                    Map<String, Object> msgMap = JsonUtil.json2Map(msg, String.class, Object.class);
+                    if (msgMap != null && msgMap.containsKey(LogMessageConstant.MESSAGE_ID)) {
+                        messageId = String.valueOf(msgMap.get(LogMessageConstant.MESSAGE_ID));
+                    }
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

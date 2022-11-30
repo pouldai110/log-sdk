@@ -2,7 +2,7 @@ package cn.rivamed.log.springboot.aspect;
 
 import brave.propagation.TraceContext;
 import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.context.RivamedLogRecordContext;
+import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.LogRecordMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
@@ -10,7 +10,7 @@ import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
 import cn.rivamed.log.core.util.IpGetter;
 import cn.rivamed.log.core.util.JsonUtil;
 import cn.rivamed.log.core.util.LogTemplateUtil;
-import io.swagger.annotations.ApiOperation;
+import cn.rivamed.log.core.util.RivamedClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -18,7 +18,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.logging.LogLevel;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -27,8 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * className：AbstractLogRecordAspect
@@ -42,21 +41,18 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
 
     private static Logger logger = LoggerFactory.getLogger(RivamedLogRecordHandler.class);
 
-    /**
-     * 序列生成器：当日志在一毫秒内打印多次时，发送到服务端排序时无法按照正常顺序显示，因此加一个序列保证同一毫秒内的日志按顺序显示
-     * 使用AtomicLong不要使用LongAdder，LongAdder在该场景高并发下无法严格保证顺序性，也不需要考虑Long是否够用，假设每秒打印10万日志，也需要两百多万年才能用的完
-     */
-    private static final AtomicLong SEQ_BUILDER = new AtomicLong(1);
+    private static final String API_OPERATION_CLASS_NAME = "io.swagger.annotations.ApiOperation";
+    private static final String API_OPERATION_FIELD_NAME = "value";
 
     public Object aroundExecute(ProceedingJoinPoint joinPoint) throws Throwable {
         LogRecordMessage message = new LogRecordMessage();
-        String method = null;
+        String methodName;
         String methodDesc = null;
+        Object returnValue;
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         try {
-            Object returnValue;
             final List<Object> params = new ArrayList<>();
             ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             if (sra == null) {
@@ -77,11 +73,11 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
                 params.add(object);
             }
             MethodSignature ms = (MethodSignature) joinPoint.getSignature();
-            Method m = ms.getMethod();
-            methodDesc = method = joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + m.getName();
-            ApiOperation declaredAnnotation = AnnotationUtils.findAnnotation(m, ApiOperation.class);
-            if (declaredAnnotation != null && StringUtils.isNotBlank(declaredAnnotation.value())) {
-                methodDesc = declaredAnnotation.value();
+            Method method = ms.getMethod();
+            methodDesc = methodName = joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + method.getName();
+            String value = RivamedClassUtils.getAnnotationValue(API_OPERATION_CLASS_NAME, method, API_OPERATION_FIELD_NAME);
+            if (StringUtils.isNotBlank(value)) {
+                methodDesc = value;
             }
             String cloneParams;
             try {
@@ -89,16 +85,15 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             } catch (Exception e) {
                 cloneParams = params.toString();
             }
-            if (logger.isInfoEnabled()) {
+            if (RivamedLogContext.isRequestEnable()) {
                 logger.info(request.getRequestURI() + " param: {}", cloneParams);
             }
-            message.setMethod(method);
+            message.setMethod(methodName);
             message.setUrl(request.getRequestURI());
-            message.setSysName(RivamedLogRecordContext.getSysName());
-            message.setEnv(RivamedLogRecordContext.getEnv());
+            message.setSysName(RivamedLogContext.getSysName());
+            message.setEnv(RivamedLogContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
-            message.setSeq(SEQ_BUILDER.getAndIncrement());
             message.setBizIP(IpGetter.CURRENT_IP);
             message.setLogType(LogMessageConstant.LOG_TYPE_RECORD);
 
@@ -109,7 +104,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             } catch (Exception e) {
                 result = returnValue.toString();
             }
-            if (logger.isInfoEnabled()) {
+            if (RivamedLogContext.isResponseEnable()) {
                 logger.info(request.getRequestURI() + " result: {}", result);
             }
             message.setLevel(LogLevel.INFO.name());
@@ -123,9 +118,9 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             throw e;
         } finally {
             stopWatch.stop();
-            message.setCostTime(stopWatch.getTime());
+            message.setCostTime(stopWatch.getTime()).setBizTime(new Date());
             //设置额外信息并推送消息
-            RivamedLogRecordContext.buildLogMessage(message);
+            RivamedLogContext.buildLogMessage(message);
             MessageAppenderFactory.push(message);
             cleanThreadLocal();
         }

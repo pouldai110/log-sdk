@@ -1,6 +1,8 @@
 package cn.rivamed.log.springboot.property;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 /**
  * Rivamed Log的 rabbitmq springboot配置参数
@@ -9,7 +11,23 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since 1.1.0
  */
 @ConfigurationProperties(prefix = "rivamed.log.rabbitmq")
-public class RivamedLogRabbitMQProperty {
+@RefreshScope
+public class RivamedLogProperty {
+
+    @Value("${rivamed.log.collect.sqlEnable}")
+    private boolean sqlEnable;
+
+    @Value("${rivamed.log.collect.rabbitmqEnable}")
+    private boolean rabbitmqEnable;
+
+    @Value("${rivamed.log.collect.taskEnable}")
+    private boolean taskEnable;
+
+    @Value("${rivamed.log.collect.requestEnable}")
+    private boolean requestEnable;
+
+    @Value("${rivamed.log.collect.responseEnable}")
+    private boolean responseEnable;
 
     private String host;
     private int port;
@@ -19,6 +37,46 @@ public class RivamedLogRabbitMQProperty {
     private String exchange;
     private String routingKey;
     private String queueName;
+
+    public boolean isSqlEnable() {
+        return sqlEnable;
+    }
+
+    public void setSqlEnable(boolean sqlEnable) {
+        this.sqlEnable = sqlEnable;
+    }
+
+    public boolean isRabbitmqEnable() {
+        return rabbitmqEnable;
+    }
+
+    public void setRabbitmqEnable(boolean rabbitmqEnable) {
+        this.rabbitmqEnable = rabbitmqEnable;
+    }
+
+    public boolean isTaskEnable() {
+        return taskEnable;
+    }
+
+    public void setTaskEnable(boolean taskEnable) {
+        this.taskEnable = taskEnable;
+    }
+
+    public boolean isRequestEnable() {
+        return requestEnable;
+    }
+
+    public void setRequestEnable(boolean requestEnable) {
+        this.requestEnable = requestEnable;
+    }
+
+    public boolean isResponseEnable() {
+        return responseEnable;
+    }
+
+    public void setResponseEnable(boolean responseEnable) {
+        this.responseEnable = responseEnable;
+    }
 
     public String getHost() {
         return host;
