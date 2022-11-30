@@ -54,6 +54,16 @@ public class LogMessageConstant {
 
     public final static String LOG_TYPE_SCHEDULED_TASK_LOG = "scheduledTask";
 
+    /**
+     * 语义化日志类型 system/swagger/mztbiz
+     */
+    public final static String LOG_RECORD_TYPE_SYSTEM = "system";
+
+    public final static String LOG_RECORD_TYPE_SWAGGER = "swagger";
+
+    public final static String LOG_RECORD_TYPE_MZTBIZ = "mztbiz";
+
+
     public final static String DELIM_STR = "{}";
 
 

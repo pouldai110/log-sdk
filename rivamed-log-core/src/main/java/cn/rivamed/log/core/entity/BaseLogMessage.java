@@ -57,6 +57,11 @@ public class BaseLogMessage implements Serializable {
     private String method;
 
     /**
+     * 方法描述
+     */
+    private String methodDesc;
+
+    /**
      * 线程名
      */
     private String threadName;

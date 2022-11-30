@@ -78,6 +78,9 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             String value = RivamedClassUtils.getAnnotationValue(API_OPERATION_CLASS_NAME, method, API_OPERATION_FIELD_NAME);
             if (StringUtils.isNotBlank(value)) {
                 methodDesc = value;
+                message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SWAGGER);
+            } else {
+                message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SYSTEM);
             }
             String cloneParams;
             try {
@@ -89,6 +92,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
                 logger.info(request.getRequestURI() + " param: {}", cloneParams);
             }
             message.setMethod(methodName);
+            message.setMethodDesc(methodDesc);
             message.setUrl(request.getRequestURI());
             message.setSysName(RivamedLogContext.getSysName());
             message.setEnv(RivamedLogContext.getEnv());

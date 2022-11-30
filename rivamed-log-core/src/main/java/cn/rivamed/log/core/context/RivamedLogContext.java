@@ -54,7 +54,6 @@ public class RivamedLogContext {
                 .setBizId(rivamedLogRecordLabel.getBizId())
                 .setBizProd(rivamedLogRecordLabel.getBizProd())
                 .setBizAction(rivamedLogRecordLabel.getBizAction())
-                .setLogRecord(rivamedLogRecordLabel.getLogRecord())
                 .setTokenId(rivamedLogRecordLabel.getTokenId())
                 .setTenantId(rivamedLogRecordLabel.getTenantId());
         return logRecordMessage;

@@ -316,7 +316,6 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             message.setResponseCode(HttpStatus.OK.name());
             message.setBizIP(IpGetter.CURRENT_IP);
             message.setLogType(LogMessageConstant.LOG_TYPE_RECORD);
-            message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_USER_LOG);
             message.setResponseCode(String.valueOf(HttpStatus.OK.value()));
             //设置额外信息并推送消息
             RivamedLogRecordContext.buildLogMessage(message);
@@ -354,7 +353,6 @@ public class RestAop extends AbstractLogRecordAspect {
                     .setBizId("bizId")
                     .setBizProd("bizProd")
                     .setBizAction("bizAction")
-                    .setLogRecord("logRecord")
                     .setTenantId("tenantId")
                     .setTokenId("tokenId");
           
