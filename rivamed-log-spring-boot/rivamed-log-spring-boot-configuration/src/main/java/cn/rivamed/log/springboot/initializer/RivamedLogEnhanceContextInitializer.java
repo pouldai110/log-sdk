@@ -1,6 +1,7 @@
-package cn.rivamed.log.rabbitmq.initializer;
+package cn.rivamed.log.springboot.initializer;
 
-import cn.rivamed.log.rabbitmq.instrument.RabbitMQInstrumentation;
+import cn.rivamed.log.springboot.instrument.MztBizLogInstrumentation;
+import cn.rivamed.log.springboot.instrument.RabbitMQInstrumentation;
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import org.springframework.context.ApplicationContextInitializer;
@@ -20,10 +21,11 @@ import org.springframework.core.annotation.Order;
  */
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class RabbitMQEnhanceContextInitializer implements ApplicationContextInitializer {
+public class RivamedLogEnhanceContextInitializer implements ApplicationContextInitializer {
 
     private static boolean sendEnhanceFlag = false;
     private static boolean receiveEnhanceFlag = false;
+    private static boolean mztBizLogEnhanceFlag = false;
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
@@ -40,6 +42,16 @@ public class RabbitMQEnhanceContextInitializer implements ApplicationContextInit
         if (!receiveEnhanceFlag) {
             try {
                 receiveEnhanceFlag = RabbitMQInstrumentation.receiveEnhance();
+            } catch (NotFoundException e) {
+                e.printStackTrace();
+            } catch (CannotCompileException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (!mztBizLogEnhanceFlag) {
+            try {
+                mztBizLogEnhanceFlag = MztBizLogInstrumentation.enhance();
             } catch (NotFoundException e) {
                 e.printStackTrace();
             } catch (CannotCompileException e) {

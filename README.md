@@ -438,9 +438,9 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
  */
 public class RabbitMQInstrumentation {
 
-    public static final String ENHANCE_RABBITMQ_SEND_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.sendInterceptor"; // 发送拦截器
+    public static final String ENHANCE_RABBITMQ_SEND_INTERCEPTOR_PATH = "cn.rivamed.log.springboot.interceptor.RabbitMQInterceptor.sendInterceptor"; // 发送拦截器
 
-    public static final String ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.receiveInterceptor"; // 接收拦截器
+    public static final String ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH = "cn.rivamed.log.springboot.interceptor.RabbitMQInterceptor.receiveInterceptor"; // 接收拦截器
 
     public static final String ENHANCE_RABBIT_TEMPLATE_CLASS = "org.springframework.amqp.rabbit.core.RabbitTemplate"; // 增强的类
     public static final String ENHANCE_RABBIT_RECEIVE_CLASS = "org.springframework.amqp.rabbit.listener.adapter.MessagingMessageListenerAdapter"; // 增强的类

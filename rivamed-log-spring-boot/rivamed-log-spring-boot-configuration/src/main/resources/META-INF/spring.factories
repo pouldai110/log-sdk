@@ -6,4 +6,4 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 
 # Initializers
 org.springframework.context.ApplicationContextInitializer=\
-  cn.rivamed.log.rabbitmq.initializer.RabbitMQEnhanceContextInitializer
+  cn.rivamed.log.springboot.initializer.RivamedLogEnhanceContextInitializer

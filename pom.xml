@@ -47,7 +47,6 @@
         <module>rivamed-log-log4j</module>
         <module>rivamed-log-log4j2</module>
         <module>rivamed-log-logback</module>
-        <module>rivamed-log-rabbitmq</module>
         <module>rivamed-log-task</module>
         <module>rivamed-log-spring-boot</module>
     </modules>
@@ -72,11 +71,6 @@
             <dependency>
                 <groupId>cn.rivamed</groupId>
                 <artifactId>rivamed-log-log4j2</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.rivamed</groupId>
-                <artifactId>rivamed-log-rabbitmq</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

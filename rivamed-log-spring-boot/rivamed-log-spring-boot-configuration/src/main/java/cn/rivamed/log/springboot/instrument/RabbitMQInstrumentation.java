@@ -1,7 +1,12 @@
-package cn.rivamed.log.rabbitmq.instrument;
+package cn.rivamed.log.springboot.instrument;
 
 import com.rabbitmq.client.Channel;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.LoaderClassPath;
+import javassist.NotFoundException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 
@@ -16,9 +21,9 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
  */
 public class RabbitMQInstrumentation {
 
-    public static final String ENHANCE_RABBITMQ_SEND_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.sendInterceptor"; // 发送拦截器
+    public static final String ENHANCE_RABBITMQ_SEND_INTERCEPTOR_PATH = "cn.rivamed.log.springboot.interceptor.RabbitMQInterceptor.sendInterceptor"; // 发送拦截器
 
-    public static final String ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH = "cn.rivamed.log.rabbitmq.interceptor.RabbitMQInterceptor.receiveInterceptor"; // 接收拦截器
+    public static final String ENHANCE_RABBITMQ_RECEIVE_INTERCEPTOR_PATH = "cn.rivamed.log.springboot.interceptor.RabbitMQInterceptor.receiveInterceptor"; // 接收拦截器
 
     public static final String ENHANCE_RABBIT_TEMPLATE_CLASS = "org.springframework.amqp.rabbit.core.RabbitTemplate"; // 增强的类
     public static final String ENHANCE_RABBIT_RECEIVE_CLASS = "org.springframework.amqp.rabbit.listener.adapter.MessagingMessageListenerAdapter"; // 增强的类
@@ -31,7 +36,7 @@ public class RabbitMQInstrumentation {
         classPool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
 
         //拦截send方法
-        CtClass ctClass = classPool.getCtClass(ENHANCE_RABBIT_TEMPLATE_CLASS);
+        CtClass ctClass = classPool.getOrNull(ENHANCE_RABBIT_TEMPLATE_CLASS);
         if (ctClass == null) {
             System.out.println("RabbitMQ client not found");
             return false;
@@ -63,7 +68,7 @@ public class RabbitMQInstrumentation {
         classPool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
 
         //拦截receive方法
-        CtClass ctClass = classPool.getCtClass(ENHANCE_RABBIT_RECEIVE_CLASS);
+        CtClass ctClass = classPool.getOrNull(ENHANCE_RABBIT_RECEIVE_CLASS);
         if (ctClass == null) {
             System.out.println("RabbitMQ Listener not found");
             return false;

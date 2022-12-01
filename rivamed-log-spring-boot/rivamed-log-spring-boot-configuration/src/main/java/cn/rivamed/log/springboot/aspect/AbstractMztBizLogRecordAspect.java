@@ -194,6 +194,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             RivamedLogContext.buildLogMessage(message);
             MessageAppenderFactory.push(message);
             cleanThreadLocal();
+            LogRecordContext.clear();
         }
     }
 
