@@ -1,4 +1,4 @@
-package cn.rivamed.log.rabbitmq.interceptor;
+package cn.rivamed.log.springboot.interceptor;
 
 import brave.Span;
 import brave.Tracer;
@@ -7,7 +7,7 @@ import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.spring.RivamedLogApplicationContextHolder;
-import cn.rivamed.log.rabbitmq.util.RabbitLogMessageUtils;
+import cn.rivamed.log.springboot.util.RabbitLogMessageUtils;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

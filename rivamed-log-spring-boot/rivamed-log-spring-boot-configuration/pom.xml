@@ -15,11 +15,6 @@
     <dependencies>
         <dependency>
             <groupId>cn.rivamed</groupId>
-            <artifactId>rivamed-log-rabbitmq</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.rivamed</groupId>
             <artifactId>rivamed-log-task</artifactId>
             <version>${revision}</version>
         </dependency>

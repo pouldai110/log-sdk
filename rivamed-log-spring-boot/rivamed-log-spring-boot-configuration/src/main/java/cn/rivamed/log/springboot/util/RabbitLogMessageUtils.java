@@ -1,9 +1,9 @@
-package cn.rivamed.log.rabbitmq.util;
+package cn.rivamed.log.springboot.util;
 
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.util.JsonUtil;
-import cn.rivamed.log.rabbitmq.instrument.RabbitMQInstrumentation;
+import cn.rivamed.log.springboot.instrument.RabbitMQInstrumentation;
 import com.rabbitmq.client.Channel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.Message;

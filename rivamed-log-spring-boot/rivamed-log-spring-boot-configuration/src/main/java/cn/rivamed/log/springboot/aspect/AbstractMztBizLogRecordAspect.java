@@ -167,14 +167,19 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             } catch (Exception t) {
                 log.error("log record parse exception", t);
             }
-            //根据解析结果设置方法描述
+            //设置方法描述方法描述取swagger配置的值，如果没有生成默认的
+            String value = RivamedClassUtils.getAnnotationValue(API_OPERATION_CLASS_NAME, method, API_OPERATION_FIELD_NAME);
+            if (StringUtils.isNotBlank(value)) {
+                methodDesc = value;
+                message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SWAGGER);
+            } else {
+                methodDesc = methodName;
+                message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SYSTEM);
+            }
+            message.setMethodDesc(value);
+
+            //根据解析结果设置语义化日志 语义化日志优先级 mztbiz >> swagger >> system
             if (CollectionUtils.isEmpty(actionList)) {
-                String value = RivamedClassUtils.getAnnotationValue(API_OPERATION_CLASS_NAME, method, API_OPERATION_FIELD_NAME);
-                if (StringUtils.isNotBlank(value)) {
-                    methodDesc = value;
-                } else {
-                    methodDesc = methodName;
-                }
                 //根据成功失败填充对应的模板
                 if (methodExecuteResult.isSuccess()) {
                     message.setBizDetail(String.format(LogTemplateUtil.LOG_RECORD_SUCCESS_FORMAT, methodDesc, stopWatch.getTime()));
@@ -182,13 +187,14 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
                     message.setBizDetail(String.format(LogTemplateUtil.LOG_RECORD_FAIL_FORMAT, methodDesc));
                 }
             } else {
-                methodDesc = actionList.get(0);
-                message.setBizDetail(methodDesc);
+                message.setBizDetail(actionList.get(0));
+                message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_MZTBIZ);
             }
             //设置额外信息并推送消息
             RivamedLogContext.buildLogMessage(message);
             MessageAppenderFactory.push(message);
             cleanThreadLocal();
+            LogRecordContext.clear();
         }
     }
 

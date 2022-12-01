@@ -30,7 +30,6 @@ public class RivamedLogRecordContext {
                     .setBizId(rivamedLogRecordLabel.getBizId())
                     .setBizProd(rivamedLogRecordLabel.getBizProd())
                     .setBizAction(rivamedLogRecordLabel.getBizAction())
-                    .setLogRecord(rivamedLogRecordLabel.getLogRecord())
                     .setTokenId(rivamedLogRecordLabel.getTokenId())
                     .setTenantId(rivamedLogRecordLabel.getTenantId());
         }
