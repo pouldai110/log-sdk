@@ -100,4 +100,9 @@ public class LogRecordMessage extends BaseLogMessage {
      */
     private String bizSubType;
 
+    /**
+     * 请求IP
+     */
+    private String requestIP;
+
 }

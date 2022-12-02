@@ -1,6 +1,7 @@
 package cn.rivamed.log.core.entity;
 
 
+import cn.rivamed.log.core.constant.LogMessageConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -94,8 +95,17 @@ public class LoginLogMessage implements Serializable {
     private Date loginTime = new Date();
 
     /**
-     * 退出登录时间
+     * 登录状态
      */
-    private Date logoutTime;
+    private String loginStatus = LogMessageConstant.SUCCESS;
 
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * traceId
+     */
+    private String traceId;
 }

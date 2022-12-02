@@ -7,7 +7,7 @@ import cn.rivamed.log.core.entity.LogRecordMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
-import cn.rivamed.log.core.util.IpGetter;
+import cn.rivamed.log.core.util.IpUtil;
 import cn.rivamed.log.core.util.JsonUtil;
 import cn.rivamed.log.core.util.LogTemplateUtil;
 import cn.rivamed.log.core.util.RivamedClassUtils;
@@ -41,9 +41,6 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
 
     private static Logger logger = LoggerFactory.getLogger(RivamedLogRecordHandler.class);
 
-    private static final String API_OPERATION_CLASS_NAME = "io.swagger.annotations.ApiOperation";
-    private static final String API_OPERATION_FIELD_NAME = "value";
-
     public Object aroundExecute(ProceedingJoinPoint joinPoint) throws Throwable {
         LogRecordMessage message = new LogRecordMessage();
         String methodName;
@@ -75,7 +72,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             MethodSignature ms = (MethodSignature) joinPoint.getSignature();
             Method method = ms.getMethod();
             methodDesc = methodName = joinPoint.getSignature().getDeclaringType().getSimpleName() + "." + method.getName();
-            String value = RivamedClassUtils.getAnnotationValue(API_OPERATION_CLASS_NAME, method, API_OPERATION_FIELD_NAME);
+            String value = RivamedClassUtils.getAnnotationValue(LogMessageConstant.API_OPERATION_CLASS_NAME, method, LogMessageConstant.API_OPERATION_FIELD_NAME);
             if (StringUtils.isNotBlank(value)) {
                 methodDesc = value;
                 message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SWAGGER);
@@ -98,7 +95,8 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             message.setEnv(RivamedLogContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
-            message.setBizIP(IpGetter.CURRENT_IP);
+            message.setBizIP(IpUtil.CURRENT_IP);
+            message.setRequestIP(IpUtil.getClientIp(request));
             message.setLogType(LogMessageConstant.LOG_TYPE_RECORD);
 
             returnValue = joinPoint.proceed(joinPoint.getArgs());

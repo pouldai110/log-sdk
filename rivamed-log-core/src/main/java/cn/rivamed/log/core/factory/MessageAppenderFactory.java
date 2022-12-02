@@ -6,7 +6,7 @@ import cn.rivamed.log.core.disruptor.LogMessageRingBuffer;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.entity.TraceId;
-import cn.rivamed.log.core.util.IpGetter;
+import cn.rivamed.log.core.util.IpUtil;
 import cn.rivamed.log.core.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.logging.LogLevel;
@@ -65,7 +65,7 @@ public class MessageAppenderFactory {
                 .setEnv(RivamedLogContext.getEnv())
                 .setThreadName(Thread.currentThread().getName())
                 .setBizDetail(message)
-                .setBizIP(IpGetter.CURRENT_IP)
+                .setBizIP(IpUtil.CURRENT_IP)
                 .setLevel(LogLevel.INFO.name())
                 .setLogType(LogMessageConstant.LOG_TYPE_RABBITMQ)
                 .setSeq(SEQ_BUILDER.getAndIncrement());

@@ -8,7 +8,7 @@ import cn.rivamed.log.core.entity.LogRecordMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
-import cn.rivamed.log.core.util.IpGetter;
+import cn.rivamed.log.core.util.IpUtil;
 import cn.rivamed.log.core.util.JsonUtil;
 import cn.rivamed.log.core.util.LogTemplateUtil;
 import cn.rivamed.log.core.util.RivamedClassUtils;
@@ -56,8 +56,6 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
 
     private static Logger logger = LoggerFactory.getLogger(RivamedLogRecordHandler.class);
 
-    private static final String API_OPERATION_CLASS_NAME = "io.swagger.annotations.ApiOperation";
-    private static final String API_OPERATION_FIELD_NAME = "value";
 
     private LogRecordOperationSource logRecordOperationSource;
 
@@ -118,7 +116,8 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             message.setEnv(RivamedLogContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
-            message.setBizIP(IpGetter.CURRENT_IP);
+            message.setBizIP(IpUtil.CURRENT_IP);
+            message.setRequestIP(IpUtil.getClientIp(request));
             message.setLogType(LogMessageConstant.LOG_TYPE_RECORD);
 
             //mzt-biz-log注解解析
@@ -168,7 +167,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
                 log.error("log record parse exception", t);
             }
             //设置方法描述方法描述取swagger配置的值，如果没有生成默认的
-            String value = RivamedClassUtils.getAnnotationValue(API_OPERATION_CLASS_NAME, method, API_OPERATION_FIELD_NAME);
+            String value = RivamedClassUtils.getAnnotationValue(LogMessageConstant.API_OPERATION_CLASS_NAME, method, LogMessageConstant.API_OPERATION_FIELD_NAME);
             if (StringUtils.isNotBlank(value)) {
                 methodDesc = value;
                 message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SWAGGER);
@@ -257,8 +256,6 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
         }
         List<String> spElTemplates = getSpElTemplates(operation, action);
         Map<String, String> expressionValues = processTemplate(spElTemplates, methodExecuteResult, functionNameAndReturnMap);
-        expressionValues.put("totalTimeMillis", functionNameAndReturnMap.get("totalTimeMillis"));
-        expressionValues.put("param", functionNameAndReturnMap.get("param"));
         return getAction(action, expressionValues);
     }
 
@@ -270,8 +267,6 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
         List<String> spElTemplates = getSpElTemplates(operation, action);
 
         Map<String, String> expressionValues = processTemplate(spElTemplates, methodExecuteResult, functionNameAndReturnMap);
-        expressionValues.put("totalTimeMillis", functionNameAndReturnMap.get("totalTimeMillis"));
-        expressionValues.put("param", functionNameAndReturnMap.get("param"));
         return getAction(action, expressionValues);
     }
 

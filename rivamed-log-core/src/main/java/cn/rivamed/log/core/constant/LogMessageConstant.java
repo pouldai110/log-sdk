@@ -17,6 +17,10 @@ public class LogMessageConstant {
 
     public final static String MESSAGE_ID = "messageId";
 
+    public final static String SUCCESS = "1";
+
+    public final static String FAIL = "0";
+
     /**
      * 链路日志前缀
      */
@@ -88,5 +92,9 @@ public class LogMessageConstant {
      * 接收 消息类型
      */
     public final static String MESSAGE_TYPE_ACCEPT = "accept";
+
+    public static final String API_OPERATION_CLASS_NAME = "io.swagger.annotations.ApiOperation";
+
+    public static final String API_OPERATION_FIELD_NAME = "value";
 
 }

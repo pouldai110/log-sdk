@@ -1,6 +1,7 @@
 package cn.rivamed.log.core.util;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -13,14 +14,14 @@ import java.util.Collection;
 import java.util.Enumeration;
 
 /**
- * className：IpGetter
+ * className：IpUtil
  * description：本机IP获取工具类
  * time：2022-10-01.16:17
  *
  * @author Zuo Yang
  * @version 1.0.0
  */
-public class IpGetter {
+public class IpUtil {
 
     /**
      * 当前IP。类初始化时调用一次就可以了
@@ -93,7 +94,7 @@ public class IpGetter {
         }
     }
 
-    public static String getIp() {
+    public static String getLocalHostIp() {
         String localHostAddress = "127.0.0.1";
         try {
             Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -160,5 +161,53 @@ public class IpGetter {
         }
 
         return "127.0.0.1";
+    }
+
+    /**
+     * 获取客户端的IP地址
+     *
+     * @return
+     */
+    public static String getClientIp(HttpServletRequest request) {
+        String ipAddress;
+        ipAddress = request.getHeader("x-forwarded-for");
+        if (invalidIp(ipAddress)) {
+            ipAddress = request.getHeader("Proxy-Client-IP");
+        }
+        if (invalidIp(ipAddress)) {
+            ipAddress = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (invalidIp(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (invalidIp(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (invalidIp(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+            if (ipAddress.equals("127.0.0.1") || ipAddress.equals("0:0:0:0:0:0:0:1")) {
+                // 根据网卡取本机配置的IP
+                InetAddress inet = null;
+                try {
+                    inet = InetAddress.getLocalHost();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+                ipAddress = inet.getHostAddress();
+            }
+
+        }
+
+        // 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
+        if (ipAddress != null && ipAddress.length() > 15) {
+            if (ipAddress.indexOf(",") > 0) {
+                ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
+            }
+        }
+        return ipAddress;
+    }
+
+    private static boolean invalidIp(String ipAddress) {
+        return ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress);
     }
 }

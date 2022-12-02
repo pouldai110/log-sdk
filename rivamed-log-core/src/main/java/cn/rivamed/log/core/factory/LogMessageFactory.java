@@ -1,10 +1,10 @@
 package cn.rivamed.log.core.factory;
 
 import cn.rivamed.log.core.constant.LogMessageConstant;
-import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.entity.LogRecordMessage;
 import cn.rivamed.log.core.entity.LoginLogMessage;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
+import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,12 @@ public class LogMessageFactory<T> {
      * @param loginLogMessage
      */
     public static void pushLoginLogMessage(LoginLogMessage loginLogMessage) {
-        log.info(LogMessageConstant.LOG_TYPE_LOGIN_LOG + JsonUtil.toJSONString(loginLogMessage));
+        loginLogMessage.setTraceId(TraceId.logTraceID.get());
+        if (LogMessageConstant.FAIL.equals(loginLogMessage.getLoginStatus())) {
+            log.error(LogMessageConstant.LOG_TYPE_LOGIN_LOG + JsonUtil.toJSONString(loginLogMessage));
+        } else {
+            log.info(LogMessageConstant.LOG_TYPE_LOGIN_LOG + JsonUtil.toJSONString(loginLogMessage));
+        }
     }
 
     /**

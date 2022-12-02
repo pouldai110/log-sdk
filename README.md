@@ -231,7 +231,7 @@ import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
 import cn.rivamed.log.core.util.JsonUtil;
-import cn.rivamed.log.core.util.IpGetter;
+import cn.rivamed.log.core.util.IpUtil;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;

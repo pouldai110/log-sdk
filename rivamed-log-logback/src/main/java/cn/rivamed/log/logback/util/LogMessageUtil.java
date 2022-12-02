@@ -8,12 +8,11 @@ import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.factory.LogMessageFactory;
-import cn.rivamed.log.core.util.IpGetter;
+import cn.rivamed.log.core.util.IpUtil;
 import cn.rivamed.log.core.util.LogExceptionStackTrace;
 import org.slf4j.helpers.MessageFormatter;
 
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static cn.rivamed.log.core.entity.TraceId.logSpanID;
 import static cn.rivamed.log.core.entity.TraceId.logTraceID;
@@ -49,7 +48,7 @@ public class LogMessageUtil {
         BaseLogMessage logMessage = convertMessage(logEvent);
         logMessage.setClassName(logEvent.getLoggerName())
                 .setThreadName(logEvent.getThreadName())
-                .setBizIP(IpGetter.CURRENT_IP)
+                .setBizIP(IpUtil.CURRENT_IP)
                 .setBizTime(new Date())
                 .setLevel(logEvent.getLevel().toString())
                 .setSysName(RivamedLogContext.getSysName())
