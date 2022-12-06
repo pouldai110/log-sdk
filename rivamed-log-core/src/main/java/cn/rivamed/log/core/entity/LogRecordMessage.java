@@ -20,7 +20,6 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 public class LogRecordMessage extends BaseLogMessage {
 
     private static final long serialVersionUID = 1L;
@@ -53,17 +52,7 @@ public class LogRecordMessage extends BaseLogMessage {
     /**
      * 业务号
      */
-    private String bizId;
-
-    /**
-     * 业务产品名
-     */
-    private String bizProd;
-
-    /**
-     * 业务动作
-     */
-    private String bizAction;
+    private String bizNo;
 
     /**
      * 接口执行时长

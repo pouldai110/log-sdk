@@ -22,16 +22,13 @@ public class RivamedLogRecordContext {
 
     public static LogRecordMessage buildLogMessage(LogRecordMessage logRecordMessage) {
         RivamedLogRecordLabel rivamedLogRecordLabel = rivamedLogLabelTTL.get();
-        if (rivamedLogRecordLabel!=null){
-            logRecordMessage.setUserId(rivamedLogRecordLabel.getUserId())
-                    .setUserName(rivamedLogRecordLabel.getUserName())
-                    .setDeviceId(rivamedLogRecordLabel.getDeviceId())
-                    .setSn(rivamedLogRecordLabel.getSn())
-                    .setBizId(rivamedLogRecordLabel.getBizId())
-                    .setBizProd(rivamedLogRecordLabel.getBizProd())
-                    .setBizAction(rivamedLogRecordLabel.getBizAction())
-                    .setTokenId(rivamedLogRecordLabel.getTokenId())
-                    .setTenantId(rivamedLogRecordLabel.getTenantId());
+        if (rivamedLogRecordLabel != null) {
+            logRecordMessage.setUserId(rivamedLogRecordLabel.getUserId());
+            logRecordMessage.setUserName(rivamedLogRecordLabel.getUserName());
+            logRecordMessage.setDeviceId(rivamedLogRecordLabel.getDeviceId());
+            logRecordMessage.setSn(rivamedLogRecordLabel.getSn());
+            logRecordMessage.setTokenId(rivamedLogRecordLabel.getTokenId());
+            logRecordMessage.setTenantId(rivamedLogRecordLabel.getTenantId());
         }
 
         return logRecordMessage;

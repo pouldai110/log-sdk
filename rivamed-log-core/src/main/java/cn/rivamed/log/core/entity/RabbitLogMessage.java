@@ -20,7 +20,6 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 public class RabbitLogMessage extends BaseLogMessage {
 
     private static final long serialVersionUID = 1L;

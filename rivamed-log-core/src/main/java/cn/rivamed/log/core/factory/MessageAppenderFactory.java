@@ -59,16 +59,16 @@ public class MessageAppenderFactory {
         } else {
             message = JsonUtil.toJSONString(rabbitLogMessage.getMessage());
         }
-        rabbitLogMessage.setTraceId(TraceId.logTraceID.get())
-                .setSpanId(TraceId.logSpanID.get())
-                .setSysName(RivamedLogContext.getSysName())
-                .setEnv(RivamedLogContext.getEnv())
-                .setThreadName(Thread.currentThread().getName())
-                .setBizDetail(message)
-                .setBizIP(IpUtil.CURRENT_IP)
-                .setLevel(LogLevel.INFO.name())
-                .setLogType(LogMessageConstant.LOG_TYPE_RABBITMQ)
-                .setSeq(SEQ_BUILDER.getAndIncrement());
+        rabbitLogMessage.setTraceId(TraceId.logTraceID.get());
+        rabbitLogMessage.setSpanId(TraceId.logSpanID.get());
+        rabbitLogMessage.setSubSysName(RivamedLogContext.getSysName());
+        rabbitLogMessage.setEnv(RivamedLogContext.getEnv());
+        rabbitLogMessage.setThreadName(Thread.currentThread().getName());
+        rabbitLogMessage.setBizDetail(message);
+        rabbitLogMessage.setBizIP(IpUtil.CURRENT_IP);
+        rabbitLogMessage.setLevel(LogLevel.INFO.name());
+        rabbitLogMessage.setLogType(LogMessageConstant.LOG_TYPE_RABBITMQ);
+        rabbitLogMessage.setSeq(SEQ_BUILDER.getAndIncrement());
         push(rabbitLogMessage);
     }
 

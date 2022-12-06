@@ -91,7 +91,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             message.setMethod(methodName);
             message.setMethodDesc(methodDesc);
             message.setUrl(request.getRequestURI());
-            message.setSysName(RivamedLogContext.getSysName());
+            message.setSubSysName(RivamedLogContext.getSysName());
             message.setEnv(RivamedLogContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
@@ -120,7 +120,8 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             throw e;
         } finally {
             stopWatch.stop();
-            message.setCostTime(stopWatch.getTime()).setBizTime(new Date());
+            message.setCostTime(stopWatch.getTime());
+            message.setBizTime(new Date());
             //设置额外信息并推送消息
             RivamedLogContext.buildLogMessage(message);
             MessageAppenderFactory.push(message);

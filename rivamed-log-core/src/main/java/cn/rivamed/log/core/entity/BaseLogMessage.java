@@ -21,7 +21,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 public class BaseLogMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,7 +38,7 @@ public class BaseLogMessage implements Serializable {
     /**
      * 系统名称
      */
-    private String sysName;
+    private String subSysName;
 
     /**
      * 应用环境

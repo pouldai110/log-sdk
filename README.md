@@ -350,9 +350,6 @@ public class RestAop extends AbstractLogRecordAspect {
                     .setUserName("userName")
                     .setDeviceId("deviceId")
                     .setSn("sn")
-                    .setBizId("bizId")
-                    .setBizProd("bizProd")
-                    .setBizAction("bizAction")
                     .setTenantId("tenantId")
                     .setTokenId("tokenId");
           
