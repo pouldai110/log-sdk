@@ -36,7 +36,7 @@ public class BaseLogMessage implements Serializable {
     private String spanId;
 
     /**
-     * 系统名称
+     * 子系统名称
      */
     private String subSysName;
 

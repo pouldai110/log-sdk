@@ -1,8 +1,11 @@
 package cn.rivamed.log.core.spring;
 
 import cn.rivamed.log.core.client.AbstractClient;
+import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.context.RivamedLogContext;
+import cn.rivamed.log.core.entity.LogClientInfo;
 import cn.rivamed.log.core.rabbitmq.RabbitMQClient;
+import cn.rivamed.log.core.util.IpUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,8 +34,12 @@ public class RivamedLogPropertyInit implements InitializingBean {
 
     @Value("${spring.application.name}")
     private String sysName;
+
     @Value("${spring.profiles.active:dev}")
     private String env;
+
+    @Value("${server.port}")
+    private String clientPort;
 
     private boolean sqlEnable;
     private boolean rabbitmqEnable;
@@ -59,9 +66,9 @@ public class RivamedLogPropertyInit implements InitializingBean {
         RivamedLogContext.setTaskEnable(taskEnable);
         RivamedLogContext.setRequestEnable(requestEnable);
         RivamedLogContext.setResponseEnable(responseEnable);
-        //自动创建交换机、路由、队列及绑定关系
+        RabbitAdmin admin = new RabbitAdmin(rabbitMQClient.getCachingConnectionFactory());
+        //设置日志传输队列 自动创建交换机、路由、队列及绑定关系
         if (StringUtils.isNotBlank(exchange) && StringUtils.isNotBlank(routingKey) && StringUtils.isNotBlank(queueName)) {
-            RabbitAdmin admin = new RabbitAdmin(rabbitMQClient.getCachingConnectionFactory());
             Queue queue = new Queue(queueName, true);
             DirectExchange exchange1 = new DirectExchange(exchange, true, false);
             admin.declareExchange(exchange1);
@@ -70,6 +77,12 @@ public class RivamedLogPropertyInit implements InitializingBean {
                     .to(exchange1) // 直接创建交换机
                     .with(routingKey)); // 指定路由Key
         }
+        //先创建队列  用于和日志服务器推送客户端系统配置
+        Queue clientQueue = new Queue(LogMessageConstant.RIVAMED_LOG_REG_QUEUE_NAME, true);
+        admin.declareQueue(clientQueue);
+        //发送客户端启动注册事件
+        LogClientInfo logClientInfo = new LogClientInfo(sysName, IpUtil.getLocalHostIp(), clientPort);
+        rabbitMQClient.getBatchingRabbitTemplate().convertAndSend(LogMessageConstant.RIVAMED_LOG_REG_QUEUE_NAME, logClientInfo);
     }
 
 }

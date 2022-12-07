@@ -45,7 +45,7 @@ public class MessageAppenderFactory {
      */
     private static boolean checkSqlLog(BaseLogMessage baseLogMessage) {
         Boolean flag = true;
-        if (!RivamedLogContext.isSqlEnable() && (baseLogMessage.getBizDetail().startsWith(LogMessageConstant.LEFT_EQULES) || baseLogMessage.getBizDetail().startsWith(LogMessageConstant.RIGHT_EQULES) || baseLogMessage.getClassName().equals(LogMessageConstant.HIBERNATE_SQL_PATH))) {
+        if (!RivamedLogContext.isSqlEnable() && (baseLogMessage.getBizDetail().startsWith(LogMessageConstant.LEFT_EQUALS) || baseLogMessage.getBizDetail().startsWith(LogMessageConstant.RIGHT_EQUALS) || baseLogMessage.getClassName().equals(LogMessageConstant.HIBERNATE_SQL_PATH))) {
             flag = false;
         }
         return flag;
