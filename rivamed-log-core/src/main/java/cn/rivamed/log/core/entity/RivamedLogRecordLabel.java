@@ -44,26 +44,6 @@ public class RivamedLogRecordLabel implements Serializable {
     private String sn;
 
     /**
-     * 业务号
-     */
-    private String bizId;
-
-    /**
-     * 业务产品名
-     */
-    private String bizProd;
-
-    /**
-     * 业务动作
-     */
-    private String bizAction;
-
-    /**
-     * LogRecode(语义化日志字符串)
-     */
-    private String logRecord;
-
-    /**
      * 登录tokenId
      */
     private String tokenId;

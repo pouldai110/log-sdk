@@ -37,18 +37,6 @@ public class RivamedLogRecordHandler {
         if (StringUtils.isNotBlank(labelBean.getSn())) {
             MDC.put(LogMessageContextConstant.CONTEXT_SN, labelBean.getSn());
         }
-        if (StringUtils.isNotBlank(labelBean.getBizId())) {
-            MDC.put(LogMessageContextConstant.CONTEXT_BIZID, labelBean.getBizId());
-        }
-        if (StringUtils.isNotBlank(labelBean.getBizProd())) {
-            MDC.put(LogMessageContextConstant.CONTEXT_BIZPROD, labelBean.getBizProd());
-        }
-        if (StringUtils.isNotBlank(labelBean.getBizAction())) {
-            MDC.put(LogMessageContextConstant.CONTEXT_BIZACTION, labelBean.getBizAction());
-        }
-        if (StringUtils.isNotBlank(labelBean.getLogRecord())) {
-            MDC.put(LogMessageContextConstant.CONTEXT_LOGRECORD, labelBean.getLogRecord());
-        }
         if (StringUtils.isNotBlank(labelBean.getTokenId())) {
             MDC.put(LogMessageContextConstant.CONTEXT_TOKENID, labelBean.getTokenId());
         }
@@ -66,10 +54,6 @@ public class RivamedLogRecordHandler {
         MDC.remove(LogMessageContextConstant.CONTEXT_USERNAME);
         MDC.remove(LogMessageContextConstant.CONTEXT_DEVICEID);
         MDC.remove(LogMessageContextConstant.CONTEXT_SN);
-        MDC.remove(LogMessageContextConstant.CONTEXT_BIZID);
-        MDC.remove(LogMessageContextConstant.CONTEXT_BIZPROD);
-        MDC.remove(LogMessageContextConstant.CONTEXT_BIZACTION);
-        MDC.remove(LogMessageContextConstant.CONTEXT_LOGRECORD);
         MDC.remove(LogMessageContextConstant.CONTEXT_TOKENID);
         MDC.remove(LogMessageContextConstant.CONTEXT_TENANTID);
 

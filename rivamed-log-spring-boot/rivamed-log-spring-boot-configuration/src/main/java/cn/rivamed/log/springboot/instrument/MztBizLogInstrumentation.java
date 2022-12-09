@@ -10,7 +10,7 @@ import org.aopalliance.intercept.MethodInvocation;
 
 /**
  * 描述: mzt-biz-log增强类
- * 直接跳过框架原始的方法 不然在AOP自定义实现依次后会执行两次
+ * 直接跳过框架原始的方法 不然在AOP自定义实现时会执行两次
  * 公司 北京瑞华康源科技有限公司
  * 版本 Rivamed 2022
  *

@@ -94,6 +94,10 @@ public class RabbitMQClient extends AbstractClient {
         }
     }
 
+    public BatchingRabbitTemplate getBatchingRabbitTemplate() {
+        return batchingRabbitTemplate;
+    }
+
     public CachingConnectionFactory getCachingConnectionFactory() {
         return cachingConnectionFactory;
     }

@@ -19,21 +19,9 @@ public class LogMessageContextConstant {
 
     public static final String CONTEXT_SN = "sn";
 
-    public static final String CONTEXT_BIZID = "bizId";
-
-    public static final String CONTEXT_BIZPROD = "bizProd";
-
-    public static final String CONTEXT_BIZACTION = "bizAction";
-
-    public static final String CONTEXT_RESPONSECODE = "responseCode";
-
-    public static final String CONTEXT_LOGRECORD = "logRecord";
-
     public static final String CONTEXT_TOKENID = "tokenId";
 
     public static final String CONTEXT_TENANTID = "tenantId";
-
-    public static final String CONTEXT_SYSNAME = "sysName";
 
     public static final String CONTEXT_OPERATOR = "operator";
 

@@ -1,7 +1,5 @@
 package cn.rivamed.log.core.client;
 
-import cn.rivamed.log.core.exception.LogQueueConnectException;
-
 import java.util.List;
 
 

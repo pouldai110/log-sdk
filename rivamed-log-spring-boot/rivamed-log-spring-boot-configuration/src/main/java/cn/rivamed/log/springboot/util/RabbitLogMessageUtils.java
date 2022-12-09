@@ -41,16 +41,16 @@ public class RabbitLogMessageUtils {
         int port = rabbitTemplate.getConnectionFactory().getPort();
         Object msg = rabbitTemplate.getMessageConverter().fromMessage(message);
         RabbitLogMessage rabbitLogMessage = new RabbitLogMessage();
-        rabbitLogMessage.setVhost(rabbitTemplate.getConnectionFactory().getVirtualHost())
-                .setRabbitMQHost(host)
-                .setRabbitMQPort(port)
-                .setExchange(exchange)
-                .setRoutingKey(routingKey)
-                .setMessage(msg)
-                .setMessageId(correlationData == null ? null : correlationData.getId())
-                .setMqType(LogMessageConstant.MESSAGE_TYPE_SEND)
-                .setMethod(RabbitMQInstrumentation.ENHANCE_RABBIT_TEMPLATE_CLASS + "." + RabbitMQInstrumentation.ENHANCE_SEND_METHOD)
-                .setClassName(RabbitMQInstrumentation.ENHANCE_RABBIT_TEMPLATE_CLASS);
+        rabbitLogMessage.setVhost(rabbitTemplate.getConnectionFactory().getVirtualHost());
+        rabbitLogMessage.setRabbitMQHost(host);
+        rabbitLogMessage.setRabbitMQPort(port);
+        rabbitLogMessage.setExchange(exchange);
+        rabbitLogMessage.setRoutingKey(routingKey);
+        rabbitLogMessage.setMessage(msg);
+        rabbitLogMessage.setMessageId(correlationData == null ? null : correlationData.getId());
+        rabbitLogMessage.setMqType(LogMessageConstant.MESSAGE_TYPE_SEND);
+        rabbitLogMessage.setMethod(RabbitMQInstrumentation.ENHANCE_RABBIT_TEMPLATE_CLASS + "." + RabbitMQInstrumentation.ENHANCE_SEND_METHOD);
+        rabbitLogMessage.setClassName(RabbitMQInstrumentation.ENHANCE_RABBIT_TEMPLATE_CLASS);
         return rabbitLogMessage;
     }
 
@@ -103,18 +103,17 @@ public class RabbitLogMessageUtils {
             }
         }
         RabbitLogMessage rabbitLogMessage = new RabbitLogMessage();
-        rabbitLogMessage
-                .setRabbitMQHost(host)
-                .setRabbitMQPort(port)
-                .setVhost(vhost)
-                .setExchange(exchange)
-                .setRoutingKey(routingKey)
-                .setQueueName(queue)
-                .setMessage(msg)
-                .setMessageId(messageId)
-                .setMqType(LogMessageConstant.MESSAGE_TYPE_ACCEPT)
-                .setClassName(className)
-                .setMethod(methodName);
+        rabbitLogMessage.setRabbitMQHost(host);
+        rabbitLogMessage.setRabbitMQPort(port);
+        rabbitLogMessage.setVhost(vhost);
+        rabbitLogMessage.setExchange(exchange);
+        rabbitLogMessage.setRoutingKey(routingKey);
+        rabbitLogMessage.setQueueName(queue);
+        rabbitLogMessage.setMessage(msg);
+        rabbitLogMessage.setMessageId(messageId);
+        rabbitLogMessage.setMqType(LogMessageConstant.MESSAGE_TYPE_ACCEPT);
+        rabbitLogMessage.setClassName(className);
+        rabbitLogMessage.setMethod(methodName);
         return rabbitLogMessage;
     }
 

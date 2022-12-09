@@ -8,16 +8,20 @@ import cn.rivamed.log.core.entity.LogRecordMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
+import cn.rivamed.log.core.util.BeanCopierUtil;
 import cn.rivamed.log.core.util.IpUtil;
 import cn.rivamed.log.core.util.JsonUtil;
 import cn.rivamed.log.core.util.LogTemplateUtil;
 import cn.rivamed.log.core.util.RivamedClassUtils;
 import cn.rivamed.log.springboot.handler.RivamedMztBizLogRecordHandler;
 import com.google.common.collect.Lists;
+import com.mzt.logapi.beans.CodeVariableType;
+import com.mzt.logapi.beans.LogRecord;
 import com.mzt.logapi.beans.LogRecordOps;
 import com.mzt.logapi.beans.MethodExecuteResult;
 import com.mzt.logapi.context.LogRecordContext;
 import com.mzt.logapi.service.IFunctionService;
+import com.mzt.logapi.service.IOperatorGetService;
 import com.mzt.logapi.service.impl.DiffParseFunction;
 import com.mzt.logapi.starter.support.aop.LogRecordOperationSource;
 import com.mzt.logapi.starter.support.parse.LogFunctionParser;
@@ -59,10 +63,12 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
 
     private LogRecordOperationSource logRecordOperationSource;
 
+    private IOperatorGetService operatorGetService;
+
     public Object aroundExecute(ProceedingJoinPoint joinPoint) throws Throwable {
         //初始化信息
         LogRecordMessage message = new LogRecordMessage();
-        List<String> actionList = null;
+        List<LogRecord> logRecords = null;
         Method method = null;
         String methodName = null;
         String methodDesc;
@@ -112,7 +118,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             //设置基础数据
             message.setMethod(methodName);
             message.setUrl(request.getRequestURI());
-            message.setSysName(RivamedLogContext.getSysName());
+            message.setSubSysName(RivamedLogContext.getSysName());
             message.setEnv(RivamedLogContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
@@ -157,15 +163,8 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             throw e;
         } finally {
             stopWatch.stop();
-            message.setCostTime(stopWatch.getTime()).setBizTime(new Date());
-            //获取mzt-biz-log注解解析结果
-            try {
-                if (!CollectionUtils.isEmpty(operations)) {
-                    actionList = recordExecute(methodExecuteResult, functionNameAndReturnMap, operations);
-                }
-            } catch (Exception t) {
-                log.error("log record parse exception", t);
-            }
+            message.setCostTime(stopWatch.getTime());
+            message.setBizTime(new Date());
             //设置方法描述方法描述取swagger配置的值，如果没有生成默认的
             String value = RivamedClassUtils.getAnnotationValue(LogMessageConstant.API_OPERATION_CLASS_NAME, method, LogMessageConstant.API_OPERATION_FIELD_NAME);
             if (StringUtils.isNotBlank(value)) {
@@ -176,30 +175,56 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
                 message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SYSTEM);
             }
             message.setMethodDesc(value);
-
+            //获取mzt-biz-log注解解析结果
+            try {
+                if (!CollectionUtils.isEmpty(operations)) {
+                    logRecords = recordExecute(methodExecuteResult, functionNameAndReturnMap, operations);
+                }
+            } catch (Exception t) {
+                log.error("log record parse exception", t);
+            }
             //根据解析结果设置语义化日志 语义化日志优先级 mztbiz >> swagger >> system
-            if (CollectionUtils.isEmpty(actionList)) {
+            if (CollectionUtils.isEmpty(logRecords)) {
                 //根据成功失败填充对应的模板
                 if (methodExecuteResult.isSuccess()) {
                     message.setBizDetail(String.format(LogTemplateUtil.LOG_RECORD_SUCCESS_FORMAT, methodDesc, stopWatch.getTime()));
                 } else {
                     message.setBizDetail(String.format(LogTemplateUtil.LOG_RECORD_FAIL_FORMAT, methodDesc));
                 }
+                //设置额外信息并推送消息
+                RivamedLogContext.buildLogMessage(message);
+                MessageAppenderFactory.push(message);
             } else {
-                message.setBizDetail(actionList.get(0));
-                message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_MZTBIZ);
+                //如果写了多个注解则需要推送多次 此时copy一个新的对象发送
+                for (int i = 0; i < logRecords.size(); i++) {
+                    message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_MZTBIZ);
+                    LogRecord logRecord = logRecords.get(i);
+                    if (i > 0) {
+                        LogRecordMessage copyMessage = BeanCopierUtil.copy(message, LogRecordMessage.class);
+                        pushRecordMessage(copyMessage, logRecord);
+                    } else {
+                        pushRecordMessage(message, logRecord);
+                    }
+                }
             }
-            //设置额外信息并推送消息
-            RivamedLogContext.buildLogMessage(message);
-            MessageAppenderFactory.push(message);
             cleanThreadLocal();
             LogRecordContext.clear();
         }
     }
 
-    private List<String> recordExecute(MethodExecuteResult methodExecuteResult, Map<String, String> functionNameAndReturnMap,
-                                       Collection<LogRecordOps> operations) {
-        List<String> actionList = Lists.newArrayList();
+    private void pushRecordMessage(LogRecordMessage message, LogRecord logRecord) {
+        message.setBizDetail(logRecord.getAction());
+        message.setBizNo(logRecord.getBizNo());
+        message.setBizType(logRecord.getType());
+        message.setBizSubType(logRecord.getSubType());
+        //设置额外信息并推送消息
+        RivamedLogContext.buildLogMessage(message);
+        MessageAppenderFactory.push(message);
+    }
+
+    private List<LogRecord> recordExecute(MethodExecuteResult methodExecuteResult, Map<String, String> functionNameAndReturnMap,
+                                          Collection<LogRecordOps> operations) {
+        List<LogRecord> logRecords = Lists.newArrayList();
         for (LogRecordOps operation : operations) {
             try {
                 if (org.springframework.util.StringUtils.isEmpty(operation.getSuccessLogTemplate())
@@ -208,23 +233,21 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
                 }
 
                 if (exitsCondition(methodExecuteResult, functionNameAndReturnMap, operation)) continue;
-
+                LogRecord logRecord;
                 if (!methodExecuteResult.isSuccess()) {
-                    String action = failRecordExecute(methodExecuteResult, functionNameAndReturnMap, operation);
-                    if (StringUtils.isNotBlank(action)) {
-                        actionList.add(action);
-                    }
+                    logRecord = failRecordExecute(methodExecuteResult, functionNameAndReturnMap, operation);
+
                 } else {
-                    String action = successRecordExecute(methodExecuteResult, functionNameAndReturnMap, operation);
-                    if (StringUtils.isNotBlank(action)) {
-                        actionList.add(action);
-                    }
+                    logRecord = successRecordExecute(methodExecuteResult, functionNameAndReturnMap, operation);
+                }
+                if (null != logRecord) {
+                    logRecords.add(logRecord);
                 }
             } catch (Exception t) {
                 log.error("log record execute exception", t);
             }
         }
-        return actionList;
+        return logRecords;
     }
 
     private boolean exitsCondition(MethodExecuteResult methodExecuteResult,
@@ -236,16 +259,18 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
         return false;
     }
 
-    private String successRecordExecute(MethodExecuteResult methodExecuteResult, Map<String, String> functionNameAndReturnMap,
-                                        LogRecordOps operation) {
+    private LogRecord successRecordExecute(MethodExecuteResult methodExecuteResult, Map<String, String> functionNameAndReturnMap,
+                                           LogRecordOps operation) {
         // 若存在 isSuccess 条件模版，解析出成功/失败的模版
         String action;
+        boolean flag = true;
         if (!org.springframework.util.StringUtils.isEmpty(operation.getIsSuccess())) {
             String condition = singleProcessTemplate(methodExecuteResult, operation.getIsSuccess(), functionNameAndReturnMap);
             if (org.springframework.util.StringUtils.endsWithIgnoreCase(condition, "true")) {
                 action = operation.getSuccessLogTemplate();
             } else {
                 action = operation.getFailLogTemplate();
+                flag = false;
             }
         } else {
             action = operation.getSuccessLogTemplate();
@@ -255,19 +280,20 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             return null;
         }
         List<String> spElTemplates = getSpElTemplates(operation, action);
+        String operatorIdFromService = getOperatorIdFromServiceAndPutTemplate(operation, spElTemplates);
         Map<String, String> expressionValues = processTemplate(spElTemplates, methodExecuteResult, functionNameAndReturnMap);
-        return getAction(action, expressionValues);
+        return generateLogRecord(methodExecuteResult.getMethod(), !flag, operation, operatorIdFromService, action, expressionValues);
     }
 
-    private String failRecordExecute(MethodExecuteResult methodExecuteResult, Map<String, String> functionNameAndReturnMap,
-                                     LogRecordOps operation) {
+    private LogRecord failRecordExecute(MethodExecuteResult methodExecuteResult, Map<String, String> functionNameAndReturnMap,
+                                        LogRecordOps operation) {
         if (org.springframework.util.StringUtils.isEmpty(operation.getFailLogTemplate())) return null;
 
         String action = operation.getFailLogTemplate();
         List<String> spElTemplates = getSpElTemplates(operation, action);
-
+        String operatorIdFromService = getOperatorIdFromServiceAndPutTemplate(operation, spElTemplates);
         Map<String, String> expressionValues = processTemplate(spElTemplates, methodExecuteResult, functionNameAndReturnMap);
-        return getAction(action, expressionValues);
+        return generateLogRecord(methodExecuteResult.getMethod(), true, operation, operatorIdFromService, action, expressionValues);
     }
 
     @Override
@@ -275,6 +301,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
         this.setLogFunctionParser(new LogFunctionParser(beanFactory.getBean(IFunctionService.class)));
         this.setDiffParseFunction(beanFactory.getBean(DiffParseFunction.class));
         this.logRecordOperationSource = beanFactory.getBean(LogRecordOperationSource.class);
+        this.operatorGetService = beanFactory.getBean(IOperatorGetService.class);
     }
 
     private List<String> getBeforeExecuteFunctionTemplate(Collection<LogRecordOps> operations) {
@@ -289,16 +316,55 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
         return spElTemplates;
     }
 
+    private Map<CodeVariableType, Object> getCodeVariable(Method method) {
+        Map<CodeVariableType, Object> map = new HashMap<>();
+        map.put(CodeVariableType.ClassName, method.getDeclaringClass());
+        map.put(CodeVariableType.MethodName, method.getName());
+        return map;
+    }
+
     private List<String> getSpElTemplates(LogRecordOps operation, String... actions) {
         List<String> spElTemplates = Lists.newArrayList(operation.getType(), operation.getBizNo(), operation.getSubType(), operation.getExtra());
         spElTemplates.addAll(Arrays.asList(actions));
         return spElTemplates;
     }
 
-    private String getAction(String action, Map<String, String> expressionValues) {
+    private String getRealOperatorId(LogRecordOps operation, String operatorIdFromService, Map<String, String> expressionValues) {
+        return !org.springframework.util.StringUtils.isEmpty(operatorIdFromService) ? operatorIdFromService : expressionValues.get(operation.getOperatorId());
+    }
+
+    private String getOperatorIdFromServiceAndPutTemplate(LogRecordOps operation, List<String> spElTemplates) {
+
+        String realOperatorId = "";
+        if (org.springframework.util.StringUtils.isEmpty(operation.getOperatorId())) {
+            realOperatorId = operatorGetService.getUser().getOperatorId();
+            if (org.springframework.util.StringUtils.isEmpty(realOperatorId)) {
+                throw new IllegalArgumentException("[LogRecord] operator is null");
+            }
+        } else {
+            spElTemplates.add(operation.getOperatorId());
+        }
+        return realOperatorId;
+    }
+
+
+    private LogRecord generateLogRecord(Method method, boolean flag, LogRecordOps operation, String operatorIdFromService,
+                                        String action, Map<String, String> expressionValues) {
         if (org.springframework.util.StringUtils.isEmpty(expressionValues.get(action)) || Objects.equals(action, expressionValues.get(action))) {
             return null;
         }
-        return expressionValues.get(action);
+        LogRecord logRecord = LogRecord.builder()
+                .type(expressionValues.get(operation.getType()))
+                .bizNo(expressionValues.get(operation.getBizNo()))
+                .operator(getRealOperatorId(operation, operatorIdFromService, expressionValues))
+                .subType(expressionValues.get(operation.getSubType()))
+                .extra(expressionValues.get(operation.getExtra()))
+                .codeVariable(getCodeVariable(method))
+                .action(expressionValues.get(action))
+                .fail(flag)
+                .createTime(new Date())
+                .build();
+
+        return logRecord;
     }
 }

@@ -76,9 +76,12 @@ public class LogMessageConstant {
 
     public final static String EXCEPTION_CONFIG = "${";
 
-    public static final String LEFT_EQULES = "<==";
+    /**
+     * SQL 打印日志前缀
+     */
+    public static final String LEFT_EQUALS = "<==";
 
-    public static final String RIGHT_EQULES = "==>";
+    public static final String RIGHT_EQUALS = "==>";
 
     public static final String HIBERNATE_SQL_PATH = "org.hibernate.SQL";
 
@@ -93,8 +96,22 @@ public class LogMessageConstant {
      */
     public final static String MESSAGE_TYPE_ACCEPT = "accept";
 
+    /**
+     * SWAGGER 切面增强常量
+     */
     public static final String API_OPERATION_CLASS_NAME = "io.swagger.annotations.ApiOperation";
 
     public static final String API_OPERATION_FIELD_NAME = "value";
+
+
+    /**
+     * 服务器IP
+     */
+    public static final String RIVAMED_LOG_SERVER_IP = "rivamed.log.serverIp";
+
+    /**
+     * 日志客户端注册队列
+     */
+    public static final String RIVAMED_LOG_REG_QUEUE_NAME = "rivamed.log.client.reg";
 
 }

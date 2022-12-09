@@ -12,8 +12,6 @@ import cn.rivamed.log.core.util.IpUtil;
 import cn.rivamed.log.core.util.LogExceptionStackTrace;
 import org.slf4j.helpers.MessageFormatter;
 
-import java.util.Date;
-
 import static cn.rivamed.log.core.entity.TraceId.logSpanID;
 import static cn.rivamed.log.core.entity.TraceId.logTraceID;
 
@@ -46,15 +44,14 @@ public class LogMessageUtil {
     public static BaseLogMessage getLogMessage(final ILoggingEvent logEvent) {
         isExpandRunLog(logEvent);
         BaseLogMessage logMessage = convertMessage(logEvent);
-        logMessage.setClassName(logEvent.getLoggerName())
-                .setThreadName(logEvent.getThreadName())
-                .setBizIP(IpUtil.CURRENT_IP)
-                .setBizTime(new Date())
-                .setLevel(logEvent.getLevel().toString())
-                .setSysName(RivamedLogContext.getSysName())
-                .setEnv(RivamedLogContext.getEnv())
-                .setTraceId(logTraceID.get())
-                .setSpanId(logSpanID.get());
+        logMessage.setClassName(logEvent.getLoggerName());
+        logMessage.setThreadName(logEvent.getThreadName());
+        logMessage.setBizIP(IpUtil.CURRENT_IP);
+        logMessage.setLevel(logEvent.getLevel().toString());
+        logMessage.setSubSysName(RivamedLogContext.getSysName());
+        logMessage.setEnv(RivamedLogContext.getEnv());
+        logMessage.setTraceId(logTraceID.get());
+        logMessage.setSpanId(logSpanID.get());
         StackTraceElement[] stackTraceElements = logEvent.getCallerData();
         if (stackTraceElements != null && stackTraceElements.length > 0) {
             StackTraceElement stackTraceElement = stackTraceElements[0];
