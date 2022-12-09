@@ -39,7 +39,7 @@ public class RabbitMQClient extends AbstractClient {
     private BatchingRabbitTemplate batchingRabbitTemplate;
 
     public RabbitMQClient(String host, int port, String virtualHost, String username, String password, String exchange, String routingKey) {
-        BatchingStrategy strategy = new SimpleBatchingStrategy(1000, 10_000, 3_000);
+        BatchingStrategy strategy = new SimpleBatchingStrategy(1000, 25_0000, 10_000);
         TaskScheduler scheduler = new ConcurrentTaskScheduler();
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
         cachingConnectionFactory.setHost(host);
