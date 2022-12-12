@@ -2,6 +2,7 @@ package cn.rivamed.log.springboot.util;
 
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
+import cn.rivamed.log.core.enums.MQTypeEnum;
 import cn.rivamed.log.core.util.JsonUtil;
 import cn.rivamed.log.springboot.instrument.RabbitMQInstrumentation;
 import com.rabbitmq.client.Channel;
@@ -48,7 +49,7 @@ public class RabbitLogMessageUtils {
         rabbitLogMessage.setRoutingKey(routingKey);
         rabbitLogMessage.setMessage(msg);
         rabbitLogMessage.setMessageId(correlationData == null ? null : correlationData.getId());
-        rabbitLogMessage.setMqType(LogMessageConstant.MESSAGE_TYPE_SEND);
+        rabbitLogMessage.setMqType(MQTypeEnum.MESSAGE_TYPE_SEND.getType());
         rabbitLogMessage.setMethod(RabbitMQInstrumentation.ENHANCE_RABBIT_TEMPLATE_CLASS + "." + RabbitMQInstrumentation.ENHANCE_SEND_METHOD);
         rabbitLogMessage.setClassName(RabbitMQInstrumentation.ENHANCE_RABBIT_TEMPLATE_CLASS);
         return rabbitLogMessage;
@@ -111,7 +112,7 @@ public class RabbitLogMessageUtils {
         rabbitLogMessage.setQueueName(queue);
         rabbitLogMessage.setMessage(msg);
         rabbitLogMessage.setMessageId(messageId);
-        rabbitLogMessage.setMqType(LogMessageConstant.MESSAGE_TYPE_ACCEPT);
+        rabbitLogMessage.setMqType(MQTypeEnum.MESSAGE_TYPE_ACCEPT.getType());
         rabbitLogMessage.setClassName(className);
         rabbitLogMessage.setMethod(methodName);
         return rabbitLogMessage;
