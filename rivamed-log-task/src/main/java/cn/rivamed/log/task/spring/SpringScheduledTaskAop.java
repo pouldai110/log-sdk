@@ -23,7 +23,7 @@ import java.util.Date;
  * @author Zuo Yang
  */
 @Aspect
-public class SpringScheduledTaskAop {
+public class  SpringScheduledTaskAop {
 
     private static final Logger logger = LoggerFactory.getLogger(SpringScheduledTaskAop.class);
 

@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 描述: TODO
+ * 描述: Bean对象复制工具类
  * 公司 北京瑞华康源科技有限公司
  * 版本 Rivamed 2022
  *

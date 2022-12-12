@@ -1,7 +1,7 @@
 package cn.rivamed.log.core.util;
 
 /**
- * 描述: TODO
+ * 描述: Bean对象复制转换器
  * 公司 北京瑞华康源科技有限公司
  * 版本 Rivamed 2022
  *

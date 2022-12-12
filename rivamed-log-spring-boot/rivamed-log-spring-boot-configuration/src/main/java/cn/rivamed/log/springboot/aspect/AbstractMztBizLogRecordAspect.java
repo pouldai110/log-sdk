@@ -6,6 +6,8 @@ import cn.rivamed.log.core.constant.LogMessageContextConstant;
 import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.LogRecordMessage;
 import cn.rivamed.log.core.entity.TraceId;
+import cn.rivamed.log.core.enums.LogRecordTypeEnum;
+import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
 import cn.rivamed.log.core.util.BeanCopierUtil;
@@ -118,13 +120,12 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             //设置基础数据
             message.setMethod(methodName);
             message.setUrl(request.getRequestURI());
-            message.setSubSysName(RivamedLogContext.getSysName());
-            message.setEnv(RivamedLogContext.getEnv());
+            message.setSubSystemName(RivamedLogContext.getSysName());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
             message.setBizIP(IpUtil.CURRENT_IP);
             message.setRequestIP(IpUtil.getClientIp(request));
-            message.setLogType(LogMessageConstant.LOG_TYPE_RECORD);
+            message.setLogType(LogTypeEnum.LOG_TYPE_RECORD_LOG.getType());
 
             //mzt-biz-log注解解析
             methodExecuteResult = new MethodExecuteResult(method, args, targetClass);
@@ -169,10 +170,10 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             String value = RivamedClassUtils.getAnnotationValue(LogMessageConstant.API_OPERATION_CLASS_NAME, method, LogMessageConstant.API_OPERATION_FIELD_NAME);
             if (StringUtils.isNotBlank(value)) {
                 methodDesc = value;
-                message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SWAGGER);
+                message.setLogRecordType(LogRecordTypeEnum.LOG_RECORD_TYPE_SWAGGER.getType());
             } else {
                 methodDesc = methodName;
-                message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SYSTEM);
+                message.setLogRecordType(LogRecordTypeEnum.LOG_RECORD_TYPE_SYSTEM.getType());
             }
             message.setMethodDesc(value);
             //获取mzt-biz-log注解解析结果
@@ -197,7 +198,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             } else {
                 //如果写了多个注解则需要推送多次 此时copy一个新的对象发送
                 for (int i = 0; i < logRecords.size(); i++) {
-                    message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_MZTBIZ);
+                    message.setLogRecordType(LogRecordTypeEnum.LOG_RECORD_TYPE_MZTBIZ.getType());
                     LogRecord logRecord = logRecords.get(i);
                     if (i > 0) {
                         LogRecordMessage copyMessage = BeanCopierUtil.copy(message, LogRecordMessage.class);

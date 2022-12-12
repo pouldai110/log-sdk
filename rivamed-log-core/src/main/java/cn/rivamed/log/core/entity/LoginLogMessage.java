@@ -30,19 +30,10 @@ public class LoginLogMessage implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 业务系统日志主键Id
-     */
-    private String systemLogId;
-
-    /**
-     * 业务系统类型 (必填)
-     */
-    private String systemType;
-
-    /**
      * 业务系统名称 (必填)
      */
-    private String systemName;
+    private String subSystemName;
+
 
     /**
      * 租户Id (必填)

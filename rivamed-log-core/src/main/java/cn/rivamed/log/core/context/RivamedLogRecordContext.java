@@ -15,8 +15,6 @@ public class RivamedLogRecordContext {
 
     private static String sysName = "rivamed-log";
 
-    private static String env = "dev";
-
     public static final TransmittableThreadLocal<RivamedLogRecordLabel> rivamedLogLabelTTL = new TransmittableThreadLocal<>();
 
 
@@ -42,11 +40,4 @@ public class RivamedLogRecordContext {
         RivamedLogRecordContext.sysName = sysName;
     }
 
-    public static String getEnv() {
-        return env;
-    }
-
-    public static void setEnv(String env) {
-        RivamedLogRecordContext.env = env;
-    }
 }

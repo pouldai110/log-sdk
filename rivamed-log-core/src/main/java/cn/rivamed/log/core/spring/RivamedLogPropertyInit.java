@@ -35,9 +35,6 @@ public class RivamedLogPropertyInit implements InitializingBean {
     @Value("${spring.application.name}")
     private String sysName;
 
-    @Value("${spring.profiles.active:dev}")
-    private String env;
-
     @Value("${server.port}")
     private String clientPort;
 
@@ -60,7 +57,6 @@ public class RivamedLogPropertyInit implements InitializingBean {
         RabbitMQClient rabbitMQClient = RabbitMQClient.getInstance(host, port, virtualHost, username, password, exchange, routingKey);
         AbstractClient.setClient(rabbitMQClient);
         RivamedLogContext.setSysName(sysName);
-        RivamedLogContext.setEnv(env);
         RivamedLogContext.setSqlEnable(sqlEnable);
         RivamedLogContext.setRabbitmqEnable(rabbitmqEnable);
         RivamedLogContext.setTaskEnable(taskEnable);

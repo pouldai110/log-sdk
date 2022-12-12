@@ -5,6 +5,8 @@ import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.LogRecordMessage;
 import cn.rivamed.log.core.entity.TraceId;
+import cn.rivamed.log.core.enums.LogRecordTypeEnum;
+import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
 import cn.rivamed.log.core.util.IpUtil;
@@ -75,9 +77,9 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             String value = RivamedClassUtils.getAnnotationValue(LogMessageConstant.API_OPERATION_CLASS_NAME, method, LogMessageConstant.API_OPERATION_FIELD_NAME);
             if (StringUtils.isNotBlank(value)) {
                 methodDesc = value;
-                message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SWAGGER);
+                message.setLogRecordType(LogRecordTypeEnum.LOG_RECORD_TYPE_SWAGGER.getType());
             } else {
-                message.setLogRecordType(LogMessageConstant.LOG_RECORD_TYPE_SYSTEM);
+                message.setLogRecordType(LogRecordTypeEnum.LOG_RECORD_TYPE_SYSTEM.getType());
             }
             String cloneParams;
             try {
@@ -91,13 +93,12 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             message.setMethod(methodName);
             message.setMethodDesc(methodDesc);
             message.setUrl(request.getRequestURI());
-            message.setSubSysName(RivamedLogContext.getSysName());
-            message.setEnv(RivamedLogContext.getEnv());
+            message.setSubSystemName(RivamedLogContext.getSysName());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
             message.setBizIP(IpUtil.CURRENT_IP);
             message.setRequestIP(IpUtil.getClientIp(request));
-            message.setLogType(LogMessageConstant.LOG_TYPE_RECORD);
+            message.setLogType(LogTypeEnum.LOG_TYPE_RECORD_LOG.getType());
 
             returnValue = joinPoint.proceed(joinPoint.getArgs());
             String result;

@@ -35,12 +35,7 @@ public class BaseLogMessage implements Serializable {
     /**
      * 子系统名称
      */
-    private String subSysName;
-
-    /**
-     * 应用环境
-     */
-    private String env;
+    private String subSystemName;
 
     /**
      * 类名
