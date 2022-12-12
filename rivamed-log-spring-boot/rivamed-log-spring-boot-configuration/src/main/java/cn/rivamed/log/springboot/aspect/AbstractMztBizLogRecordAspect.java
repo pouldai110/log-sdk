@@ -120,7 +120,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             //设置基础数据
             message.setMethod(methodName);
             message.setUrl(request.getRequestURI());
-            message.setSubSysName(RivamedLogContext.getSysName());
+            message.setSubSystemName(RivamedLogContext.getSysName());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
             message.setBizIP(IpUtil.CURRENT_IP);

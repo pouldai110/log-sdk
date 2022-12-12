@@ -93,7 +93,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             message.setMethod(methodName);
             message.setMethodDesc(methodDesc);
             message.setUrl(request.getRequestURI());
-            message.setSubSysName(RivamedLogContext.getSysName());
+            message.setSubSystemName(RivamedLogContext.getSysName());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
             message.setBizIP(IpUtil.CURRENT_IP);

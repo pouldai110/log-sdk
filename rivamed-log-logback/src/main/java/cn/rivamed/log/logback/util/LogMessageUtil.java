@@ -48,7 +48,7 @@ public class LogMessageUtil {
         logMessage.setThreadName(logEvent.getThreadName());
         logMessage.setBizIP(IpUtil.CURRENT_IP);
         logMessage.setLevel(logEvent.getLevel().toString());
-        logMessage.setSubSysName(RivamedLogContext.getSysName());
+        logMessage.setSubSystemName(RivamedLogContext.getSysName());
         logMessage.setTraceId(logTraceID.get());
         logMessage.setSpanId(logSpanID.get());
         StackTraceElement[] stackTraceElements = logEvent.getCallerData();

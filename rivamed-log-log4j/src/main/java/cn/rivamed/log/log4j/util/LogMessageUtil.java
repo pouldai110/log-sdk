@@ -42,7 +42,7 @@ public class LogMessageUtil {
         logMessage.setThreadName(loggingEvent.getThreadName());
         logMessage.setBizIP(IpUtil.CURRENT_IP);
         logMessage.setLevel(loggingEvent.getLevel().toString());
-        logMessage.setSubSysName(RivamedLogContext.getSysName());
+        logMessage.setSubSystemName(RivamedLogContext.getSysName());
         logMessage.setTraceId(logTraceID.get());
         logMessage.setSpanId(logSpanID.get());
         LocationInfo locationInfo = loggingEvent.getLocationInformation();

@@ -62,7 +62,7 @@ public class MessageAppenderFactory {
         }
         rabbitLogMessage.setTraceId(TraceId.logTraceID.get());
         rabbitLogMessage.setSpanId(TraceId.logSpanID.get());
-        rabbitLogMessage.setSubSysName(RivamedLogContext.getSysName());
+        rabbitLogMessage.setSubSystemName(RivamedLogContext.getSysName());
         rabbitLogMessage.setThreadName(Thread.currentThread().getName());
         rabbitLogMessage.setBizDetail(message);
         rabbitLogMessage.setBizIP(IpUtil.CURRENT_IP);
