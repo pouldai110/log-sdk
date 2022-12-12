@@ -46,6 +46,8 @@ rivamed:
 
 |  字段值   | 用途  |
 |  ----  | ----  |
+| sysName  | 自定义应用名称 |
+| env  | 环境 默认是dev |
 | host  | RabbitMQ 主机 |
 | port  | RabbitMQ 端口 |
 | virtualHost  | RabbitMQ 虚拟主机名 |
@@ -304,6 +306,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             returnValue = joinPoint.proceed(joinPoint.getArgs());
             stopWatch.stop();
             message.setSysName(RivamedLogRecordContext.getSysName());
+            message.setEnv(RivamedLogRecordContext.getEnv());
             message.setClassName(ms.getMethod().getDeclaringClass().getName());
             message.setThreadName(Thread.currentThread().getName());
             message.setSeq(SEQ_BUILDER.getAndIncrement());
