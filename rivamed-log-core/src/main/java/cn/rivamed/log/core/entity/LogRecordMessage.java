@@ -68,7 +68,7 @@ public class LogRecordMessage extends BaseLogMessage {
     private String tokenId;
 
     /**
-     * 语义化日志类型（system,swagger,mztbiz）
+     * 语义化日志类型（1: system, 2: swagger, 3: mztbiz）
      */
     private String logRecordType;
 
