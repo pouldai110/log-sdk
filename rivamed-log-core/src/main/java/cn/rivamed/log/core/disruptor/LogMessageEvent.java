@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * className：LogMessageEvent
- * description： TODO
+ * description： LogMessageEvent
  * time：2022-10-09.14:46
  *
  * @author Zuo Yang

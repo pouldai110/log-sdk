@@ -1,18 +1,14 @@
 package cn.rivamed.log.core.disruptor;
 
 import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.SequenceBarrier;
 import com.lmax.disruptor.SleepingWaitStrategy;
-import com.lmax.disruptor.WorkerPool;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
-import java.util.concurrent.Executors;
-
 /**
  * className：LogMessageRingBuffer
- * description： TODO
+ * description： LogMessageRingBuffer
  * time：2022-10-09.15:26
  *
  * @author Zuo Yang

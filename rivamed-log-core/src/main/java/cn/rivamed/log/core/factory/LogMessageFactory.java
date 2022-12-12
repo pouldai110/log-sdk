@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * className：logRecordMessageFactory
- * description： TODO
+ * description： 日志工厂类
  * time：2022-10-03.14:04
  *
  * @author Zuo Yang
@@ -48,7 +48,7 @@ public class LogMessageFactory<T> {
      * @param rabbitLogMessage
      */
     public static void pushRabbitLogMessage(RabbitLogMessage rabbitLogMessage) {
-        log.info(LogMessageConstant.LOG_TYPE_RABBITMQ + JsonUtil.toJSONString(rabbitLogMessage));
+        log.info(LogMessageConstant.LOG_TYPE_RABBITMQ_LOG + JsonUtil.toJSONString(rabbitLogMessage));
     }
 
     /**
@@ -56,7 +56,7 @@ public class LogMessageFactory<T> {
      * @param logRecordMessage
      */
     public static void pushLogRecordMessage(LogRecordMessage logRecordMessage) {
-        log.info(LogMessageConstant.LOG_TYPE_RECORD + JsonUtil.toJSONString(logRecordMessage));
+        log.info(LogMessageConstant.LOG_TYPE_RECORD_LOG + JsonUtil.toJSONString(logRecordMessage));
     }
 
 }

@@ -4,7 +4,7 @@ import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 
 /**
- * 描述: TODO
+ * 描述: 日志类型
  * 公司 北京瑞华康源科技有限公司
  * 版本 Rivamed 2022
  *
@@ -14,21 +14,28 @@ import cn.rivamed.log.core.entity.BaseLogMessage;
  */
 public enum LogTypeEnum {
 
-    LOG_TYPE_RECORD(LogMessageConstant.LOG_TYPE_RECORD),
-    LOG_TYPE_RABBITMQ(LogMessageConstant.LOG_TYPE_RABBITMQ),
-    LOG_TYPE_SYSTEM_LOG(LogMessageConstant.LOG_TYPE_SYSTEM_LOG),
-    LOG_TYPE_LOGIN_LOG(LogMessageConstant.LOG_TYPE_LOGIN_LOG),
-    LOG_TYPE_SCHEDULED_TASK_LOG(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG),
+    LOG_TYPE_RECORD_LOG("1", LogMessageConstant.LOG_TYPE_RECORD_LOG),
+    LOG_TYPE_RABBITMQ_LOG("2", LogMessageConstant.LOG_TYPE_RABBITMQ_LOG),
+    LOG_TYPE_SYSTEM_LOG("3", LogMessageConstant.LOG_TYPE_SYSTEM_LOG),
+    LOG_TYPE_SCHEDULED_TASK_LOG("4", LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG),
+    LOG_TYPE_LOGIN_LOG("5", LogMessageConstant.LOG_TYPE_LOGIN_LOG),
     ;
 
     private String type;
+
+    private String desc;
 
     public String getType() {
         return type;
     }
 
-    LogTypeEnum(String type) {
+    public String getDesc() {
+        return desc;
+    }
+
+    LogTypeEnum(String type, String desc) {
         this.type = type;
+        this.desc = desc;
     }
 
     /**
@@ -40,15 +47,15 @@ public enum LogTypeEnum {
     public static BaseLogMessage convertMessageType(String formattedMessage) {
         BaseLogMessage logMessage = new BaseLogMessage();
         for (LogTypeEnum value : LogTypeEnum.values()) {
-            String type = value.getType();
-            if (formattedMessage.startsWith(type)) {
-                logMessage.setBizDetail(formattedMessage.substring(type.length()));
-                logMessage.setLogType(type);
+            String desc = value.getDesc();
+            if (formattedMessage.startsWith(desc)) {
+                logMessage.setBizDetail(formattedMessage.substring(desc.length()));
+                logMessage.setLogType(value.getType());
                 return logMessage;
             }
         }
         logMessage.setBizDetail(formattedMessage);
-        logMessage.setLogType(LogMessageConstant.LOG_TYPE_SYSTEM_LOG);
+        logMessage.setLogType(LOG_TYPE_SYSTEM_LOG.getType());
         return logMessage;
     }
 

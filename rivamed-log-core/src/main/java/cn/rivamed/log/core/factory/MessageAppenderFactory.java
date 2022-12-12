@@ -6,6 +6,7 @@ import cn.rivamed.log.core.disruptor.LogMessageRingBuffer;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.entity.TraceId;
+import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.util.IpUtil;
 import cn.rivamed.log.core.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -67,7 +68,7 @@ public class MessageAppenderFactory {
         rabbitLogMessage.setBizDetail(message);
         rabbitLogMessage.setBizIP(IpUtil.CURRENT_IP);
         rabbitLogMessage.setLevel(LogLevel.INFO.name());
-        rabbitLogMessage.setLogType(LogMessageConstant.LOG_TYPE_RABBITMQ);
+        rabbitLogMessage.setLogType(LogTypeEnum.LOG_TYPE_RABBITMQ_LOG.getType());
         rabbitLogMessage.setSeq(SEQ_BUILDER.getAndIncrement());
         push(rabbitLogMessage);
     }

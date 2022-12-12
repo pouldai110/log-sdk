@@ -21,7 +21,7 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import java.util.List;
 
 /**
- * 描述: TODO
+ * 描述: RabbitMQ 客户端
  * 公司 北京瑞华康源科技有限公司
  * 版本 Rivamed 2022
  *
