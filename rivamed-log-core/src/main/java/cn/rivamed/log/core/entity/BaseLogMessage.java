@@ -38,11 +38,6 @@ public class BaseLogMessage implements Serializable {
     private String subSysName;
 
     /**
-     * 应用环境
-     */
-    private String env;
-
-    /**
      * 类名
      */
     private String className;

@@ -15,8 +15,6 @@ public class RivamedLogContext {
 
     private static String sysName = "rivamed-log";
 
-    private static String env = "dev";
-
     /**
      * 是否收集SQL日志
      */
@@ -66,14 +64,6 @@ public class RivamedLogContext {
 
     public static void setSysName(String sysName) {
         RivamedLogContext.sysName = sysName;
-    }
-
-    public static String getEnv() {
-        return env;
-    }
-
-    public static void setEnv(String env) {
-        RivamedLogContext.env = env;
     }
 
     public static boolean isSqlEnable() {
