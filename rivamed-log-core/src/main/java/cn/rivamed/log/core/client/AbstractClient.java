@@ -27,6 +27,10 @@ public abstract class AbstractClient {
 
     }
 
+    public void pushSimpleMessage(String queueName, Object object) {
+
+    }
+
     public void putMessageList(List<String> list) {
 
     }

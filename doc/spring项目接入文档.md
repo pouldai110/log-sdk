@@ -160,9 +160,6 @@ rivamed:
       virtualHost: jishou
       username: rivamed
       password: rivamed
-      exchange: log.rm-th
-      routingKey: log.rm-th
-      queueName: log.rm-th
 
 ```
 
@@ -173,9 +170,6 @@ rivamed:
 | virtualHost  | RabbitMQ 虚拟主机名 |
 | username  | RabbitMQ 账号 |
 | password  | RabbitMQ 密码 |
-| exchange  | RabbitMQ 交换机名称 |
-| routingKey  | RabbitMQ 路由键 |
-| queueName  | RabbitMQ 队列名称 |
 
 
 

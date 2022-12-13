@@ -34,6 +34,7 @@ public class RivamedLogProperty {
     private String virtualHost;
     private String username;
     private String password;
+
     private String exchange;
     private String routingKey;
     private String queueName;

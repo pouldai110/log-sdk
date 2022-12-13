@@ -47,7 +47,6 @@ public class LogConfigTopicListener {
             key = {"#{'${spring.application.name}'}"}
     ), containerFactory = "rivamedLogContainerFactory")
     public void logConfigTopicListener(Message message, Channel channel) {
-        System.out.println("接收到消息日志服务器推送的配置信息：" + message);
         try {
             RivamedLogProperty rivamedLogProperty = objectMapper.readValue(message.getBody(), RivamedLogProperty.class);
             RivamedLogContext.setSqlEnable(rivamedLogProperty.isSqlEnable());

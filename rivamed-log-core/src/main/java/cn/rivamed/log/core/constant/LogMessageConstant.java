@@ -110,6 +110,16 @@ public class LogMessageConstant {
     public static final String RIVAMED_LOG_SERVER_IP = "rivamed.log.serverIp";
 
     /**
+     * 业务日志队列
+     */
+    public static final String RIVAMED_BUSINESS_LOG_QUEUE_NAME = "rivamed.log.client.business";
+
+    /**
+     * 登录日志队列
+     */
+    public static final String RIVAMED_LOGIN_LOG_QUEUE_NAME = "rivamed.log.client.login";
+
+    /**
      * 日志客户端注册队列
      */
     public static final String RIVAMED_LOG_REG_QUEUE_NAME = "rivamed.log.client.reg";
