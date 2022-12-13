@@ -37,7 +37,7 @@ public class LogMessageFactory<T> {
      */
     public static void pushLoginLogMessage(LoginLogMessage loginLogMessage) {
         loginLogMessage.setTraceId(TraceId.logTraceID.get());
-        RabbitMQClient.getClient().pushSimpleMessage(LogMessageConstant.LOG_TYPE_LOGIN_LOG, loginLogMessage);
+        RabbitMQClient.getClient().pushSimpleMessage(LogMessageConstant.RIVAMED_LOGIN_LOG_QUEUE_NAME, loginLogMessage);
     }
 
     /**
