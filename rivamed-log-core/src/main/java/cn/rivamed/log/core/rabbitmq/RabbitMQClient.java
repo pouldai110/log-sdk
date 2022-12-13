@@ -14,6 +14,7 @@ import org.springframework.amqp.rabbit.batch.BatchingStrategy;
 import org.springframework.amqp.rabbit.batch.SimpleBatchingStrategy;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.BatchingRabbitTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.scheduling.TaskScheduler;
@@ -38,6 +39,7 @@ public class RabbitMQClient extends AbstractClient {
     private static String routingKey = "";
     private CachingConnectionFactory cachingConnectionFactory;
     private BatchingRabbitTemplate batchingRabbitTemplate;
+    private RabbitTemplate rabbitTemplate;
 
     public RabbitMQClient(String host, int port, String virtualHost, String username, String password, String exchange, String routingKey) {
         BatchingStrategy strategy = new SimpleBatchingStrategy(1000, 25_0000, 10_000);
@@ -48,11 +50,17 @@ public class RabbitMQClient extends AbstractClient {
         cachingConnectionFactory.setVirtualHost(virtualHost);
         cachingConnectionFactory.setUsername(username);
         cachingConnectionFactory.setPassword(password);
-        BatchingRabbitTemplate template = new BatchingRabbitTemplate(strategy, scheduler);
-        template.setConnectionFactory(cachingConnectionFactory);
-        template.setMessageConverter(messageConverter());
+        BatchingRabbitTemplate batchingRabbitTemplate = new BatchingRabbitTemplate(strategy, scheduler);
+        batchingRabbitTemplate.setConnectionFactory(cachingConnectionFactory);
+        batchingRabbitTemplate.setMessageConverter(messageConverter());
+
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(cachingConnectionFactory);
+        rabbitTemplate.setMessageConverter(messageConverter());
+
         this.cachingConnectionFactory = cachingConnectionFactory;
-        this.batchingRabbitTemplate = template;
+        this.batchingRabbitTemplate = batchingRabbitTemplate;
+        this.rabbitTemplate = rabbitTemplate;
+
         this.exchange = exchange;
         this.routingKey = routingKey;
     }
@@ -90,7 +98,7 @@ public class RabbitMQClient extends AbstractClient {
 
     @Override
     public void pushSimpleMessage(String queueName, Object object) {
-        batchingRabbitTemplate.convertAndSend(queueName, object);
+        rabbitTemplate.convertAndSend(queueName, object);
     }
 
     @Override
