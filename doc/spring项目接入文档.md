@@ -181,7 +181,7 @@ rivamed:
 
 ##### 3.1 接口日志
 
-* 在业务系统中创建一个AOP继承AbstractLogRecordAspect.java，然后设置用户登录信息，系统信息。
+* 如果不需要语义化日志解析，那么只需要在业务系统中创建一个AOP继承AbstractLogRecordAspect.java，然后设置用户登录信息，系统信息。
 
 
 * RestAop.java 示例
@@ -191,6 +191,38 @@ rivamed:
 @Aspect
 @Component
 public class RestAop extends AbstractLogRecordAspect {
+    
+     @Pointcut("execution(public * cn.rivamed.*.*.web.rest..*.*(..))")
+        public void pointCutRest() {
+            throw new UnsupportedOperationException();
+        }
+        
+    @Around("pointCutRest()")
+        public Object processRst(ProceedingJoinPoint point) {
+        
+            RivamedLogRecordLabel rivamedLogLabel = new RivamedLogRecordLabel();
+            rivamedLogLabel.setUserId("userId")
+                    .setUserName("userName")
+                    .setDeviceId("deviceId")
+                    .setSn("sn")
+                    .setTenantId("tenantId")
+                    .setTokenId("tokenId");
+          
+            processProviderSide(rivamedLogLabel);
+
+            return aroundExecute(point);
+    }
+}
+
+```
+
+* 如果需要语义化日志，那么需要在业务系统中创建一个AOP继承继承 AbstractMztBizLogRecordAspect.java,然后设置用户登录信息，系统信息。
+
+```java
+
+@Aspect
+@Component
+public class RestAop extends AbstractMztBizLogRecordAspect {
     
      @Pointcut("execution(public * cn.rivamed.*.*.web.rest..*.*(..))")
         public void pointCutRest() {
@@ -288,4 +320,23 @@ public class LoginRest {
 ##### 3.5 定时任务日志
 
 
-* 系统默认支持定时任务日志，不需要用户配置
+* 1、系统默认支持解析spring的@Scheduled注解方式的定时任务，如果使用这种定时任务，不需要单独配置
+
+* 2、如果使用的quartz,那么需要将自定义的Job类继承RivamedLogQuartzJobBean，就可以实现定时任务日志~
+
+* 示例
+
+```java
+
+@Component
+public class BspDynamicJob extends RivamedLogQuartzJobBean {
+    
+    @Override
+        public void executeTask(JobExecutionContext executorContext) {
+            // TODO
+        }
+}
+
+```
+
+
