@@ -285,7 +285,7 @@ public class RestAop extends AbstractMztBizLogRecordAspect {
 
 * 如果是推送登录日志，那么只需要在业务系统的登录接口下先封装对应的实体参数，然后打印一下带前缀的日志
 
-* 示例
+* 登录成功示例
 
 ```java
 
@@ -293,23 +293,47 @@ public class RestAop extends AbstractMztBizLogRecordAspect {
 public class LoginRest {
     
     public void login() {
-        LoginLogMessage loginLogMessage = new LoginLogMessage()
-                            .setSystemLogId("111111111")
-                            .setSystemType("rm-th")
-                            .setSystemName("rm-th")
-                            .setTenantId("11111")
-                            .setTokenId("TOKEN")
-                            .setAccountId("张三111")
-                            .setAccountName("张三444")
-                            .setUserName("张三222")
-                            .setLoginType("pda");
-            log.info(LogMessageConstant.LOG_TYPE_LOGIN_LOG + JsonUtil.toJSONString(loginLogMessage));
+            LoginLogMessage loginLogMessage = new LoginLogMessage()
+                    .setSubSystemName("stemType")
+                    .setTenantId("tenantId")
+                    .setTokenId("tokenId")
+                    .setAccountId("accountId")
+                    .setAccountName("accountName")
+                    .setUserName("userName")
+                    .setLoginType("loginType")
+                    .setLoginDevice("device")
+                    .setLoginDeviceSn("sn")
+                    .setRemark("remark");
+            LogMessageFactory.pushLoginLogMessage(loginLogMessage);
     }
 }
 
 
 ```
+* 登录失败示例
 
+```java
+
+
+public class LoginRest {
+    
+    public void login() {
+            LoginLogMessage loginLogMessage = new LoginLogMessage()
+                    .setSubSystemName("stemType")
+                    .setTenantId("tenantId")
+                    .setAccountId("accountId")
+                    .setAccountName("accountName")
+                    .setLoginType("loginType")
+                    .setLoginStatus(LogMessageConstant.FAIL)
+                    .setLoginDevice("device")
+                    .setLoginDeviceSn("sn")
+                    .setRemark("remark");
+            LogMessageFactory.pushLoginLogMessage(loginLogMessage);
+    }
+}
+
+
+```
 
 ##### 3.4 RabbitMQ日志
 
