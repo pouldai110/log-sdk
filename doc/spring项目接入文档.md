@@ -289,7 +289,6 @@ public class RestAop extends AbstractMztBizLogRecordAspect {
 
 ```java
 
-
 public class LoginRest {
     
     public void login() {
@@ -301,6 +300,8 @@ public class LoginRest {
                     .setAccountName("accountName")
                     .setUserName("userName")
                     .setLoginType("loginType")
+                    .setLoginStatus(LogMessageConstant.SUCCESS)
+                    .setLoginTime(new Date())
                     .setLoginDevice("device")
                     .setLoginDeviceSn("sn")
                     .setRemark("remark");
@@ -308,12 +309,10 @@ public class LoginRest {
     }
 }
 
-
 ```
 * 登录失败示例
 
-```java
-
+```java·
 
 public class LoginRest {
     
@@ -325,9 +324,28 @@ public class LoginRest {
                     .setAccountName("accountName")
                     .setLoginType("loginType")
                     .setLoginStatus(LogMessageConstant.FAIL)
+                    .setLoginTime(new Date())
                     .setLoginDevice("device")
                     .setLoginDeviceSn("sn")
                     .setRemark("remark");
+            LogMessageFactory.pushLoginLogMessage(loginLogMessage);
+    }
+}
+
+
+```
+
+* 退出登录示例
+
+```java·
+
+public class LoginRest {
+    
+    public void login() {
+            LoginLogMessage loginLogMessage = new LoginLogMessage()
+                    .setSubSystemName("stemType")
+                    .setTokenId("tokenId")
+                    .setLogoutTime(new Date());
             LogMessageFactory.pushLoginLogMessage(loginLogMessage);
     }
 }

@@ -30,23 +30,23 @@ public class LoginLogMessage implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 业务系统名称 (必填)
+     * 业务系统名称
      */
     private String subSystemName;
 
 
     /**
-     * 租户Id (必填)
+     * 租户Id
      */
     private String tenantId;
 
     /**
-     * 账户Id (必填)
+     * 账户Id
      */
     private String accountId;
 
     /**
-     * 账户名称 (必填)
+     * 账户名称
      */
     private String accountName;
 
@@ -76,19 +76,24 @@ public class LoginLogMessage implements Serializable {
     private String loginDeviceSn;
 
     /**
-     * 登录token (必填)
+     * 登录token
      */
     private String tokenId;
 
     /**
-     * 登录时间 (必填)
+     * 登录时间
      */
     private Date loginTime = new Date();
 
     /**
+     * 退出登录时间
+     */
+    private Date logoutTime;
+
+    /**
      * 登录状态
      */
-    private String loginStatus = LogMessageConstant.SUCCESS;
+    private String loginStatus;
 
     /**
      * 备注
