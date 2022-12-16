@@ -112,16 +112,16 @@ public class LogMessageConstant {
     /**
      * 业务日志队列
      */
-    public static final String RIVAMED_BUSINESS_LOG_QUEUE_NAME = "rivamed.log.client.business";
+    public static final String RIVAMED_BUSINESS_LOG_QUEUE_NAME = "log.client.business";
 
     /**
      * 登录日志队列
      */
-    public static final String RIVAMED_LOGIN_LOG_QUEUE_NAME = "rivamed.log.client.login";
+    public static final String RIVAMED_LOGIN_LOG_QUEUE_NAME = "log.client.login";
 
     /**
      * 日志客户端注册队列
      */
-    public static final String RIVAMED_REG_LOG_QUEUE_NAME = "rivamed.log.client.reg";
+    public static final String RIVAMED_REG_LOG_QUEUE_NAME = "log.client.reg";
 
 }
