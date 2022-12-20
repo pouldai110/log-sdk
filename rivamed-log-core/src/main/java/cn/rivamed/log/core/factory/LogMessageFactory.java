@@ -7,6 +7,7 @@ import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.rabbitmq.RabbitMQClient;
 import cn.rivamed.log.core.util.JsonUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,9 @@ public class LogMessageFactory<T> {
      * @param loginLogMessage
      */
     public static void pushLoginLogMessage(LoginLogMessage loginLogMessage) {
-        loginLogMessage.setTraceId(TraceId.logTraceID.get());
+        if (StringUtils.isNotBlank(TraceId.logTraceID.get())) {
+            loginLogMessage.setTraceId(TraceId.logTraceID.get());
+        }
         RabbitMQClient.getClient().pushSimpleMessage(LogMessageConstant.RIVAMED_LOGIN_LOG_QUEUE_NAME, loginLogMessage);
     }
 
