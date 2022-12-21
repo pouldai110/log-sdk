@@ -9,10 +9,7 @@ import cn.rivamed.log.core.enums.LogRecordTypeEnum;
 import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
-import cn.rivamed.log.core.util.IpUtil;
-import cn.rivamed.log.core.util.JsonUtil;
-import cn.rivamed.log.core.util.LogTemplateUtil;
-import cn.rivamed.log.core.util.RivamedClassUtils;
+import cn.rivamed.log.core.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -87,6 +84,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             } catch (Exception e) {
                 cloneParams = params.toString();
             }
+            DesensitizedUtil.desensitizedJsonData(cloneParams);
             if (RivamedLogContext.isRequestEnable()) {
                 logger.info(request.getRequestURI() + " param: {}", cloneParams);
             }
@@ -104,12 +102,15 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             String result;
             try {
                 result = JsonUtil.toJSONString(returnValue);
+
             } catch (Exception e) {
                 result = returnValue.toString();
             }
+            DesensitizedUtil.desensitizedJsonData(result);
             if (RivamedLogContext.isResponseEnable()) {
                 logger.info(request.getRequestURI() + " result: {}", result);
             }
+
             message.setLevel(LogLevel.INFO.name());
             message.setResponseCode(String.valueOf(HttpStatus.OK.value()));
             message.setBizDetail(String.format(LogTemplateUtil.LOG_RECORD_SUCCESS_FORMAT, methodDesc, stopWatch.getTime()));
@@ -129,4 +130,5 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             cleanThreadLocal();
         }
     }
+
 }

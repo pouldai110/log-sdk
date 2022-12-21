@@ -10,11 +10,7 @@ import cn.rivamed.log.core.enums.LogRecordTypeEnum;
 import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
-import cn.rivamed.log.core.util.BeanCopierUtil;
-import cn.rivamed.log.core.util.IpUtil;
-import cn.rivamed.log.core.util.JsonUtil;
-import cn.rivamed.log.core.util.LogTemplateUtil;
-import cn.rivamed.log.core.util.RivamedClassUtils;
+import cn.rivamed.log.core.util.*;
 import cn.rivamed.log.springboot.handler.RivamedMztBizLogRecordHandler;
 import com.google.common.collect.Lists;
 import com.mzt.logapi.beans.CodeVariableType;
@@ -111,9 +107,11 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             String cloneParams;
             try {
                 cloneParams = JsonUtil.toJSONString(params);
+
             } catch (Exception e) {
                 cloneParams = params.toString();
             }
+            DesensitizedUtil.desensitizedJsonData(cloneParams);
             if (RivamedLogContext.isRequestEnable()) {
                 logger.info(request.getRequestURI() + " param: {}", cloneParams);
             }
@@ -152,6 +150,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             if (RivamedLogContext.isResponseEnable()) {
                 logger.info(request.getRequestURI() + " result: {}", result);
             }
+            DesensitizedUtil.desensitizedJsonData(result);
             message.setLevel(LogLevel.INFO.name());
             message.setResponseCode(String.valueOf(HttpStatus.OK.value()));
             return returnValue;
