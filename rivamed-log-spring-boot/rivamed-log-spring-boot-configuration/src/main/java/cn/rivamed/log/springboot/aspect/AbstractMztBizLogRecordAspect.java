@@ -111,7 +111,6 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             } catch (Exception e) {
                 cloneParams = params.toString();
             }
-            DesensitizedUtil.desensitizedJsonData(cloneParams);
             if (RivamedLogContext.isRequestEnable()) {
                 logger.info(request.getRequestURI() + " param: {}", cloneParams);
             }
@@ -150,7 +149,6 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             if (RivamedLogContext.isResponseEnable()) {
                 logger.info(request.getRequestURI() + " result: {}", result);
             }
-            DesensitizedUtil.desensitizedJsonData(result);
             message.setLevel(LogLevel.INFO.name());
             message.setResponseCode(String.valueOf(HttpStatus.OK.value()));
             return returnValue;

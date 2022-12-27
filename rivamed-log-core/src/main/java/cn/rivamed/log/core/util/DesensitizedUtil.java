@@ -19,7 +19,7 @@ public class DesensitizedUtil {
         if (StringUtils.isBlank(str)) {
             return "";
         } else {
-            String newStr = String.valueOf(str);
+            String newStr;
             switch (desensitizedType) {
                 case USER_ID:
                     newStr = String.valueOf(userId());
@@ -28,7 +28,7 @@ public class DesensitizedUtil {
                     newStr = chineseName(String.valueOf(str));
                     break;
                 case ID_CARD:
-                    newStr = idCardNum(String.valueOf(str), 1, 2);
+                    newStr = idCardNum(String.valueOf(str), 4, 4);
                     break;
                 case FIXED_PHONE:
                     newStr = fixedPhone(String.valueOf(str));
@@ -50,6 +50,10 @@ public class DesensitizedUtil {
                     break;
                 case BANK_CARD:
                     newStr = bankCard(String.valueOf(str));
+                    break;
+                default:
+                    newStr = defaultStr(String.valueOf(str));
+                    break;
             }
 
             return newStr;
@@ -59,8 +63,22 @@ public class DesensitizedUtil {
     public static Long userId() {
         return 0L;
     }
+
     /**
-     *<p>功能描述: 中文脱敏</p>
+     * <p>功能描述: 字符串默认脱敏</p>
+     *
+     * @param fullName
+     * @return java.lang.String
+     * @author daiyaopeng
+     * @date 2022/12/21
+     */
+    public static String defaultStr(String fullName) {
+        return StringUtils.isBlank(fullName) ? "" : replaceStr(fullName, 2, fullName.length() - 2);
+    }
+
+    /**
+     * <p>功能描述: 中文脱敏</p>
+     *
      * @param fullName
      * @return java.lang.String
      * @author daiyaopeng
@@ -72,9 +90,10 @@ public class DesensitizedUtil {
 
     /**
      * 身份证号码脱敏
-     * @param idCardNum  身份证号
-     * @param front 开始保留长度
-     * @param end 结尾保留长度
+     *
+     * @param idCardNum 身份证号
+     * @param front     开始保留长度
+     * @param end       结尾保留长度
      * @return
      */
     public static String idCardNum(String idCardNum, int front, int end) {
@@ -86,8 +105,10 @@ public class DesensitizedUtil {
             return front >= 0 && end >= 0 ? replaceStr(idCardNum, front, idCardNum.length() - end) : "";
         }
     }
+
     /**
-     *<p>功能描述: 固定电话脱敏</p>
+     * <p>功能描述: 固定电话脱敏</p>
+     *
      * @param num
      * @return java.lang.String
      * @author daiyaopeng
@@ -96,8 +117,10 @@ public class DesensitizedUtil {
     public static String fixedPhone(String num) {
         return StringUtils.isBlank(num) ? "" : replaceStr(num, 4, num.length() - 2);
     }
+
     /**
-     *<p>功能描述: 手机电话脱敏</p>
+     * <p>功能描述: 手机电话脱敏</p>
+     *
      * @param num
      * @return java.lang.String
      * @author daiyaopeng
@@ -106,10 +129,12 @@ public class DesensitizedUtil {
     public static String mobilePhone(String num) {
         return StringUtils.isBlank(num) ? "" : replaceStr(num, 3, num.length() - 4);
     }
+
     /**
-     *<p>功能描述: 地址脱敏</p>
-     * @param address 地址信息
-    * @param sensitiveSize 不脱敏数据长度
+     * <p>功能描述: 地址脱敏</p>
+     *
+     * @param address       地址信息
+     * @param sensitiveSize 不脱敏数据长度
      * @return java.lang.String
      * @author daiyaopeng
      * @date 2022/12/21
@@ -173,6 +198,7 @@ public class DesensitizedUtil {
             return carLicense;
         }
     }
+
     /**
      * <p>功能描述: 银行卡号脱敏</p>
      *
@@ -210,6 +236,7 @@ public class DesensitizedUtil {
 
     /**
      * 字符串替换指定长度字符为 “*”
+     *
      * @param str
      * @param startInclude
      * @param endExclude
@@ -233,7 +260,7 @@ public class DesensitizedUtil {
                 } else {
                     char[] chars = new char[strLength];
 
-                    for(int i = 0; i < strLength; ++i) {
+                    for (int i = 0; i < strLength; ++i) {
                         if (i >= startInclude && i < endExclude) {
                             chars[i] = replacedChar;
                         } else {
@@ -246,31 +273,35 @@ public class DesensitizedUtil {
             }
         }
     }
-   /**
-    *<p>功能描述: json脱敏默认数据</p>
-    * @param data
-    * @return java.lang.String
-    * @author daiyaopeng
-    * @date 2022/12/21
-    */
-    public static  String desensitizedJsonData(String data){
-        if(StringUtils.isBlank(data)){
+
+    /**
+     * <p>功能描述: json脱敏默认数据</p>
+     *
+     * @param data
+     * @return java.lang.String
+     * @author daiyaopeng
+     * @date 2022/12/21
+     */
+    public static String desensitizedJsonData(String data) {
+        if (StringUtils.isBlank(data)) {
             return data;
         }
-        String regexParamStr  ="\"%s\":\".*?\"";
-        String regexValueStr  ="\"%s\":\"%m\"";
-        for(RivamedLogDesensitizedEnum desensitizedEnum:RivamedLogDesensitizedEnum.values()){
+        String regexParamStr = "\"%s\":\".*?\"";
+        String regexValueStr = "\"%s\":\"%m\"";
+        for (RivamedLogDesensitizedEnum desensitizedEnum : RivamedLogDesensitizedEnum.values()) {
             String replace = regexParamStr.replace("%s", desensitizedEnum.getParam());
-            if(data.matches(replace)) {
+            if (data.matches(replace)) {
                 String replaceValue = regexValueStr.replace("%s", desensitizedEnum.getParam()).replace("%m", desensitizedEnum.getDesensitizedValue());
                 data = data.replaceAll(replace, replaceValue);
             }
         }
         return data;
     }
+
     public static String str(CharSequence cs) {
         return null == cs ? null : cs.toString();
     }
+
     public static enum DesensitizedType {
         USER_ID,
         CHINESE_NAME,

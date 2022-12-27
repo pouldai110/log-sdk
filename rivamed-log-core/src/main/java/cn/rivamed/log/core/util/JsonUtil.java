@@ -1,12 +1,12 @@
 package cn.rivamed.log.core.util;
 
+import cn.rivamed.log.core.desensitizer.handler.DesensitizeJacksonAnnotationIntrospector;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -33,6 +33,7 @@ public class JsonUtil {
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
         objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
+        objectMapper.setAnnotationIntrospector(new DesensitizeJacksonAnnotationIntrospector());
     }
 
     public static <T> T parseObject(String jsonString, Class<T> classz) {
