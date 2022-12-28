@@ -58,7 +58,7 @@ public class RivamedLogPropertyConfiguration {
      */
     @Bean("rivamedLogConnectionFactory")
     @DependsOn("rivamedLogPropertyInit")
-    public CachingConnectionFactory rivamedLogConnectionFactory(RivamedLogProperty rivamedLogProperty){
+    public CachingConnectionFactory rivamedLogConnectionFactory(RivamedLogProperty rivamedLogProperty) {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setUsername(rivamedLogProperty.getUsername());
         connectionFactory.setPassword(rivamedLogProperty.getPassword());
@@ -78,19 +78,19 @@ public class RivamedLogPropertyConfiguration {
     @Bean("rivamedLogContainerFactory")
     @DependsOn("rivamedLogConnectionFactory")
     public SimpleRabbitListenerContainerFactory rivamedLogContainerFactory(SimpleRabbitListenerContainerFactoryConfigurer configurer,
-                                                                 @Qualifier("rivamedLogConnectionFactory") ConnectionFactory connectionFactory) {
+                                                                           @Qualifier("rivamedLogConnectionFactory") ConnectionFactory connectionFactory) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
 
         factory.setConnectionFactory(connectionFactory);
         //初始化消费者数量
-        factory.setConcurrentConsumers(4);
+        factory.setConcurrentConsumers(1);
         //最大消费者数量
-        factory.setMaxConcurrentConsumers(8);
-        //手动确认消息
-        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        factory.setMaxConcurrentConsumers(4);
+        //自动确认消息
+        factory.setAcknowledgeMode(AcknowledgeMode.AUTO);
         // 单个消费者一次接收的消息数，默认250
         factory.setPrefetchCount(10);
-        configurer.configure(factory,connectionFactory);
+        configurer.configure(factory, connectionFactory);
         return factory;
     }
 

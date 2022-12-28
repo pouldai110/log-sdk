@@ -11,7 +11,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
 /**
- * 描述: RabbitMQ初始执行
+ * 描述: 字节码增强初始类
  * 公司 北京瑞华康源科技有限公司
  * 版本 Rivamed 2022
  *

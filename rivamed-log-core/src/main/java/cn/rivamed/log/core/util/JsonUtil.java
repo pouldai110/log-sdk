@@ -7,7 +7,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -15,13 +18,15 @@ import java.util.TimeZone;
 
 /**
  * className：JsonUtil
- * description：fastjson工具类
+ * description：json工具类
  * time：2022-10-01.16:17
  *
  * @author Zuo Yang
  * @version 1.0.0
  */
 public class JsonUtil {
+
+    protected static final Logger log = LoggerFactory.getLogger(JsonUtil.class);
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -33,6 +38,7 @@ public class JsonUtil {
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
         objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
+        //设置脱敏
         objectMapper.setAnnotationIntrospector(new DesensitizeJacksonAnnotationIntrospector());
     }
 
@@ -46,13 +52,20 @@ public class JsonUtil {
     }
 
     public static String toJSONString(Object object) {
-
-        try {
-            return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        if (object == null) {
+            return null;
         }
-        return null;
+        String result = null;
+        if (object instanceof Serializable) {
+            try {
+                result = objectMapper.writeValueAsString(object);
+            } catch (JsonProcessingException e) {
+                log.error("toJSONString error", e);
+            }
+        } else {
+            result = object.toString();
+        }
+        return result;
     }
 
     public static <T> List<T> parseArray(String json, Class<T> clazz) {
