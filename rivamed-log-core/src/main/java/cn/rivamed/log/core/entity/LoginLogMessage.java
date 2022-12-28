@@ -1,7 +1,6 @@
 package cn.rivamed.log.core.entity;
 
 
-import cn.rivamed.log.core.constant.LogMessageConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -77,10 +77,6 @@ public class RivamedLogPropertyInit implements InitializingBean {
         Queue clientQueue = new Queue(LogMessageConstant.RIVAMED_REG_LOG_QUEUE_NAME, true);
         admin.declareQueue(clientQueue);
 
-        //发送客户端启动注册事件
-        LogClientInfo logClientInfo = new LogClientInfo(sysName, IpUtil.getLocalHostIp(), clientPort);
-        rabbitMQClient.pushSimpleMessage(LogMessageConstant.RIVAMED_REG_LOG_QUEUE_NAME, logClientInfo);
-
         //创建登录日志队列  用于上传登录日志
         Queue loginLogQueue = new Queue(LogMessageConstant.RIVAMED_LOGIN_LOG_QUEUE_NAME, true);
         admin.declareQueue(loginLogQueue);
