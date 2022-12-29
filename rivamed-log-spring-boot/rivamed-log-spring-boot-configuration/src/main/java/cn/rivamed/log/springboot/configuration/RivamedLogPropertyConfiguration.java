@@ -2,10 +2,14 @@ package cn.rivamed.log.springboot.configuration;
 
 import cn.rivamed.log.core.spring.RivamedLogPropertyInit;
 import cn.rivamed.log.springboot.property.RivamedLogProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.retry.RejectAndDontRequeueRecoverer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
@@ -15,6 +19,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 
 /**
  * Rivamed Log的参数自动装配类
@@ -29,6 +36,8 @@ import org.springframework.context.annotation.PropertySource;
         name = "Rivamed Log Default Properties",
         value = "classpath:/META-INF/rivamed-log-default.properties")
 public class RivamedLogPropertyConfiguration {
+
+    protected static final Logger log = LoggerFactory.getLogger(RivamedLogPropertyConfiguration.class);
 
     @Bean
     @ConditionalOnMissingBean(RivamedLogPropertyInit.class)
@@ -88,10 +97,40 @@ public class RivamedLogPropertyConfiguration {
         factory.setMaxConcurrentConsumers(4);
         //自动确认消息
         factory.setAcknowledgeMode(AcknowledgeMode.AUTO);
-        // 单个消费者一次接收的消息数，默认250
-        factory.setPrefetchCount(10);
+        factory.setAdviceChain(RetryInterceptorBuilder
+                        .stateless()
+                        .recoverer(new RejectAndDontRequeueRecoverer())
+                        .retryOperations(rivamedLogRetryTemplate())
+                        .build()
+        );
         configurer.configure(factory, connectionFactory);
         return factory;
+    }
+
+    @Bean("rivamedLogRetryTemplate")
+    @DependsOn("rivamedLogConnectionFactory")
+    public RetryTemplate rivamedLogRetryTemplate() {
+        RetryTemplate retryTemplate = new RetryTemplate();
+        retryTemplate.setBackOffPolicy(backOffPolicy());
+        retryTemplate.setRetryPolicy(retryPolicy());
+        return retryTemplate;
+    }
+
+    @Bean("rivamedLogExponentialBackOffPolicy")
+    @DependsOn("rivamedLogConnectionFactory")
+    public ExponentialBackOffPolicy backOffPolicy() {
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        backOffPolicy.setInitialInterval(1000);
+        backOffPolicy.setMaxInterval(10000);
+        return backOffPolicy;
+    }
+
+    @Bean("rivamedLogSimpleRetryPolicy")
+    @DependsOn("rivamedLogConnectionFactory")
+    public SimpleRetryPolicy retryPolicy() {
+        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
+        retryPolicy.setMaxAttempts(3);
+        return retryPolicy;
     }
 
 }
