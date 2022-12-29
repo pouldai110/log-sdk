@@ -55,14 +55,11 @@ public class JsonUtil {
         if (object == null) {
             return null;
         }
-        String result = null;
-        if (object instanceof Serializable) {
-            try {
-                result = objectMapper.writeValueAsString(object);
-            } catch (JsonProcessingException e) {
-                log.error("toJSONString error", e);
-            }
-        } else {
+        String result;
+        try {
+            result = objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            log.error("toJSONString error", e);
             result = object.toString();
         }
         return result;

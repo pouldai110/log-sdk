@@ -30,7 +30,7 @@ public class RivamedLogApplicationRunnerImpl implements ApplicationRunner {
     private RivamedLogPropertyInit rivamedLogPropertyInit;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         logger.info("发送客户端启动注册事件");
         //发送客户端启动注册事件
         LogClientInfo logClientInfo = new LogClientInfo(rivamedLogPropertyInit.getSysName(), IpUtil.getLocalHostIp(), rivamedLogPropertyInit.getClientPort());

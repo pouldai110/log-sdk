@@ -92,11 +92,13 @@ public class RivamedLogPropertyConfiguration {
 
         factory.setConnectionFactory(connectionFactory);
         //初始化消费者数量
-        factory.setConcurrentConsumers(1);
+        factory.setConcurrentConsumers(2);
         //最大消费者数量
-        factory.setMaxConcurrentConsumers(4);
+        factory.setMaxConcurrentConsumers(8);
+        factory.setPrefetchCount(10);
         //自动确认消息
-        factory.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        factory.setDefaultRequeueRejected(false);
         factory.setAdviceChain(RetryInterceptorBuilder
                         .stateless()
                         .recoverer(new RejectAndDontRequeueRecoverer())
