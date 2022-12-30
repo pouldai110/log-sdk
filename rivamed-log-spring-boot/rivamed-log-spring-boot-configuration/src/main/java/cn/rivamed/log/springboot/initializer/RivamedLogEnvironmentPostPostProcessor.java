@@ -29,6 +29,6 @@ public class RivamedLogEnvironmentPostPostProcessor implements EnvironmentPostPr
         MutablePropertySources propertySources = environment.getPropertySources();
         PropertySource<?> systemProperties = propertySources.get("systemProperties");
         Properties systemPropertiesSource = (Properties) systemProperties.getSource();
-        systemPropertiesSource.setProperty(LogMessageConstant.RIVAMED_LOG_SERVER_IP, IpUtil.getLocalHostIp());
+        systemPropertiesSource.setProperty(LogMessageConstant.RIVAMED_LOG_CLIENT_IP, IpUtil.getLocalHostIp());
     }
 }

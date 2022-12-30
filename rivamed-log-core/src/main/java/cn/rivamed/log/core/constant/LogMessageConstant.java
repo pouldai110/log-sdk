@@ -107,7 +107,12 @@ public class LogMessageConstant {
     /**
      * 服务器IP
      */
-    public static final String RIVAMED_LOG_SERVER_IP = "rivamed.log.serverIp";
+    public static final String RIVAMED_LOG_CLIENT_IP = "rivamed.log.clientIp";
+
+    /**
+     * 日志服务配置交换机
+     */
+    public static final String RIVAMED_LOG_CONFIG = "rivamed-log-config";
 
     /**
      * 业务日志队列

@@ -1,4 +1,4 @@
-package cn.rivamed.log.springboot.property;
+package cn.rivamed.log.core.entity;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;

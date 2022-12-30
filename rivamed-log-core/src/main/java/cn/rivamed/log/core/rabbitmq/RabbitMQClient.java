@@ -1,7 +1,6 @@
 package cn.rivamed.log.core.rabbitmq;
 
 import cn.rivamed.log.core.client.AbstractClient;
-import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.util.UuidUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
