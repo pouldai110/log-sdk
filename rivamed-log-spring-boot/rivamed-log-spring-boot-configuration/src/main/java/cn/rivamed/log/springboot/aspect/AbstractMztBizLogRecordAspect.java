@@ -12,7 +12,6 @@ import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
 import cn.rivamed.log.core.util.*;
 import cn.rivamed.log.springboot.handler.RivamedMztBizLogRecordHandler;
-import com.google.common.collect.Lists;
 import com.mzt.logapi.beans.CodeVariableType;
 import com.mzt.logapi.beans.LogRecord;
 import com.mzt.logapi.beans.LogRecordOps;
@@ -21,6 +20,7 @@ import com.mzt.logapi.context.LogRecordContext;
 import com.mzt.logapi.service.IFunctionService;
 import com.mzt.logapi.service.IOperatorGetService;
 import com.mzt.logapi.service.impl.DiffParseFunction;
+import com.mzt.logapi.starter.configuration.LogRecordProperties;
 import com.mzt.logapi.starter.support.aop.LogRecordOperationSource;
 import com.mzt.logapi.starter.support.parse.LogFunctionParser;
 import org.apache.commons.lang3.StringUtils;
@@ -62,6 +62,8 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
     private LogRecordOperationSource logRecordOperationSource;
 
     private IOperatorGetService operatorGetService;
+
+    private boolean diffLog;
 
     public Object aroundExecute(ProceedingJoinPoint joinPoint) throws Throwable {
         //初始化信息
@@ -222,7 +224,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
 
     private List<LogRecord> recordExecute(MethodExecuteResult methodExecuteResult, Map<String, String> functionNameAndReturnMap,
                                           Collection<LogRecordOps> operations) {
-        List<LogRecord> logRecords = Lists.newArrayList();
+        List<LogRecord> logRecords = new ArrayList<>();
         for (LogRecordOps operation : operations) {
             try {
                 if (org.springframework.util.StringUtils.isEmpty(operation.getSuccessLogTemplate())
@@ -300,6 +302,8 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
         this.setDiffParseFunction(beanFactory.getBean(DiffParseFunction.class));
         this.logRecordOperationSource = beanFactory.getBean(LogRecordOperationSource.class);
         this.operatorGetService = beanFactory.getBean(IOperatorGetService.class);
+        LogRecordProperties logRecordProperties = beanFactory.getBean(LogRecordProperties.class);
+        this.diffLog = logRecordProperties.getDiffLog();
     }
 
     private List<String> getBeforeExecuteFunctionTemplate(Collection<LogRecordOps> operations) {
@@ -322,7 +326,11 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
     }
 
     private List<String> getSpElTemplates(LogRecordOps operation, String... actions) {
-        List<String> spElTemplates = Lists.newArrayList(operation.getType(), operation.getBizNo(), operation.getSubType(), operation.getExtra());
+        List<String> spElTemplates = new ArrayList<>();
+        spElTemplates.add(operation.getType());
+        spElTemplates.add(operation.getBizNo());
+        spElTemplates.add(operation.getSubType());
+        spElTemplates.add(operation.getExtra());
         spElTemplates.addAll(Arrays.asList(actions));
         return spElTemplates;
     }
@@ -348,7 +356,8 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
 
     private LogRecord generateLogRecord(Method method, boolean flag, LogRecordOps operation, String operatorIdFromService,
                                         String action, Map<String, String> expressionValues) {
-        if (org.springframework.util.StringUtils.isEmpty(expressionValues.get(action)) || Objects.equals(action, expressionValues.get(action))) {
+        if (org.springframework.util.StringUtils.isEmpty(expressionValues.get(action)) ||
+                (!diffLog && action.contains("#") && Objects.equals(action, expressionValues.get(action)))) {
             return null;
         }
         LogRecord logRecord = LogRecord.builder()

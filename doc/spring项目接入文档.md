@@ -27,7 +27,7 @@
 <dependency>
      <groupId>io.github.mouzt</groupId>
      <artifactId>bizlog-sdk</artifactId>
-     <version>3.0.3</version>
+     <version>3.0.4</version>
 </dependency>
 ```
 
@@ -60,7 +60,7 @@ log4j.appender.rabbitmq=cn.rivamed.log.log4j.appender.RabbitMQAppender
 <dependency>
      <groupId>io.github.mouzt</groupId>
      <artifactId>bizlog-sdk</artifactId>
-     <version>3.0.3</version>
+     <version>3.0.4</version>
 </dependency>
 
 ```
@@ -106,7 +106,7 @@ log4j.appender.rabbitmq=cn.rivamed.log.log4j.appender.RabbitMQAppender
 <dependency>
      <groupId>io.github.mouzt</groupId>
      <artifactId>bizlog-sdk</artifactId>
-     <version>3.0.3</version>
+     <version>3.0.4</version>
 </dependency>
 ```
 

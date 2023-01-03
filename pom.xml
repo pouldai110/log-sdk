@@ -27,7 +27,6 @@
         <jedis.version>4.2.3</jedis.version>
         <kafka.version>3.3.1</kafka.version>
         <ttl.version>2.14.0</ttl.version>
-        <guava.version>31.1-jre</guava.version>
         <httpclient.version>4.5.13</httpclient.version>
         <disruptor.version>3.4.4</disruptor.version>
         <jackson.version>2.11.4</jackson.version>
