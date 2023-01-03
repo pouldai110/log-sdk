@@ -1,6 +1,8 @@
 package cn.rivamed.log.core.rabbitmq;
 
 import cn.rivamed.log.core.client.AbstractClient;
+import cn.rivamed.log.core.constant.LogMessageConstant;
+import cn.rivamed.log.core.enums.RivamedLogQueueEnum;
 import cn.rivamed.log.core.util.UuidUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -34,13 +36,11 @@ public class RabbitMQClient extends AbstractClient {
 
     private static RabbitMQClient instance;
 
-    private static String exchange = "";
-    private static String routingKey = "";
     private CachingConnectionFactory cachingConnectionFactory;
     private BatchingRabbitTemplate batchingRabbitTemplate;
     private RabbitTemplate rabbitTemplate;
 
-    public RabbitMQClient(String host, int port, String virtualHost, String username, String password, String exchange, String routingKey) {
+    public RabbitMQClient(String host, int port, String virtualHost, String username, String password) {
         BatchingStrategy strategy = new SimpleBatchingStrategy(1000, 25_0000, 10_000);
         TaskScheduler scheduler = new ConcurrentTaskScheduler();
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
@@ -60,8 +60,6 @@ public class RabbitMQClient extends AbstractClient {
         this.batchingRabbitTemplate = batchingRabbitTemplate;
         this.rabbitTemplate = rabbitTemplate;
 
-        this.exchange = exchange;
-        this.routingKey = routingKey;
     }
 
     public MessageConverter messageConverter() {
@@ -72,11 +70,11 @@ public class RabbitMQClient extends AbstractClient {
         return new Jackson2JsonMessageConverter(om);
     }
 
-    public static RabbitMQClient getInstance(String host, int port, String virtualHost, String username, String password, String exchange, String routingKey) {
+    public static RabbitMQClient getInstance(String host, int port, String virtualHost, String username, String password) {
         if (instance == null) {
             synchronized (RabbitMQClient.class) {
                 if (instance == null) {
-                    instance = new RabbitMQClient(host, port, virtualHost, username, password, exchange, routingKey);
+                    instance = new RabbitMQClient(host, port, virtualHost, username, password);
                 }
             }
         }
@@ -92,12 +90,12 @@ public class RabbitMQClient extends AbstractClient {
         // 生成消息对象
         MessageConverter messageConverter = batchingRabbitTemplate.getMessageConverter();
         Message message = messageConverter.toMessage(messageStr, messageProperties);
-        batchingRabbitTemplate.send(exchange, routingKey, message, null);
+        batchingRabbitTemplate.send(LogMessageConstant.RIVAMED_LOG_EXCHANGE_NAME, LogMessageConstant.RIVAMED_BUSINESS_LOG_ROUTING_KEY_NAME, message, null);
     }
 
     @Override
-    public void pushSimpleMessage(String queueName, Object object) {
-        rabbitTemplate.convertAndSend(queueName, object);
+    public void pushSimpleMessage(RivamedLogQueueEnum rivamedLogQueueEnum, Object object) {
+        rabbitTemplate.convertAndSend(rivamedLogQueueEnum.getExchangeName(), rivamedLogQueueEnum.getRoutingKey(), object);
     }
 
     @Override

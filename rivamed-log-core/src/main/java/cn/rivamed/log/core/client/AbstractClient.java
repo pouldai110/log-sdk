@@ -1,5 +1,7 @@
 package cn.rivamed.log.core.client;
 
+import cn.rivamed.log.core.enums.RivamedLogQueueEnum;
+
 import java.util.List;
 
 
@@ -27,7 +29,7 @@ public abstract class AbstractClient {
 
     }
 
-    public void pushSimpleMessage(String queueName, Object object) {
+    public void pushSimpleMessage(RivamedLogQueueEnum rivamedLogQueueEnum, Object object) {
 
     }
 

@@ -115,6 +115,26 @@ public class LogMessageConstant {
     public static final String RIVAMED_LOG_CONFIG = "rivamed-log-config";
 
     /**
+     * 日志交换机
+     */
+    public static final String RIVAMED_LOG_EXCHANGE_NAME = "log.client.exchange";
+
+    /**
+     * 业务日志交换机
+     */
+    public static final String RIVAMED_BUSINESS_LOG_ROUTING_KEY_NAME = "log.client.business.routingKey";
+
+    /**
+     * 登录日志交换机
+     */
+    public static final String RIVAMED_LOGIN_LOG_ROUTING_KEY_NAME = "log.client.login.routingKey";
+
+    /**
+     * 日志客户端注册交换机
+     */
+    public static final String RIVAMED_REG_LOG_ROUTING_KEY_NAME = "log.client.reg.routingKey";
+
+    /**
      * 业务日志队列
      */
     public static final String RIVAMED_BUSINESS_LOG_QUEUE_NAME = "log.client.business";

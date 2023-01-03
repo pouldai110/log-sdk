@@ -1,7 +1,7 @@
 package cn.rivamed.log.springboot.runner;
 
-import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.entity.LogClientInfo;
+import cn.rivamed.log.core.enums.RivamedLogQueueEnum;
 import cn.rivamed.log.core.rabbitmq.RabbitMQClient;
 import cn.rivamed.log.core.spring.RivamedLogPropertyInit;
 import cn.rivamed.log.core.util.IpUtil;
@@ -34,6 +34,6 @@ public class RivamedLogApplicationRunnerImpl implements ApplicationRunner {
         logger.info("发送客户端启动注册事件");
         //发送客户端启动注册事件
         LogClientInfo logClientInfo = new LogClientInfo(rivamedLogPropertyInit.getSysName(), IpUtil.getLocalHostIp(), rivamedLogPropertyInit.getClientPort());
-        RabbitMQClient.getClient().pushSimpleMessage(LogMessageConstant.RIVAMED_REG_LOG_QUEUE_NAME, logClientInfo);
+        RabbitMQClient.getClient().pushSimpleMessage(RivamedLogQueueEnum.RIVAMED_REG_LOG_QUEUE, logClientInfo);
     }
 }

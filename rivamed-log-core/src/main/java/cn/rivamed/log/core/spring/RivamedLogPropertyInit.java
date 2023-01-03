@@ -3,6 +3,7 @@ package cn.rivamed.log.core.spring;
 import cn.rivamed.log.core.client.AbstractClient;
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.context.RivamedLogContext;
+import cn.rivamed.log.core.enums.RivamedLogQueueEnum;
 import cn.rivamed.log.core.rabbitmq.LogConfigTopicListener;
 import cn.rivamed.log.core.rabbitmq.RabbitMQClient;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -54,13 +54,10 @@ public class RivamedLogPropertyInit implements InitializingBean {
     private String virtualHost;
     private String username;
     private String password;
-    private String exchange;
-    private String routingKey;
-    private String queueName;
 
     @Override
     public void afterPropertiesSet() {
-        RabbitMQClient rabbitMQClient = RabbitMQClient.getInstance(host, port, virtualHost, username, password, exchange, routingKey);
+        RabbitMQClient rabbitMQClient = RabbitMQClient.getInstance(host, port, virtualHost, username, password);
         AbstractClient.setClient(rabbitMQClient);
         RivamedLogContext.setSysName(sysName);
         RivamedLogContext.setSqlEnable(sqlEnable);
@@ -71,22 +68,18 @@ public class RivamedLogPropertyInit implements InitializingBean {
 
         RabbitAdmin admin = new RabbitAdmin(rabbitMQClient.getCachingConnectionFactory());
         //设置日志传输队列 自动创建交换机、路由、队列及绑定关系
-        if (StringUtils.isNotBlank(exchange) && StringUtils.isNotBlank(routingKey) && StringUtils.isNotBlank(queueName)) {
-            Queue queue = new Queue(queueName, true);
-            DirectExchange exchange1 = new DirectExchange(exchange, true, false);
-            admin.declareExchange(exchange1);
+
+        for (RivamedLogQueueEnum rivamedLogQueueEnum : RivamedLogQueueEnum.values()) {
+            DirectExchange exchange = new DirectExchange(rivamedLogQueueEnum.getExchangeName(), true, false);
+
+            Queue queue = new Queue(rivamedLogQueueEnum.getQueueName(), true);
+            admin.declareExchange(exchange);
             admin.declareQueue(queue);
             admin.declareBinding(BindingBuilder.bind(queue) // 直接创建队列
-                    .to(exchange1) // 直接创建交换机
-                    .with(routingKey)); // 指定路由Key
-        }
-        //先创建队列  用于和日志服务器推送客户端系统配置
-        Queue clientQueue = new Queue(LogMessageConstant.RIVAMED_REG_LOG_QUEUE_NAME, true);
-        admin.declareQueue(clientQueue);
+                    .to(exchange) // 直接创建交换机
+                    .with(rivamedLogQueueEnum.getRoutingKey())); // 指定路由Key
 
-        //创建登录日志队列  用于上传登录日志
-        Queue loginLogQueue = new Queue(LogMessageConstant.RIVAMED_LOGIN_LOG_QUEUE_NAME, true);
-        admin.declareQueue(loginLogQueue);
+        }
 
         //创建日志系统配置项监听队列 用于监听服务器的配置 采用发布订阅模式 队列名采用 sysName://ip:port 格式，方便查看
         Queue configQueue = new Queue(sysName + "://" + clientIp + ":" + clientPort, true, false, true);

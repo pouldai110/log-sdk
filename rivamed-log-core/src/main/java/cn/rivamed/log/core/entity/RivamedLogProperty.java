@@ -35,10 +35,6 @@ public class RivamedLogProperty {
     private String username;
     private String password;
 
-    private String exchange;
-    private String routingKey;
-    private String queueName;
-
     public boolean isSqlEnable() {
         return sqlEnable;
     }
@@ -119,27 +115,4 @@ public class RivamedLogProperty {
         this.password = password;
     }
 
-    public String getExchange() {
-        return exchange;
-    }
-
-    public void setExchange(String exchange) {
-        this.exchange = exchange;
-    }
-
-    public String getRoutingKey() {
-        return routingKey;
-    }
-
-    public void setRoutingKey(String routingKey) {
-        this.routingKey = routingKey;
-    }
-
-    public String getQueueName() {
-        return queueName;
-    }
-
-    public void setQueueName(String queueName) {
-        this.queueName = queueName;
-    }
 }
