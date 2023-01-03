@@ -36,7 +36,7 @@
         <servlet.version>4.0.1</servlet.version>
         <javassist.version>3.29.2-GA</javassist.version>
         <springfox.version>2.10.5</springfox.version>
-        <mzt-biz-sdk.version>3.0.3</mzt-biz-sdk.version>
+        <mzt-biz-sdk.version>3.0.4</mzt-biz-sdk.version>
         <quartz.version>2.3.2</quartz.version>
         <lombok.version>1.18.24</lombok.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
