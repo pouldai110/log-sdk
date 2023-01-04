@@ -90,7 +90,7 @@ public class RabbitMQClient extends AbstractClient {
         // 生成消息对象
         MessageConverter messageConverter = batchingRabbitTemplate.getMessageConverter();
         Message message = messageConverter.toMessage(messageStr, messageProperties);
-        batchingRabbitTemplate.send(LogMessageConstant.RIVAMED_LOG_EXCHANGE_NAME, LogMessageConstant.RIVAMED_BUSINESS_LOG_ROUTING_KEY_NAME, message, null);
+        batchingRabbitTemplate.send(LogMessageConstant.RIVAMED_LOG_CLIENT_EXCHANGE_NAME, LogMessageConstant.RIVAMED_BUSINESS_LOG_ROUTING_KEY_NAME, message, null);
     }
 
     @Override

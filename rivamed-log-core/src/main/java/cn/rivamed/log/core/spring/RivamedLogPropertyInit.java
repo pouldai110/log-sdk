@@ -22,6 +22,8 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.text.MessageFormat;
+
 /**
  * Rivamed Log参数初始化类，适用于springboot和spring
  *
@@ -81,9 +83,10 @@ public class RivamedLogPropertyInit implements InitializingBean {
 
         }
 
-        //创建日志系统配置项监听队列 用于监听服务器的配置 采用发布订阅模式 队列名采用 sysName://ip:port 格式，方便查看
-        Queue configQueue = new Queue(sysName + "://" + clientIp + ":" + clientPort, true, false, true);
-        TopicExchange topicExchange = new TopicExchange(LogMessageConstant.RIVAMED_LOG_SERVER_CONFIG, true, true);
+        //创建日志系统配置项监听队列 用于监听服务器的配置 采用发布订阅模式
+        String queueName = MessageFormat.format(LogMessageConstant.RIVAMED_LOG_CLIENT_QUEUE_NAME, sysName, clientIp, clientPort);
+        Queue configQueue = new Queue(queueName, true, false, true);
+        TopicExchange topicExchange = new TopicExchange(LogMessageConstant.RIVAMED_LOG_SERVER_EXCHANGE_NAME, true, true);
         admin.declareExchange(topicExchange);
         admin.declareQueue(configQueue);
         admin.declareBinding(BindingBuilder.bind(configQueue) // 直接创建队列

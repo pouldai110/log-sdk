@@ -112,12 +112,12 @@ public class LogMessageConstant {
     /**
      * 日志服务配置交换机
      */
-    public static final String RIVAMED_LOG_SERVER_CONFIG = "log.server.config";
+    public static final String RIVAMED_LOG_SERVER_EXCHANGE_NAME = "log.server.exchange";
 
     /**
-     * 日志交换机
+     * 日志客户端交换机
      */
-    public static final String RIVAMED_LOG_EXCHANGE_NAME = "log.client.exchange";
+    public static final String RIVAMED_LOG_CLIENT_EXCHANGE_NAME = "log.client.exchange";
 
     /**
      * 业务日志交换机
@@ -148,5 +148,14 @@ public class LogMessageConstant {
      * 日志客户端注册队列
      */
     public static final String RIVAMED_REG_LOG_QUEUE_NAME = "log.client.reg";
+
+
+    /**
+     * 创建日志系统配置项监听队列模板 队列名采用 sysName://ip:port 格式
+     */
+    public static final String RIVAMED_LOG_CLIENT_QUEUE_NAME = "{0}://{1}:{2}";
+
+
+
 
 }

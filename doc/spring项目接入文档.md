@@ -381,4 +381,31 @@ public class BspDynamicJob extends RivamedLogQuartzJobBean {
 
 ```
 
+##### 3.6 日志脱敏
 
+* 1、如果有些关键数据不需要完整展示在日志中，那么只需要在对应的字段上面加上 @Desensitize 注解，根据对应的业务类型设置相应的策略,即可实现脱敏。
+* 2、暂时支持 用户名、身份证、座机号码、电话号码、邮箱、地址、车牌号、银行卡号、密码等类型的脱敏
+
+* 示例
+
+```java
+
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class BspLoginDto implements Serializable {
+    
+     private static final long serialVersionUID = 2291962030426081727L;
+    
+     @Desensitize(strategy = DesensitizeStrategy.PASSWORD)
+     private String password;
+     
+}
+ 
+ ``` 
+
+```text
+
+ /bsp/rmApi/login/bsplogin param: [{"isUpdatePart":"1","sourceFlag":"0","systemType":"jishou-oms","loginName":"cs01","password":"********","loginMode":"1","onlyToken":"0","continueToLogin":"1"}]
+ 
+ ```
+  
