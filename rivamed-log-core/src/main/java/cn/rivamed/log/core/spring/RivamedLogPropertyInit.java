@@ -83,7 +83,7 @@ public class RivamedLogPropertyInit implements InitializingBean {
 
         //创建日志系统配置项监听队列 用于监听服务器的配置 采用发布订阅模式 队列名采用 sysName://ip:port 格式，方便查看
         Queue configQueue = new Queue(sysName + "://" + clientIp + ":" + clientPort, true, false, true);
-        TopicExchange topicExchange = new TopicExchange(LogMessageConstant.RIVAMED_LOG_CONFIG, true, true);
+        TopicExchange topicExchange = new TopicExchange(LogMessageConstant.RIVAMED_LOG_SERVER_CONFIG, true, true);
         admin.declareExchange(topicExchange);
         admin.declareQueue(configQueue);
         admin.declareBinding(BindingBuilder.bind(configQueue) // 直接创建队列

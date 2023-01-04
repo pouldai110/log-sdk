@@ -112,7 +112,7 @@ public class LogMessageConstant {
     /**
      * 日志服务配置交换机
      */
-    public static final String RIVAMED_LOG_CONFIG = "rivamed-log-config";
+    public static final String RIVAMED_LOG_SERVER_CONFIG = "log.server.config";
 
     /**
      * 日志交换机
