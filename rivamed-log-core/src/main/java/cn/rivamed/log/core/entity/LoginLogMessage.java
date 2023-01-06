@@ -85,7 +85,7 @@ public class LoginLogMessage implements Serializable {
     private Date loginTime = new Date();
 
     /**
-     * 退出登录时间
+     * 退出登录时间(退出登录必填)
      */
     private Date logoutTime;
 

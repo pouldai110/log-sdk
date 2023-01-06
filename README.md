@@ -373,11 +373,12 @@ public class LoginRest {
                             .setSystemName("rm-th")
                             .setTenantId("11111")
                             .setTokenId("TOKEN")
+                            .setJobNo("jobNo")
                             .setAccountId("张三111")
                             .setAccountName("张三444")
                             .setUserName("张三222")
                             .setLoginType("pda");
-            log.info(LogMessageConstant.LOG_TYPE_LOGIN_LOG + JsonUtil.toJSONString(loginLogMessage));
+            LogMessageFactory.pushLoginLogMessage(loginLogMessage);
     }
 }
 

@@ -293,15 +293,16 @@ public class LoginRest {
     
     public void login() {
             LoginLogMessage loginLogMessage = new LoginLogMessage()
-                    .setSubSystemName("stemType")
+                    .setSubSystemName("stemType") //必填
                     .setTenantId("tenantId")
-                    .setTokenId("tokenId")
-                    .setAccountId("accountId")
+                    .setTokenId("tokenId") //必填
+                    .setAccountId("accountId") //必填
                     .setAccountName("accountName")
                     .setUserName("userName")
                     .setLoginType("loginType")
+                    .setJobNo("jobNo")
                     .setLoginStatus(LogMessageConstant.SUCCESS)
-                    .setLoginTime(new Date())
+                    .setLoginTime(new Date()) //必填
                     .setLoginDevice("device")
                     .setLoginDeviceSn("sn")
                     .setRemark("remark");
@@ -318,13 +319,13 @@ public class LoginRest {
     
     public void login() {
             LoginLogMessage loginLogMessage = new LoginLogMessage()
-                    .setSubSystemName("stemType")
+                    .setSubSystemName("stemType") //必填
                     .setTenantId("tenantId")
-                    .setAccountId("accountId")
+                    .setAccountId("accountId") //必填
                     .setAccountName("accountName")
                     .setLoginType("loginType")
                     .setLoginStatus(LogMessageConstant.FAIL)
-                    .setLoginTime(new Date())
+                    .setLoginTime(new Date()) //必填
                     .setLoginDevice("device")
                     .setLoginDeviceSn("sn")
                     .setRemark("remark");
@@ -343,9 +344,9 @@ public class LoginRest {
     
     public void login() {
             LoginLogMessage loginLogMessage = new LoginLogMessage()
-                    .setSubSystemName("stemType")
-                    .setTokenId("tokenId")
-                    .setLogoutTime(new Date());
+                    .setSubSystemName("stemType") //必填
+                    .setTokenId("tokenId") //必填
+                    .setLogoutTime(new Date()); //必填
             LogMessageFactory.pushLoginLogMessage(loginLogMessage);
     }
 }
@@ -403,6 +404,7 @@ public class BspLoginDto implements Serializable {
  
  ``` 
 
+* 脱敏后密码字段值变成*
 ```text
 
  /bsp/rmApi/login/bsplogin param: [{"isUpdatePart":"1","sourceFlag":"0","systemType":"jishou-oms","loginName":"cs01","password":"********","loginMode":"1","onlyToken":"0","continueToLogin":"1"}]
