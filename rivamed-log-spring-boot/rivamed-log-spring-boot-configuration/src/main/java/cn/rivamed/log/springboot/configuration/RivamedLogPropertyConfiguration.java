@@ -1,7 +1,7 @@
 package cn.rivamed.log.springboot.configuration;
 
-import cn.rivamed.log.core.spring.RivamedLogPropertyInit;
 import cn.rivamed.log.core.entity.RivamedLogProperty;
+import cn.rivamed.log.core.spring.RivamedLogPropertyInit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -36,11 +36,12 @@ public class RivamedLogPropertyConfiguration {
                 .setVirtualHost(rivamedLogProperty.getVirtualHost())
                 .setUsername(rivamedLogProperty.getUsername())
                 .setPassword(rivamedLogProperty.getPassword())
-                .setSqlEnable(rivamedLogProperty.isSqlEnable())
-                .setRabbitmqEnable(rivamedLogProperty.isRabbitmqEnable())
-                .setTaskEnable(rivamedLogProperty.isTaskEnable())
-                .setRequestEnable(rivamedLogProperty.isRequestEnable())
-                .setResponseEnable(rivamedLogProperty.isResponseEnable());
+                .setLogEnabled(rivamedLogProperty.isLogEnabled())
+                .setSqlEnabled(rivamedLogProperty.isSqlEnabled())
+                .setRabbitmqEnabled(rivamedLogProperty.isRabbitmqEnabled())
+                .setTaskEnabled(rivamedLogProperty.isTaskEnabled())
+                .setRequestEnabled(rivamedLogProperty.isRequestEnabled())
+                .setResponseEnabled(rivamedLogProperty.isResponseEnabled());
         return rivamedLogPropertyInit;
     }
 

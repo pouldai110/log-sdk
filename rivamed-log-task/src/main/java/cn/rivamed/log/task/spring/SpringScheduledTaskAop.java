@@ -23,7 +23,7 @@ import java.util.Date;
  * @author Zuo Yang
  */
 @Aspect
-public class  SpringScheduledTaskAop {
+public class SpringScheduledTaskAop {
 
     private static final Logger logger = LoggerFactory.getLogger(SpringScheduledTaskAop.class);
 
@@ -47,16 +47,17 @@ public class  SpringScheduledTaskAop {
         Object proceed;
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
+        boolean taskEnabled = RivamedLogContext.isLogEnabled() && RivamedLogContext.isTaskEnabled();
         try {
             proceed = pjp.proceed();
             stopWatch.stop();
-            if (RivamedLogContext.isTaskEnable()) {
+            if (taskEnabled) {
                 logger.info(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_SUCCESS_FORMAT, dateStr, method, stopWatch.getTime()));
             }
             return proceed;
         } catch (Throwable ex) {
             String message = ex.getMessage() == null ? ex.getClass().getSimpleName() : ex.getMessage();
-            if (RivamedLogContext.isTaskEnable()) {
+            if (taskEnabled) {
                 logger.error(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_FAIL_FORMAT, dateStr, method), message);
             }
             throw ex;

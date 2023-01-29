@@ -1,5 +1,6 @@
 package cn.rivamed.log.core.factory;
 
+import cn.rivamed.log.core.client.AbstractClient;
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.entity.LogRecordMessage;
 import cn.rivamed.log.core.entity.LoginLogMessage;
@@ -41,7 +42,7 @@ public class LogMessageFactory<T> {
         if (StringUtils.isNotBlank(TraceId.logTraceID.get())) {
             loginLogMessage.setTraceId(TraceId.logTraceID.get());
         }
-        RabbitMQClient.getClient().pushSimpleMessage(RivamedLogQueueEnum.RIVAMED_LOGIN_LOG_QUEUE, loginLogMessage);
+        AbstractClient.getClient().pushSimpleMessage(RivamedLogQueueEnum.RIVAMED_LOGIN_LOG_QUEUE, loginLogMessage);
     }
 
     /**

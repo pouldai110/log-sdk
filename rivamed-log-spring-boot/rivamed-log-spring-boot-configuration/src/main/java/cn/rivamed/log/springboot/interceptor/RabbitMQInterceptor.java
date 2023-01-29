@@ -33,7 +33,7 @@ public class RabbitMQInterceptor {
      * @param args
      */
     public static void sendInterceptor(RabbitTemplate rabbitTemplate, Object[] args) {
-        if (rabbitTemplate.getClass().isAssignableFrom(RabbitTemplate.class) && RivamedLogContext.isRabbitmqEnable()) {
+        if (rabbitTemplate.getClass().isAssignableFrom(RabbitTemplate.class) && RivamedLogContext.isLogEnabled() && RivamedLogContext.isRabbitmqEnabled()) {
             RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromSend(rabbitTemplate, args);
             MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
         }
@@ -46,7 +46,7 @@ public class RabbitMQInterceptor {
      * @param channel
      */
     public static void receiveInterceptor(Message message, Channel channel) {
-        if (RivamedLogContext.isRabbitmqEnable()) {
+        if (RivamedLogContext.isLogEnabled() && RivamedLogContext.isRabbitmqEnabled()) {
             if (tracer == null) {
                 tracer = RivamedLogApplicationContextHolder.getApplicationContext().getBean("tracer", Tracer.class);
             }
