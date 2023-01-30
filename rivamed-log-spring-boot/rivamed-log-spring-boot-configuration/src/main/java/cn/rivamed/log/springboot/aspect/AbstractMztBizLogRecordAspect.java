@@ -113,7 +113,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             } catch (Exception e) {
                 cloneParams = params.toString();
             }
-            if (RivamedLogContext.isLogEnabled() && RivamedLogContext.isRequestEnabled()) {
+            if (RivamedLogContext.isLogEnable() && RivamedLogContext.isRequestEnable()) {
                 logger.info(request.getRequestURI() + " param: {}", cloneParams);
             }
             //设置基础数据
@@ -148,7 +148,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             } catch (Exception e) {
                 result = returnValue.toString();
             }
-            if (RivamedLogContext.isLogEnabled() && RivamedLogContext.isResponseEnabled()) {
+            if (RivamedLogContext.isLogEnable() && RivamedLogContext.isResponseEnable()) {
                 logger.info(request.getRequestURI() + " result: {}", result);
             }
             message.setLevel(LogLevel.INFO.name());

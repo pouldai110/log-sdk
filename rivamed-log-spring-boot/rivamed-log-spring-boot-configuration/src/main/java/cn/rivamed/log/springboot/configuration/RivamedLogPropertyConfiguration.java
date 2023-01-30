@@ -36,12 +36,12 @@ public class RivamedLogPropertyConfiguration {
                 .setVirtualHost(rivamedLogProperty.getVirtualHost())
                 .setUsername(rivamedLogProperty.getUsername())
                 .setPassword(rivamedLogProperty.getPassword())
-                .setLogEnabled(rivamedLogProperty.isLogEnabled())
-                .setSqlEnabled(rivamedLogProperty.isSqlEnabled())
-                .setRabbitmqEnabled(rivamedLogProperty.isRabbitmqEnabled())
-                .setTaskEnabled(rivamedLogProperty.isTaskEnabled())
-                .setRequestEnabled(rivamedLogProperty.isRequestEnabled())
-                .setResponseEnabled(rivamedLogProperty.isResponseEnabled());
+                .setLogEnable(rivamedLogProperty.isLogEnable())
+                .setSqlEnable(rivamedLogProperty.isSqlEnable())
+                .setRabbitmqEnable(rivamedLogProperty.isRabbitmqEnable())
+                .setTaskEnable(rivamedLogProperty.isTaskEnable())
+                .setRequestEnable(rivamedLogProperty.isRequestEnable())
+                .setResponseEnable(rivamedLogProperty.isResponseEnable());
         return rivamedLogPropertyInit;
     }
 

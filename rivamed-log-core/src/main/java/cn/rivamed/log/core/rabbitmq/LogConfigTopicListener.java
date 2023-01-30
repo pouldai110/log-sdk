@@ -41,11 +41,11 @@ public class LogConfigTopicListener implements ChannelAwareMessageListener {
             }
             log.info("-----收到日志服务器配置：{}", new String(message.getBody(), "UTF-8"));
             RivamedLogProperty rivamedLogProperty = objectMapper.readValue(message.getBody(), RivamedLogProperty.class);
-            RivamedLogContext.setSqlEnabled(rivamedLogProperty.isSqlEnabled());
-            RivamedLogContext.setRabbitmqEnabled(rivamedLogProperty.isRabbitmqEnabled());
-            RivamedLogContext.setTaskEnabled(rivamedLogProperty.isTaskEnabled());
-            RivamedLogContext.setRequestEnabled(rivamedLogProperty.isRequestEnabled());
-            RivamedLogContext.setResponseEnabled(rivamedLogProperty.isResponseEnabled());
+            RivamedLogContext.setSqlEnable(rivamedLogProperty.isSqlEnable());
+            RivamedLogContext.setRabbitmqEnable(rivamedLogProperty.isRabbitmqEnable());
+            RivamedLogContext.setTaskEnable(rivamedLogProperty.isTaskEnable());
+            RivamedLogContext.setRequestEnable(rivamedLogProperty.isRequestEnable());
+            RivamedLogContext.setResponseEnable(rivamedLogProperty.isResponseEnable());
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
             log.error("-----日志服务器配置解析失败", e);

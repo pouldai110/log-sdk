@@ -18,32 +18,32 @@ public class RivamedLogContext {
     /**
      * 是否收集日志 全局控制
      */
-    private static boolean logEnabled = true;
+    private static boolean logEnable = true;
 
     /**
      * 是否收集SQL日志
      */
-    private static boolean sqlEnabled = false;
+    private static boolean sqlEnable = false;
 
     /**
      * 是否收集RabbitMQ日志
      */
-    private static boolean rabbitmqEnabled = false;
+    private static boolean rabbitmqEnable = false;
 
     /**
      * 是否收集定时任务日志
      */
-    private static boolean taskEnabled = true;
+    private static boolean taskEnable = true;
 
     /**
      * 是否收集接口请求参数
      */
-    private static boolean requestEnabled = true;
+    private static boolean requestEnable = true;
 
     /**
      * 是否收集接口响应参数
      */
-    private static boolean responseEnabled = false;
+    private static boolean responseEnable = false;
 
     public static final TransmittableThreadLocal<RivamedLogRecordLabel> rivamedLogLabelTTL = new TransmittableThreadLocal<>();
 
@@ -71,51 +71,51 @@ public class RivamedLogContext {
         RivamedLogContext.sysName = sysName;
     }
 
-    public static boolean isLogEnabled() {
-        return logEnabled;
+    public static boolean isLogEnable() {
+        return logEnable;
     }
 
-    public static void setLogEnabled(boolean logEnabled) {
-        RivamedLogContext.logEnabled = logEnabled;
+    public static void setLogEnable(boolean logEnable) {
+        RivamedLogContext.logEnable = logEnable;
     }
 
-    public static boolean isSqlEnabled() {
-        return sqlEnabled;
+    public static boolean isSqlEnable() {
+        return sqlEnable;
     }
 
-    public static void setSqlEnabled(boolean sqlEnabled) {
-        RivamedLogContext.sqlEnabled = sqlEnabled;
+    public static void setSqlEnable(boolean sqlEnable) {
+        RivamedLogContext.sqlEnable = sqlEnable;
     }
 
-    public static boolean isRabbitmqEnabled() {
-        return rabbitmqEnabled;
+    public static boolean isRabbitmqEnable() {
+        return rabbitmqEnable;
     }
 
-    public static void setRabbitmqEnabled(boolean rabbitmqEnabled) {
-        RivamedLogContext.rabbitmqEnabled = rabbitmqEnabled;
+    public static void setRabbitmqEnable(boolean rabbitmqEnable) {
+        RivamedLogContext.rabbitmqEnable = rabbitmqEnable;
     }
 
-    public static boolean isTaskEnabled() {
-        return taskEnabled;
+    public static boolean isTaskEnable() {
+        return taskEnable;
     }
 
-    public static void setTaskEnabled(boolean taskEnabled) {
-        RivamedLogContext.taskEnabled = taskEnabled;
+    public static void setTaskEnable(boolean taskEnable) {
+        RivamedLogContext.taskEnable = taskEnable;
     }
 
-    public static boolean isRequestEnabled() {
-        return requestEnabled;
+    public static boolean isRequestEnable() {
+        return requestEnable;
     }
 
-    public static void setRequestEnabled(boolean requestEnabled) {
-        RivamedLogContext.requestEnabled = requestEnabled;
+    public static void setRequestEnable(boolean requestEnable) {
+        RivamedLogContext.requestEnable = requestEnable;
     }
 
-    public static boolean isResponseEnabled() {
-        return responseEnabled;
+    public static boolean isResponseEnable() {
+        return responseEnable;
     }
 
-    public static void setResponseEnabled(boolean responseEnabled) {
-        RivamedLogContext.responseEnabled = responseEnabled;
+    public static void setResponseEnable(boolean responseEnable) {
+        RivamedLogContext.responseEnable = responseEnable;
     }
 }

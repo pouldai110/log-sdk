@@ -37,16 +37,16 @@ public abstract class RivamedLogQuartzJobBean extends QuartzJobBean {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         String method = ((JobDetailImpl) jobExecutionContext.getJobDetail()).getFullName();
-        boolean taskEnabled = RivamedLogContext.isLogEnabled() && RivamedLogContext.isTaskEnabled();
+        boolean taskEnable = RivamedLogContext.isLogEnable() && RivamedLogContext.isTaskEnable();
         try {
             executeTask(jobExecutionContext);
             stopWatch.stop();
-            if (taskEnabled) {
+            if (taskEnable) {
                 logger.info(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_SUCCESS_FORMAT, dateStr, method, stopWatch.getTime()));
             }
         } catch (Throwable ex) {
             String message = ex.getMessage() == null ? ex.getClass().getSimpleName() : ex.getMessage();
-            if (taskEnabled) {
+            if (taskEnable) {
                 logger.error(LogMessageConstant.LOG_TYPE_SCHEDULED_TASK_LOG + String.format(LogTemplateUtil.TASK_FAIL_FORMAT, dateStr, method), message);
             }
             throw ex;

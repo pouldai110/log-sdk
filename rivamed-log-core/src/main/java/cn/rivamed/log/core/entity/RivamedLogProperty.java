@@ -15,22 +15,22 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 public class RivamedLogProperty {
 
     @Value("${rivamed.log.enabled}")
-    private boolean logEnabled;
+    private boolean logEnable;
 
-    @Value("${rivamed.log.collect.sqlEnabled}")
-    private boolean sqlEnabled;
+    @Value("${rivamed.log.collect.sqlEnable}")
+    private boolean sqlEnable;
 
-    @Value("${rivamed.log.collect.rabbitmqEnabled}")
-    private boolean rabbitmqEnabled;
+    @Value("${rivamed.log.collect.rabbitmqEnable}")
+    private boolean rabbitmqEnable;
 
-    @Value("${rivamed.log.collect.taskEnabled}")
-    private boolean taskEnabled;
+    @Value("${rivamed.log.collect.taskEnable}")
+    private boolean taskEnable;
 
-    @Value("${rivamed.log.collect.requestEnabled}")
-    private boolean requestEnabled;
+    @Value("${rivamed.log.collect.requestEnable}")
+    private boolean requestEnable;
 
-    @Value("${rivamed.log.collect.responseEnabled}")
-    private boolean responseEnabled;
+    @Value("${rivamed.log.collect.responseEnable}")
+    private boolean responseEnable;
 
     private String host;
     private int port;
@@ -38,52 +38,52 @@ public class RivamedLogProperty {
     private String username;
     private String password;
 
-    public boolean isLogEnabled() {
-        return logEnabled;
+    public boolean isLogEnable() {
+        return logEnable;
     }
 
-    public void setLogEnabled(boolean logEnabled) {
-        this.logEnabled = logEnabled;
+    public void setLogEnable(boolean logEnable) {
+        this.logEnable = logEnable;
     }
 
-    public boolean isSqlEnabled() {
-        return sqlEnabled;
+    public boolean isSqlEnable() {
+        return sqlEnable;
     }
 
-    public void setSqlEnabled(boolean sqlEnabled) {
-        this.sqlEnabled = sqlEnabled;
+    public void setSqlEnable(boolean sqlEnable) {
+        this.sqlEnable = sqlEnable;
     }
 
-    public boolean isRabbitmqEnabled() {
-        return rabbitmqEnabled;
+    public boolean isRabbitmqEnable() {
+        return rabbitmqEnable;
     }
 
-    public void setRabbitmqEnabled(boolean rabbitmqEnabled) {
-        this.rabbitmqEnabled = rabbitmqEnabled;
+    public void setRabbitmqEnable(boolean rabbitmqEnable) {
+        this.rabbitmqEnable = rabbitmqEnable;
     }
 
-    public boolean isTaskEnabled() {
-        return taskEnabled;
+    public boolean isTaskEnable() {
+        return taskEnable;
     }
 
-    public void setTaskEnabled(boolean taskEnabled) {
-        this.taskEnabled = taskEnabled;
+    public void setTaskEnable(boolean taskEnable) {
+        this.taskEnable = taskEnable;
     }
 
-    public boolean isRequestEnabled() {
-        return requestEnabled;
+    public boolean isRequestEnable() {
+        return requestEnable;
     }
 
-    public void setRequestEnabled(boolean requestEnabled) {
-        this.requestEnabled = requestEnabled;
+    public void setRequestEnable(boolean requestEnable) {
+        this.requestEnable = requestEnable;
     }
 
-    public boolean isResponseEnabled() {
-        return responseEnabled;
+    public boolean isResponseEnable() {
+        return responseEnable;
     }
 
-    public void setResponseEnabled(boolean responseEnabled) {
-        this.responseEnabled = responseEnabled;
+    public void setResponseEnable(boolean responseEnable) {
+        this.responseEnable = responseEnable;
     }
 
     public String getHost() {

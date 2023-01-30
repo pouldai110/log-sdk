@@ -32,7 +32,7 @@ public class MessageAppenderFactory {
 
 
     public static void push(BaseLogMessage baseLogMessage) {
-        if (RivamedLogContext.isLogEnabled() && StringUtils.isNotBlank(baseLogMessage.getTraceId()) && checkSqlLog(baseLogMessage)) {
+        if (RivamedLogContext.isLogEnable() && StringUtils.isNotBlank(baseLogMessage.getTraceId()) && checkSqlLog(baseLogMessage)) {
             baseLogMessage.setSeq(SEQ_BUILDER.getAndIncrement());
             LogMessageRingBuffer.ringBuffer.publishEvent((event, sequence) -> event.setBaseLogMessage(baseLogMessage));
         }
@@ -46,7 +46,7 @@ public class MessageAppenderFactory {
      */
     private static boolean checkSqlLog(BaseLogMessage baseLogMessage) {
         Boolean flag = true;
-        if (!RivamedLogContext.isSqlEnabled() && (baseLogMessage.getBizDetail().startsWith(LogMessageConstant.LEFT_EQUALS) || baseLogMessage.getBizDetail().startsWith(LogMessageConstant.RIGHT_EQUALS) || baseLogMessage.getClassName().equals(LogMessageConstant.HIBERNATE_SQL_PATH))) {
+        if (!RivamedLogContext.isSqlEnable() && (baseLogMessage.getBizDetail().startsWith(LogMessageConstant.LEFT_EQUALS) || baseLogMessage.getBizDetail().startsWith(LogMessageConstant.RIGHT_EQUALS) || baseLogMessage.getClassName().equals(LogMessageConstant.HIBERNATE_SQL_PATH))) {
             flag = false;
         }
         return flag;

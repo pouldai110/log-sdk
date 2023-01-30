@@ -84,7 +84,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             } catch (Exception e) {
                 cloneParams = params.toString();
             }
-            if (RivamedLogContext.isLogEnabled() && RivamedLogContext.isRequestEnabled()) {
+            if (RivamedLogContext.isLogEnable() && RivamedLogContext.isRequestEnable()) {
                 logger.info(request.getRequestURI() + " param: {}", cloneParams);
             }
             message.setMethod(methodName);
@@ -105,7 +105,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             } catch (Exception e) {
                 result = returnValue.toString();
             }
-            if (RivamedLogContext.isLogEnabled() && RivamedLogContext.isResponseEnabled()) {
+            if (RivamedLogContext.isLogEnable() && RivamedLogContext.isResponseEnable()) {
                 logger.info(request.getRequestURI() + " result: {}", result);
             }
 

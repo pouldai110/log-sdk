@@ -46,12 +46,12 @@ public class RivamedLogPropertyInit implements InitializingBean {
     @Value("${server.port}")
     private String clientPort;
 
-    private boolean logEnabled;
-    private boolean sqlEnabled;
-    private boolean rabbitmqEnabled;
-    private boolean taskEnabled;
-    private boolean requestEnabled;
-    private boolean responseEnabled;
+    private boolean logEnable;
+    private boolean sqlEnable;
+    private boolean rabbitmqEnable;
+    private boolean taskEnable;
+    private boolean requestEnable;
+    private boolean responseEnable;
     private String host;
     private int port;
     private String virtualHost;
@@ -62,14 +62,14 @@ public class RivamedLogPropertyInit implements InitializingBean {
     public void afterPropertiesSet() {
 
         RivamedLogContext.setSysName(sysName);
-        RivamedLogContext.setLogEnabled(logEnabled);
-        RivamedLogContext.setSqlEnabled(sqlEnabled);
-        RivamedLogContext.setRabbitmqEnabled(rabbitmqEnabled);
-        RivamedLogContext.setTaskEnabled(taskEnabled);
-        RivamedLogContext.setRequestEnabled(requestEnabled);
-        RivamedLogContext.setResponseEnabled(responseEnabled);
+        RivamedLogContext.setLogEnable(logEnable);
+        RivamedLogContext.setSqlEnable(sqlEnable);
+        RivamedLogContext.setRabbitmqEnable(rabbitmqEnable);
+        RivamedLogContext.setTaskEnable(taskEnable);
+        RivamedLogContext.setRequestEnable(requestEnable);
+        RivamedLogContext.setResponseEnable(responseEnable);
         //只有开启了日志打印的才注册事件 绑定队列
-        if (logEnabled) {
+        if (logEnable) {
             RabbitMQClient rabbitMQClient = RabbitMQClient.getInstance(host, port, virtualHost, username, password);
             AbstractClient.setClient(rabbitMQClient);
             RabbitAdmin admin = new RabbitAdmin(rabbitMQClient.getCachingConnectionFactory());
