@@ -37,6 +37,9 @@ public class RivamedLogApplicationRunnerImpl implements ApplicationRunner {
         logger.info("发送客户端启动注册事件");
         //发送客户端启动注册事件
         LogClientInfo logClientInfo = new LogClientInfo(rivamedLogPropertyInit.getSysName(), IpUtil.getLocalHostIp(), rivamedLogPropertyInit.getClientPort());
-        AbstractClient.getClient().pushSimpleMessage(RivamedLogQueueEnum.RIVAMED_REG_LOG_QUEUE, logClientInfo);
+        AbstractClient client = AbstractClient.getClient();
+        if (client != null) {
+            client.pushSimpleMessage(RivamedLogQueueEnum.RIVAMED_REG_LOG_QUEUE, logClientInfo);
+        }
     }
 }

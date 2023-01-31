@@ -36,17 +36,22 @@ public class LogMessageFactory<T> {
 
     /**
      * 推送登录日志
+     *
      * @param loginLogMessage
      */
     public static void pushLoginLogMessage(LoginLogMessage loginLogMessage) {
         if (StringUtils.isNotBlank(TraceId.logTraceID.get())) {
             loginLogMessage.setTraceId(TraceId.logTraceID.get());
         }
-        AbstractClient.getClient().pushSimpleMessage(RivamedLogQueueEnum.RIVAMED_LOGIN_LOG_QUEUE, loginLogMessage);
+        AbstractClient client = AbstractClient.getClient();
+        if (client != null) {
+            client.pushSimpleMessage(RivamedLogQueueEnum.RIVAMED_LOGIN_LOG_QUEUE, loginLogMessage);
+        }
     }
 
     /**
      * 推送RabbitMQ日志
+     *
      * @param rabbitLogMessage
      */
     public static void pushRabbitLogMessage(RabbitLogMessage rabbitLogMessage) {
@@ -55,6 +60,7 @@ public class LogMessageFactory<T> {
 
     /**
      * 推送操作记录日志
+     *
      * @param logRecordMessage
      */
     public static void pushLogRecordMessage(LogRecordMessage logRecordMessage) {
