@@ -1,7 +1,5 @@
 # Rivamed Log使用方法
 
-* 使用前请耐心的按照步骤把文档看完，需要对logback,log4j两大日志框架基本配置有一定了解
-
 ## 使用前注意事项
 
 * Rivamed Log使用的是RabbitMQ + Disruptor + Sleuth。
@@ -32,6 +30,7 @@ RabbitMQAppender内部实例化了一个 BatchingRabbitTemplate客户端和一�
 
 rivamed:
   log:
+    enabled: true
     rabbitmq:
       host: 192.168.111.222
       port: 5672
@@ -43,8 +42,7 @@ rivamed:
 
 |  字段值   | 用途  |
 |  ----  | ----  |
-| sysName  | 自定义应用名称 |
-| env  | 环境 默认是dev |
+| enabled  | 全局日志开启关闭配置，默认是true |
 | host  | RabbitMQ 主机 |
 | port  | RabbitMQ 端口 |
 | virtualHost  | RabbitMQ 虚拟主机名 |
@@ -378,7 +376,7 @@ public class LoginRest {
                             .setAccountName("张三444")
                             .setUserName("张三222")
                             .setLoginType("pda");
-            LogMessageFactory.pushLoginLogMessage(loginLogMessage);
+        LogMessageFactory.pushLoginLogMessage(loginLogMessage);
     }
 }
 

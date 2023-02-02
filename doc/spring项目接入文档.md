@@ -1,8 +1,5 @@
 # spring项目接入
 
-* 使用前请耐心的按照步骤把文档看完，需要对logback,log4j两大日志框架基本配置有一定了解
-
-
 ## 一、支持spring版本
 
 * 1.只支持spring-boot项目，基于spring-boot(2.3.12.RELEASE)版本开发，请尽量使用高版本的spring-boot,低版本里面的RabbitMQ可能会不兼容。
@@ -21,7 +18,7 @@
 <dependency>
     <groupId>cn.rivamed</groupId>
     <artifactId>rivamed-log-log4j-spring-boot-starter</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
   <!-- 需要语义化日志时添加 -->
 <dependency>
@@ -54,7 +51,7 @@ log4j.appender.rabbitmq=cn.rivamed.log.log4j.appender.RabbitMQAppender
 <dependency>
     <groupId>cn.rivamed</groupId>
     <artifactId>rivamed-log-logback-spring-boot-starter</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
   <!-- 需要语义化日志时添加 -->
 <dependency>
@@ -100,7 +97,7 @@ log4j.appender.rabbitmq=cn.rivamed.log.log4j.appender.RabbitMQAppender
 <dependency>
     <groupId>cn.rivamed</groupId>
     <artifactId>rivamed-log-log4j2-spring-boot-starter</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
   <!-- 需要语义化日志时添加 -->
 <dependency>
@@ -154,6 +151,7 @@ logging:
 
 rivamed:
   log:
+    enabled: true
     rabbitmq:
       host: 192.168.111.222
       port: 5672
@@ -165,6 +163,7 @@ rivamed:
 
 |  字段值   | 用途  |
 |  ----  | ----  |
+| enabled  | 全局日志开启关闭配置，默认是true |
 | host  | RabbitMQ 主机 |
 | port  | RabbitMQ 端口 |
 | virtualHost  | RabbitMQ 虚拟主机名 |

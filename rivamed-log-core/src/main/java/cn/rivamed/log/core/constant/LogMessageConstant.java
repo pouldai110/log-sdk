@@ -151,11 +151,8 @@ public class LogMessageConstant {
 
 
     /**
-     * 创建日志系统配置项监听队列模板 队列名采用 sysName://ip:port 格式
+     * 创建日志系统配置项监听队列模板，因为阿里云限制了队列名不能用 ':',所以队列名采用 sysName@ip@port 格式
      */
-    public static final String RIVAMED_LOG_CLIENT_QUEUE_NAME = "{0}://{1}:{2}";
-
-
-
+    public static final String RIVAMED_LOG_CLIENT_QUEUE_NAME = "{0}@{1}@{2}";
 
 }

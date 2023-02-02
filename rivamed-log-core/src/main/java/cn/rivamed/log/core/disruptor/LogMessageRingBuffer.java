@@ -1,7 +1,7 @@
 package cn.rivamed.log.core.disruptor;
 
 import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.SleepingWaitStrategy;
+import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
@@ -21,10 +21,10 @@ public class LogMessageRingBuffer {
     private static RingBuffer<LogMessageEvent> getRingBuffer() {
         LogMessageEventFactory eventFactory = new LogMessageEventFactory();
         // ringBuffer大小必须为2的倍数
-        Disruptor<LogMessageEvent> disruptor = new Disruptor<>(eventFactory, 128 * 1024, new CustomizableThreadFactory("event-handler-"),
-                ProducerType.SINGLE, new SleepingWaitStrategy());
+        Disruptor<LogMessageEvent> disruptor = new Disruptor<>(eventFactory, 256 * 1024, new CustomizableThreadFactory("event-handler-"),
+                ProducerType.MULTI, new YieldingWaitStrategy());
         // 连接消费端
-        disruptor.handleEventsWith(new LogMessageEventHandler()).then(new LogMessageEventCleanHandler());
+        disruptor.handleEventsWith(new LogMessageEventHandler());
         disruptor.start();
         return disruptor.getRingBuffer();
     }
