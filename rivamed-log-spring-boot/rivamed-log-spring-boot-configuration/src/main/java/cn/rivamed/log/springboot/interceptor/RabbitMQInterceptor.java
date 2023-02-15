@@ -6,6 +6,7 @@ import cn.rivamed.log.core.context.RivamedLogContext;
 import cn.rivamed.log.core.entity.RabbitLogMessage;
 import cn.rivamed.log.core.entity.TraceId;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
+import cn.rivamed.log.core.rabbitmq.RabbitMQClient;
 import cn.rivamed.log.core.spring.RivamedLogApplicationContextHolder;
 import cn.rivamed.log.springboot.util.RabbitLogMessageUtils;
 import com.rabbitmq.client.Channel;
@@ -28,12 +29,13 @@ public class RabbitMQInterceptor {
 
     /**
      * 处理RabbitMQ发送消息事件
-     *
+     * 去掉日志批量发送的消息以及系统自身发送的登录日志
      * @param rabbitTemplate
      * @param args
      */
     public static void sendInterceptor(RabbitTemplate rabbitTemplate, Object[] args) {
-        if (rabbitTemplate.getClass().isAssignableFrom(RabbitTemplate.class) && RivamedLogContext.isLogEnable() && RivamedLogContext.isRabbitmqEnable()) {
+        if (rabbitTemplate.getClass().isAssignableFrom(RabbitTemplate.class) && RivamedLogContext.isLogEnable()
+                && RivamedLogContext.isRabbitmqEnable() && rabbitTemplate != RabbitMQClient.getRabbitTemplate()) {
             RabbitLogMessage rabbitLogMessage = RabbitLogMessageUtils.collectFromSend(rabbitTemplate, args);
             MessageAppenderFactory.pushRabbitLogMessage(rabbitLogMessage);
         }

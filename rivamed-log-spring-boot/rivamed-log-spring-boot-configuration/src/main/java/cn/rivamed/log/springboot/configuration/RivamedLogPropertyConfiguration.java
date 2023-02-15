@@ -36,6 +36,7 @@ public class RivamedLogPropertyConfiguration {
                 .setVirtualHost(rivamedLogProperty.getVirtualHost())
                 .setUsername(rivamedLogProperty.getUsername())
                 .setPassword(rivamedLogProperty.getPassword())
+                .setBufferLimit(rivamedLogProperty.getBufferLimit())
                 .setLogEnable(rivamedLogProperty.isLogEnable())
                 .setSqlEnable(rivamedLogProperty.isSqlEnable())
                 .setRabbitmqEnable(rivamedLogProperty.isRabbitmqEnable())

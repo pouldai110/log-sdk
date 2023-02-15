@@ -37,6 +37,12 @@ public class IpUtil {
      */
     private static final String NETWORK_CARD_BAND = "bond0";
 
+    private static final String ipReg = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
+
+
+    public static boolean isIp(String ip) {
+        return ip.matches(ipReg);
+    }
 
     public static String getLocalHostName() {
         try {

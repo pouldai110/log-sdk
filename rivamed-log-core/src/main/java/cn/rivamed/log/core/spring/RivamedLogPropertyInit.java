@@ -57,6 +57,7 @@ public class RivamedLogPropertyInit implements InitializingBean {
     private String virtualHost;
     private String username;
     private String password;
+    private Integer bufferLimit;
 
     @Override
     public void afterPropertiesSet() {
@@ -70,7 +71,7 @@ public class RivamedLogPropertyInit implements InitializingBean {
         RivamedLogContext.setResponseEnable(responseEnable);
         //只有开启了日志打印的才注册事件 绑定队列
         if (logEnable) {
-            RabbitMQClient rabbitMQClient = RabbitMQClient.getInstance(host, port, virtualHost, username, password);
+            RabbitMQClient rabbitMQClient = RabbitMQClient.getInstance(host, port, virtualHost, username, password, bufferLimit);
             AbstractClient.setClient(rabbitMQClient);
             RabbitAdmin admin = new RabbitAdmin(rabbitMQClient.getCachingConnectionFactory());
             //设置日志传输队列 自动创建交换机、路由、队列及绑定关系

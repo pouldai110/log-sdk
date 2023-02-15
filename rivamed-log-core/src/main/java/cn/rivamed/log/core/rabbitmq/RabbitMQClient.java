@@ -3,6 +3,7 @@ package cn.rivamed.log.core.rabbitmq;
 import cn.rivamed.log.core.client.AbstractClient;
 import cn.rivamed.log.core.constant.LogMessageConstant;
 import cn.rivamed.log.core.enums.RivamedLogQueueEnum;
+import cn.rivamed.log.core.util.IpUtil;
 import cn.rivamed.log.core.util.UuidUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -37,11 +38,15 @@ public class RabbitMQClient extends AbstractClient {
     private static RabbitMQClient instance;
 
     private CachingConnectionFactory cachingConnectionFactory;
-    private BatchingRabbitTemplate batchingRabbitTemplate;
-    private RabbitTemplate rabbitTemplate;
+    private static BatchingRabbitTemplate batchingRabbitTemplate;
+    private static RabbitTemplate rabbitTemplate;
 
-    public RabbitMQClient(String host, int port, String virtualHost, String username, String password) {
-        BatchingStrategy strategy = new SimpleBatchingStrategy(1000, 25_0000, 10_000);
+    public RabbitMQClient(String host, int port, String virtualHost, String username, String password, Integer bufferLimit) {
+        //如果是IP地址 则扩大bufferLimit,默认为64KB 扩大为1M
+        if (IpUtil.isIp(host)) {
+            bufferLimit = bufferLimit << 4;
+        }
+        BatchingStrategy strategy = new SimpleBatchingStrategy(100, bufferLimit, 5_000);
         TaskScheduler scheduler = new ConcurrentTaskScheduler();
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory();
         cachingConnectionFactory.setHost(host);
@@ -70,11 +75,11 @@ public class RabbitMQClient extends AbstractClient {
         return new Jackson2JsonMessageConverter(om);
     }
 
-    public static RabbitMQClient getInstance(String host, int port, String virtualHost, String username, String password) {
+    public static RabbitMQClient getInstance(String host, int port, String virtualHost, String username, String password, Integer bufferLimit) {
         if (instance == null) {
             synchronized (RabbitMQClient.class) {
                 if (instance == null) {
-                    instance = new RabbitMQClient(host, port, virtualHost, username, password);
+                    instance = new RabbitMQClient(host, port, virtualHost, username, password, bufferLimit);
                 }
             }
         }
@@ -105,7 +110,11 @@ public class RabbitMQClient extends AbstractClient {
         }
     }
 
-    public BatchingRabbitTemplate getBatchingRabbitTemplate() {
+    public static RabbitTemplate getRabbitTemplate() {
+        return rabbitTemplate;
+    }
+
+    public static BatchingRabbitTemplate getBatchingRabbitTemplate() {
         return batchingRabbitTemplate;
     }
 

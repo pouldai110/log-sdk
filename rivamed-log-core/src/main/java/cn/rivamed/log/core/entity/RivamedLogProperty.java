@@ -37,6 +37,7 @@ public class RivamedLogProperty {
     private String virtualHost;
     private String username;
     private String password;
+    private Integer bufferLimit = 65535;
 
     public boolean isLogEnable() {
         return logEnable;
@@ -126,4 +127,11 @@ public class RivamedLogProperty {
         this.password = password;
     }
 
+    public Integer getBufferLimit() {
+        return bufferLimit;
+    }
+
+    public void setBufferLimit(Integer bufferLimit) {
+        this.bufferLimit = bufferLimit;
+    }
 }
