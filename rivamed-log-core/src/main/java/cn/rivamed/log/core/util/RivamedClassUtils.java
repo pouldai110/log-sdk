@@ -5,6 +5,8 @@ import org.springframework.util.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 描述:
@@ -17,6 +19,9 @@ import java.lang.reflect.Method;
  */
 public class RivamedClassUtils {
 
+    private static final Map<String, Boolean> commonClassCache = new ConcurrentHashMap<>(16);
+
+
     /**
      * 获取方法的注解值
      *
@@ -28,7 +33,15 @@ public class RivamedClassUtils {
     public static String getAnnotationValue(String className, Method method, String field) {
         String value = null;
         try {
-            if (ClassUtils.isPresent(className, null)) {
+            //增加缓存 防止解析时间过长影响到业务流程
+            boolean present;
+            if (commonClassCache.containsKey(className)) {
+                present = commonClassCache.get(className);
+            } else {
+                present = ClassUtils.isPresent(className, null);
+                commonClassCache.put(className, present);
+            }
+            if (present) {
                 Class<Annotation> aClass = (Class<Annotation>) ClassUtils.forName(className, null);
                 if (null != aClass) {
                     Annotation annotation = AnnotationUtils.findAnnotation(method, aClass);
