@@ -3,7 +3,6 @@ package cn.rivamed.log.springboot.runner;
 import cn.rivamed.log.core.client.AbstractClient;
 import cn.rivamed.log.core.entity.LogClientInfo;
 import cn.rivamed.log.core.enums.RivamedLogQueueEnum;
-import cn.rivamed.log.core.rabbitmq.RabbitMQClient;
 import cn.rivamed.log.core.spring.RivamedLogPropertyInit;
 import cn.rivamed.log.core.util.IpUtil;
 import org.slf4j.Logger;
@@ -11,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -26,6 +27,7 @@ import javax.annotation.Resource;
  */
 @Component
 @ConditionalOnProperty(value = "rivamed.log.enabled", matchIfMissing = true)
+@Order(value = Ordered.HIGHEST_PRECEDENCE)
 public class RivamedLogApplicationRunnerImpl implements ApplicationRunner {
     private static Logger logger = LoggerFactory.getLogger(RivamedLogApplicationRunnerImpl.class);
 

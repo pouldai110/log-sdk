@@ -35,6 +35,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -96,7 +97,7 @@ public abstract class AbstractMztBizLogRecordAspect extends RivamedMztBizLogReco
             Object[] args = joinPoint.getArgs();
             for (int i = 0; i < args.length; i++) {
                 Object object = args[i];
-                if (object instanceof HttpServletResponse || object instanceof HttpServletRequest) {
+                if (object instanceof HttpServletResponse || object instanceof HttpServletRequest || object instanceof MultipartFile) {
                     continue;
                 }
                 params.add(object);

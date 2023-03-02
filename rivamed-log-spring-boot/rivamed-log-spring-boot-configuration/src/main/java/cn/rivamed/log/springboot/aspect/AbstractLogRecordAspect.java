@@ -9,7 +9,10 @@ import cn.rivamed.log.core.enums.LogRecordTypeEnum;
 import cn.rivamed.log.core.enums.LogTypeEnum;
 import cn.rivamed.log.core.factory.MessageAppenderFactory;
 import cn.rivamed.log.core.rpc.RivamedLogRecordHandler;
-import cn.rivamed.log.core.util.*;
+import cn.rivamed.log.core.util.IpUtil;
+import cn.rivamed.log.core.util.JsonUtil;
+import cn.rivamed.log.core.util.LogTemplateUtil;
+import cn.rivamed.log.core.util.RivamedClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,6 +23,7 @@ import org.springframework.boot.logging.LogLevel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,7 +67,7 @@ public abstract class AbstractLogRecordAspect extends RivamedLogRecordHandler {
             Object[] args = joinPoint.getArgs();
             for (int i = 0; i < args.length; i++) {
                 Object object = args[i];
-                if (object instanceof HttpServletResponse || object instanceof HttpServletRequest) {
+                if (object instanceof HttpServletResponse || object instanceof HttpServletRequest || object instanceof MultipartFile) {
                     continue;
                 }
                 params.add(object);
