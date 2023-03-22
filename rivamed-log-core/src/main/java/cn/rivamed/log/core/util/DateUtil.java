@@ -68,6 +68,11 @@ public class DateUtil {
     public static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
 
     /**
+     * 时间格式，时分秒，用:分开，例如：12-23-34
+     */
+    public static final String TIME_FORMAT_HH_MI_SS = "HH:mm:ss";
+
+    /**
      * 日期格式，年月日，例如：2016.10.05
      */
     public static final String DATE_FORMAT_POINTYYYYMMDD = "yyyy.MM.dd";
