@@ -24,6 +24,7 @@ public class LogMessageRingBuffer {
         Disruptor<LogMessageEvent> disruptor = new Disruptor<>(eventFactory, 256 * 1024, new CustomizableThreadFactory("event-handler-"),
                 ProducerType.SINGLE, new SleepingWaitStrategy());
         // 连接消费端
+        disruptor.setDefaultExceptionHandler(new LogMessageExceptionHandler());
         disruptor.handleEventsWith(new LogMessageEventHandler());
         disruptor.start();
         return disruptor.getRingBuffer();
