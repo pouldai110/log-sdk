@@ -4,6 +4,7 @@ import cn.rivamed.log.core.client.AbstractClient;
 import cn.rivamed.log.core.entity.BaseLogMessage;
 import cn.rivamed.log.core.util.JsonUtil;
 import com.lmax.disruptor.EventHandler;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author weixiaobo
@@ -17,7 +18,10 @@ public class LogMessageEventHandler implements EventHandler<LogMessageEvent> {
             BaseLogMessage baseLogMessage = event.getBaseLogMessage();
             AbstractClient client = AbstractClient.getClient();
             if (client != null) {
-                client.pushMessage(JsonUtil.toJSONString(baseLogMessage));
+                String messageStr = JsonUtil.toJSONString(baseLogMessage);
+                if (StringUtils.isNotBlank(messageStr)) {
+                    client.pushMessage(messageStr);
+                }
             }
         } finally {
             event.clear();
