@@ -18,6 +18,7 @@ package cn.rivamed.log.springboot.configuration;
 
 import brave.Tracer;
 import cn.rivamed.log.task.spring.SpringScheduledTaskAop;
+import cn.rivamed.log.task.xxlJob.XxlJobTaskAop;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -34,6 +35,13 @@ public class RivamedLogTraceSchedulingAutoConfiguration {
     @Bean
     public SpringScheduledTaskAop springScheduledTaskAop(Tracer tracer) {
         return new SpringScheduledTaskAop(tracer);
+    }
+
+
+    @Bean
+    @ConditionalOnClass(name = "com.xxl.job.core.handler.annotation.XxlJob")
+    public XxlJobTaskAop xxlJobTaskAop(Tracer tracer) {
+        return new XxlJobTaskAop(tracer);
     }
 
 }

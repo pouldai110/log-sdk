@@ -7,6 +7,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.LoaderClassPath;
 import javassist.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 
@@ -19,6 +20,7 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
  * @version V2.0.1
  * @date 22/10/24 10:34
  */
+@Slf4j
 public class RabbitMQInstrumentation {
 
     public static final String ENHANCE_RABBITMQ_SEND_INTERCEPTOR_PATH = "cn.rivamed.log.springboot.interceptor.RabbitMQInterceptor.sendInterceptor"; // 发送拦截器
@@ -38,7 +40,7 @@ public class RabbitMQInstrumentation {
         //拦截send方法
         CtClass ctClass = classPool.getOrNull(ENHANCE_RABBIT_TEMPLATE_CLASS);
         if (ctClass == null) {
-            System.out.println("RabbitMQ client not found");
+            log.error("RabbitMQ client not found");
             return false;
         }
         CtClass strClass = classPool.get(String.class.getName());
@@ -70,7 +72,7 @@ public class RabbitMQInstrumentation {
         //拦截receive方法
         CtClass ctClass = classPool.getOrNull(ENHANCE_RABBIT_RECEIVE_CLASS);
         if (ctClass == null) {
-            System.out.println("RabbitMQ Listener not found");
+            log.error("RabbitMQ Listener not found");
             return false;
         }
         CtClass messageClass = classPool.get(Message.class.getName());

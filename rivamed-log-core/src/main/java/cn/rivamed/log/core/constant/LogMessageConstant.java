@@ -58,6 +58,8 @@ public class LogMessageConstant {
 
     public final static String LOG_TYPE_SCHEDULED_TASK_LOG = "scheduledTask";
 
+    public final static String LOG_TYPE_XXLJOB_TASK_LOG = "XxlJob";
+
     /**
      * 语义化日志类型 system/swagger/mztbiz
      */
